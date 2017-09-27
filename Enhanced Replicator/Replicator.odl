@@ -1,0 +1,23 @@
+
+import "ocidl.idl";
+
+#include <olectl.h>
+[ 
+   uuid(8870FA7E-CF04-4a03-A20E-BB5B83071E0D),
+   helpstring("InnoVisioNate CursiVision Enhanced Replicator"), 
+   lcid(0x0), 
+   version(1.0)
+] 
+
+library CursiVisionEnhancedReplicatorBackEnd { 
+
+    importlib(STDOLE_TLB); 
+    importlib(STDTYPE_TLB);
+
+	[uuid(8870FA7E-CF04-4a03-A20E-BB5B83071E0E),
+		helpstring("CursiVision Enhanced Replicator Object")]
+		coclass CursiVisionEnhancedReplicatorBackEnd {
+		[default] interface IUnknown;
+	};
+
+};

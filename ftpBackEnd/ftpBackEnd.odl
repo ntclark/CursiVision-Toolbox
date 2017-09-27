@@ -1,0 +1,24 @@
+
+import "ocidl.idl";
+
+#include <olectl.h>
+
+[ 
+   uuid(CDC6E109-9B34-4405-87B8-0D82D3B623D6),
+   helpstring("InnoVisioNate CursiVision FTP backend plugin"), 
+   lcid(0x0), 
+   version(1.0)
+] 
+
+library CursiVisionFTPBackEnd { 
+
+    importlib(STDOLE_TLB); 
+    importlib(STDTYPE_TLB);
+
+	[uuid(CDC6E109-9B34-4405-87B8-0D82D3B623D7),
+		helpstring("CursiVision FTP Back End Object")]
+		coclass CursiVisionFTPBackEnd {
+		[default] interface IUnknown;
+	};
+
+};

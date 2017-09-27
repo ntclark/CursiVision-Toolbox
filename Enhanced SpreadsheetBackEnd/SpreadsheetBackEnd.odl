@@ -1,0 +1,24 @@
+
+import "ocidl.idl";
+
+#include <olectl.h>
+
+[ 
+   uuid(C16C4DF5-7197-4207-93C0-82A718159876),
+   helpstring("Enhanced Spreadsheet backend plugin"), 
+   lcid(0x0), 
+   version(1.0)
+] 
+
+library CursiVisionSpreadsheetBackEnd { 
+
+    importlib(STDOLE_TLB); 
+    importlib(STDTYPE_TLB);
+
+	[uuid(C16C4DF5-7197-4207-93C0-82A718159877),
+		helpstring("Enhanced CursiVision Spreadsheet Storage Object")]
+		coclass CursiVisionSpreadsheetBackEnd {
+		[default] interface IUnknown;
+	};
+
+};

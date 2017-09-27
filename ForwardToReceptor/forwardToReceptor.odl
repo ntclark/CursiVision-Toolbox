@@ -1,0 +1,32 @@
+
+import "ocidl.idl";
+
+#include <olectl.h>
+[ 
+   uuid(C78A8C5E-89DC-4957-A263-831BFAC300E1),
+   helpstring("InnoVisioNate CursiVision Forward to Receptor Back End plugin"), 
+   lcid(0x0), 
+   version(1.0)
+] 
+
+library CursiVisionForwardToReceptorBackEnd { 
+
+    importlib(STDOLE_TLB); 
+    importlib(STDTYPE_TLB);
+
+    [uuid(C78A8C5E-89DC-4957-A263-831BFAC300E3)]
+    interface ICursiVisionForwardToReceptorBackEnd : IUnknown {
+
+      HRESULT SetServer(char *pszServerName);
+      HRESULT SetPort(long portNumber);
+
+    }
+
+	[uuid(C78A8C5E-89DC-4957-A263-831BFAC300E2),
+		helpstring("CursiVision Forward to Receptor Back End Object")]
+		coclass CursiVisionForwardToReceptorBackEnd {
+//		[default] interface ICursiVisionBackEnd;
+      interface ICursiVisionForwardToReceptorBackEnd;
+	};
+
+};

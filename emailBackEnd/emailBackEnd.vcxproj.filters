@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{24dd3840-16ed-4950-932f-972ef770cd59}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Source Files\COM Implementation">
+      <UniqueIdentifier>{40f01cd4-1142-495a-bda3-d2271c8082e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\COM Interfaces">
+      <UniqueIdentifier>{6995aa3d-4a50-4f31-897e-36d7a66477a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\emails">
+      <UniqueIdentifier>{96bcf28c-8712-422c-b04c-36be158750e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\emails\munpack">
+      <UniqueIdentifier>{deff1396-41b5-41a8-89a4-002374304f90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{74255b99-7c63-4368-ab76-a3977c474d79}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{a287513a-d596-4b3b-af1a-df965084dd80}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="bodyHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="emailBackEnd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="propertiesHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dllMain.cpp">
+      <Filter>Source Files\COM Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="ICursiVisionBackEnd.cpp">
+      <Filter>Source Files\COM Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="IPropertiesClient.cpp">
+      <Filter>Source Files\COM Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="IPropertyPageClient.cpp">
+      <Filter>Source Files\COM Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="IUnknown.cpp">
+      <Filter>Source Files\COM Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="emails\emailUtilities.cpp">
+      <Filter>Source Files\emails</Filter>
+    </ClCompile>
+    <ClCompile Include="emails\munpack\codes.c">
+      <Filter>Source Files\emails\munpack</Filter>
+    </ClCompile>
+    <ClCompile Include="emails\munpack\decode.c">
+      <Filter>Source Files\emails\munpack</Filter>
+    </ClCompile>
+    <ClCompile Include="emails\munpack\encode.c">
+      <Filter>Source Files\emails\munpack</Filter>
+    </ClCompile>
+    <ClCompile Include="emails\munpack\magic.c">
+      <Filter>Source Files\emails\munpack</Filter>
+    </ClCompile>
+    <ClCompile Include="emails\munpack\md5c.c">
+      <Filter>Source Files\emails\munpack</Filter>
+    </ClCompile>
+    <ClCompile Include="emails\munpack\mpack.c">
+      <Filter>Source Files\emails\munpack</Filter>
+    </ClCompile>
+    <ClCompile Include="emails\munpack\part.c">
+      <Filter>Source Files\emails\munpack</Filter>
+    </ClCompile>
+    <ClCompile Include="emails\munpack\string.c">
+      <Filter>Source Files\emails\munpack</Filter>
+    </ClCompile>
+    <ClCompile Include="emails\munpack\unixos.c">
+      <Filter>Source Files\emails\munpack</Filter>
+    </ClCompile>
+    <ClCompile Include="emails\munpack\uudecode.c">
+      <Filter>Source Files\emails\munpack</Filter>
+    </ClCompile>
+    <ClCompile Include="emails\munpack\xmalloc.c">
+      <Filter>Source Files\emails\munpack</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="emailBackEnd.def">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="emailBackEnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="emailBackEnd.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="fms.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="emailBackEnd.odl">
+      <Filter>Source Files\COM Implementation</Filter>
+    </Midl>
+  </ItemGroup>
+</Project>

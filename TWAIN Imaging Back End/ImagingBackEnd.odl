@@ -1,0 +1,24 @@
+
+import "ocidl.idl";
+
+#include <olectl.h>
+
+[ 
+   uuid(5B1E25BB-633C-4e17-A327-25583B646B4D),
+   helpstring("TWAIN Compatible Imaging backend plugin"), 
+   lcid(0x0), 
+   version(1.0)
+] 
+
+library CursiVisionTWAINImagingBackEnd { 
+
+    importlib(STDOLE_TLB); 
+    importlib(STDTYPE_TLB);
+
+	[uuid(5B1E25BB-633C-4e17-A327-25583B646B4E),
+		helpstring("CursiVision TWAIN Compatible Imaging BackEnd object")]
+		coclass CursiVisionTWAINImagingBackEnd {
+		[default] interface IUnknown;
+	};
+
+};

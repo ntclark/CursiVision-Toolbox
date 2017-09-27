@@ -1,0 +1,24 @@
+
+import "ocidl.idl";
+
+#include <olectl.h>
+
+[ 
+   uuid(52A9EE3A-5C46-48b4-A1A4-56929ED05E55),
+   helpstring("Generic backend plugin"), 
+   lcid(0x0), 
+   version(1.0)
+] 
+
+library CursiVisionGenericBackEnd { 
+
+    importlib(STDOLE_TLB); 
+    importlib(STDTYPE_TLB);
+
+	[uuid(52A9EE3A-5C46-48b4-A1A4-56929ED05E56),
+		helpstring("Generic backend Object")]
+		coclass CursiVisionGenericBackEnd {
+		[default] interface IUnknown;
+	};
+
+};

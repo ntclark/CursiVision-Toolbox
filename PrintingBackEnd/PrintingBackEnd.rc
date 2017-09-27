@@ -1,0 +1,74 @@
+
+#include <windows.h>
+#include <winres.h>
+#include <commctrl.h>
+
+#include "resource.h"
+
+VS_VERSION_INFO VERSIONINFO
+
+ FILEVERSION 4,0,0,0
+ PRODUCTVERSION 4,0,0,0
+ FILEFLAGSMASK 0x3fL
+ FILEFLAGS 0x0L
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "InnoVisioNate\0"
+            VALUE "FileDescription", "CursiVision Printing back end\0"
+            VALUE "FileVersion", "5, 0, 1, 0\0"
+            VALUE "InternalName", "CursiVisionPrinting.ocx\0"
+            VALUE "LegalCopyright", "Copyright © 2009,2010,2011,2012,2013,2014 InnoVisioNate Inc.\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "CursiVisionPrinting.ocx\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "CursiVision Printing back end\0"
+            VALUE "ProductVersion", "5.0.1\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#define NO_CURSIVISION_PROPERTIES
+#define DONT_TERMINATE_DIALOG_TEMPLATE
+
+IDD_DISPOSITION_PROPERTIES DIALOGEX 0, 0, 256, 128
+STYLE DS_SETFONT | DS_3DLOOK | WS_CHILD | WS_VISIBLE
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+
+   AUTOCHECKBOX "Show these properties every time",IDDI_DISPOSITION_SHOW_PROPERTIES, 10,8,128,12,WS_GROUP
+
+   AUTOCHECKBOX "Use the default printer", IDDI_USE_DEFAULT_PRINTER, 10, 8 + 14, 160, 14
+
+   LTEXT "Please choose the destination printer:",IDDI_CHOOSE_PRINTER_LABEL,10,8 + 14 + 14 + 8, 160, 14
+
+   COMBOBOX IDDI_PRINTER, 16, 8 + 14 + 14 + 8 + 14, 128 + 24, 128, CBS_DROPDOWNLIST | WS_VSCROLL
+
+#if 1
+   LTEXT "Copies:", -1, 10, 8 + 14 + 14 + 8 + 14 + 8 + 12, 24, 14
+   EDITTEXT IDDI_PRINT_COPIES,10 + 24 + 8, 8 + 14 + 14 + 8 + 14 + 8 + 8, 24, 14, ES_CENTER
+#endif
+
+   AUTOCHECKBOX "Skip printing", IDDI_SKIP, 16, 8 + 14 + 14 + 8 + 14 + 14 + 8 + 8, 96, 14
+
+#if 0
+   PUSHBUTTON "Properties", IDDI_PRINTER_PROPERTIES, 16 + 128 + 24 + 4, 8 + 14 + 14 - 1, 48, 14
+#endif
+
+   LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,
+                           0,0,256, 24 
+
+END

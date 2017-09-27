@@ -1,0 +1,24 @@
+
+import "ocidl.idl";
+
+#include <olectl.h>
+
+[ 
+   uuid(A8DF7F28-4775-48ac-A3FD-F693C0E96F1E),
+   helpstring("Imaging backend plugin"), 
+   lcid(0x0), 
+   version(1.0)
+] 
+
+library CursiVisionImagingBackEnd { 
+
+    importlib(STDOLE_TLB); 
+    importlib(STDTYPE_TLB);
+
+	[uuid(A8DF7F28-4775-48ac-A3FD-F693C0E96F1F),
+		helpstring("CursiVision Imaging BackEnd object")]
+		coclass CursiVisionImagingBackEnd {
+		[default] interface IUnknown;
+	};
+
+};

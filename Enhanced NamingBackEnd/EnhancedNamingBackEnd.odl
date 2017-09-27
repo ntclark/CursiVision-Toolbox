@@ -1,0 +1,24 @@
+
+import "ocidl.idl";
+
+#include <olectl.h>
+
+[ 
+   uuid(2BEFEC20-B6F7-4ccb-93B7-D8EDDF3153B5),
+   helpstring("Enhanced Naming backend plugin"), 
+   lcid(0x0), 
+   version(1.0)
+] 
+
+library CursiVisionNamingBackEnd { 
+
+    importlib(STDOLE_TLB); 
+    importlib(STDTYPE_TLB);
+
+	[uuid(2BEFEC20-B6F7-4ccb-93B7-D8EDDF3153B6),
+		helpstring("Enhanced Naming CursiVision File Storage Object")]
+		coclass CursiVisionNamingBackEnd {
+		[default] interface IUnknown;
+	};
+
+};

@@ -1,0 +1,86 @@
+
+#include <windows.h>
+#include <winres.h>
+#include <commctrl.h>
+
+#include "resource.h"
+
+VS_VERSION_INFO VERSIONINFO
+
+ FILEVERSION 4,0,0,0
+ PRODUCTVERSION 4,0,0,0
+ FILEFLAGSMASK 0x3fL
+ FILEFLAGS 0x0L
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "InnoVisioNate\0"
+            VALUE "FileDescription", "CursiVision File Naming backend\0"
+            VALUE "FileVersion", "5, 0, 1, 0\0"
+            VALUE "InternalName", "EnhancedNamingBackEnd.ocx\0"
+            VALUE "LegalCopyright", "Copyright © 2009,2010,2011,2012,2013,2014 InnoVisioNate Inc.\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "EnhancedNamingBackEnd.ocx\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "CursiVision File Naming backend\0"
+            VALUE "ProductVersion", "5.0.1\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#define NO_CURSIVISION_PROPERTIES
+#define DONT_TERMINATE_DIALOG_TEMPLATE
+#define ADDITIONAL_TOP_SPACE 24
+
+#include "..\resultDisposition.rc"
+
+   LTEXT "Please specify the storage options for the resulting document:",IDDI_HEADER_TEXT, 10, 5, 256, 12
+
+   LTEXT "Choose the field label from your print profile:",IDC_STATIC,10,102 + 14 + 10 + 20, 250, 14
+   COMBOBOX IDDI_NAME_PREFIX,16, 102 + 14 + 10 + 20 + 14, 128, 64,WS_VISIBLE | CBS_DROPDOWNLIST
+
+   LTEXT "",IDC_STATIC,10,102 + 14 + 10 + 20 + 14 + 4 + 20 + 20 + 20, 256, 64
+
+   LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,
+                           0,0,256, 24 
+
+END
+
+
+IDD_NO_PROFILE DIALOGEX 0,0, 256, 256 + 32 + 8
+CAPTION "Note"
+STYLE DS_SETFONT | WS_CHILD | WS_POPUP | WS_CAPTION
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+
+   LTEXT "",IDDI_NO_PROFILE_NOTE, 8, 8, 16, 16
+
+END
+
+STRINGTABLE {
+
+#include "..\commonStrings.rc"
+
+IDDI_NAME_PREFIX "Create a field in your print profile (Tools - Setup - Print) that defines a location containing text for the file name."
+
+IDS_NO_PROFILE "This CursiVision back end tool is designed to be used with documents that have been printed through the CursiVision Print driver.\r\
+The CursiVision print driver captures text, and it's location, from every document printed.\r\r\
+By editing the printing profile (Tools - Setup - Printing) for the current document, you can specify a location on your documents from which to \
+find certain text for each copy of the document printed.\r\r\
+With these definitions, this back end tool can then take the text from that location off of the printed document and name your signed document with \
+that text.\r\r\
+When you edit the profile, create fields by going to the Text Fields Tab, press Edit, and use the mouse to select each field. Be sure to right click on each field and create a label for it.\r\r\r\
+There is no print profile defined for this document. To create a print profile, print your source document from your application to the CursiVision print driver."
+}

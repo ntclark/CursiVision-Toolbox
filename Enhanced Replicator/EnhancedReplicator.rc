@@ -1,0 +1,105 @@
+
+#include <windows.h>
+#include <winres.h>
+#include <commctrl.h>
+
+#include "resource.h"
+
+VS_VERSION_INFO VERSIONINFO
+
+ FILEVERSION 2,0,0,1
+ PRODUCTVERSION 2,0,0,1
+ FILEFLAGSMASK 0x3fL
+ FILEFLAGS 0x0L
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "InnoVisioNate\0"
+            VALUE "FileDescription", "CursiVision Replicator backend\0"
+            VALUE "FileVersion", "5, 0, 1, 1\0"
+            VALUE "InternalName", "EnhancedReplicator.ocx\0"
+            VALUE "LegalCopyright", "Copyright © 2010,2011,2012,2013,2014 InnoVisioNate Inc.\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "EnhancedReplicator.ocx\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "CursiVision Enhanced Replicator backend\0"
+            VALUE "ProductVersion", "5.0.1\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+IDD_REPLICATOR DIALOGEX 0, 0, 512, 512
+STYLE DS_SETFONT | DS_3DLOOK | WS_CHILD | WS_VISIBLE  
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+
+   PUSHBUTTON "Reset",IDDI_REPLICATOR_RESET, 8, 8, 32, 14
+
+   LTEXT "",IDDI_REPLICATOR_INSTRUCTIONS, 8 + 32 + 2, 8, 256 - 64, 60
+
+   //LTEXT "",IDDI_REPLICATOR_ACTION_INSTRUCTIONS, 8, 8, 24, 16
+
+   LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,
+                           0,0,256, 24 
+
+END
+
+#if 0
+IDD_EDIT_REPLICATOR DIALOGEX 0, 0, 512, 512
+CAPTION "Replicating signatures" 
+STYLE DS_SETFONT | DS_3DLOOK | WS_CHILD | WS_VISIBLE | WS_POPUP | WS_CAPTION | WS_BORDER | WS_THICKFRAME
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+
+   LTEXT "Instructions",IDDI_REPLICATOR_INSTRUCTIONS, 16,4, 256 - 64, 32
+
+   AUTOCHECKBOX "Show text outlines ?", IDDI_SHOW_TEXT_OUTLINES,16, 32 + 12, 64 + 16, 12
+
+   PUSHBUTTON "Reset",IDDI_REPLICATOR_RESET, 16 + 64 + 16 + 8, 32 + 12, 24, 12, 
+
+   CONTROL "",IDDI_REPLICATOR_VIEW,STATIC,WS_VISIBLE, 16, 62 - 16, 220 - 16, 256 - 32 - 32, WS_EX_CLIENTEDGE
+
+   CONTROL "",IDDI_REPLICATOR_SCROLL, "Scrollbar", WS_VISIBLE | SBS_VERT, 10,10,10,10,WS_EX_RIGHTSCROLLBAR
+   
+   LTEXT "",IDDI_REPLICATOR_ACTION_INSTRUCTIONS, 8, 8, 24, 16
+
+   PUSHBUTTON "Ok",IDDI_REPLICATOR_OK, 8, 8, 24, 16
+   PUSHBUTTON "Cancel",IDDI_REPLICATOR_CANCEL, 8, 8, 32, 16
+
+END
+
+
+IDD_NO_PROFILE DIALOGEX 0,0, 256, 256 + 32 + 8
+CAPTION "Note"
+STYLE DS_SETFONT | WS_CHILD | WS_POPUP | WS_CAPTION
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+
+   LTEXT "",IDDI_NO_PROFILE_NOTE, 8, 8, 16, 16
+
+END
+
+#endif
+
+STRINGTABLE {
+
+IDS_EDIT_INSTRUCTIONS "To replicate a signature, right click in the Native signature, and choose Replicate from the menu. \
+Move the mouse to the desired location (you can also navigate to the desired page), and click the left mouse button.\r\
+To move a signature, left click within it and move the mouse while holding the button down.\r\
+You can only move replicated signatures, native signatures will not move."
+
+}

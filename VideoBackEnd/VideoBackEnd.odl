@@ -1,0 +1,24 @@
+
+import "ocidl.idl";
+
+#include <olectl.h>
+
+[ 
+   uuid(A8DF7F28-4775-48ac-A3FD-F693C0E96F22),
+   helpstring("Video backend plugin"), 
+   lcid(0x0), 
+   version(1.0)
+] 
+
+library CursiVisionVideoBackEnd { 
+
+    importlib(STDOLE_TLB); 
+    importlib(STDTYPE_TLB);
+
+	[uuid(A8DF7F28-4775-48ac-A3FD-F693C0E96F23),
+		helpstring("CursiVision Video BackEnd object")]
+		coclass CursiVisionVideoBackEnd {
+		[default] interface IUnknown;
+	};
+
+};

@@ -1,0 +1,105 @@
+
+#include <windows.h>
+#include <winres.h>
+#include <commctrl.h>
+
+#include "resource.h"
+
+VS_VERSION_INFO VERSIONINFO
+
+ FILEVERSION 4,0,0,0
+ PRODUCTVERSION 4,0,0,0
+ FILEFLAGSMASK 0x3fL
+ FILEFLAGS 0x0L
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "InnoVisioNate\0"
+            VALUE "FileDescription", "CursiVision Spreadsheet Storage backend\0"
+            VALUE "FileVersion", "5, 0, 1, 0\0"
+            VALUE "InternalName", "EnhancedSpreadsheetBackEnd.ocx\0"
+            VALUE "LegalCopyright", "Copyright © 2010,2011,2012,2013,2014 InnoVisioNate Inc.\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "EnhancedSpreadsheetBackEnd.ocx\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "CursiVision Spreadsheet Storage backend\0"
+            VALUE "ProductVersion", "5.0.1\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+IDD_NO_PROFILE DIALOGEX 0,0, 256, 256 + 32 + 8
+CAPTION "Note"
+STYLE DS_SETFONT | WS_CHILD | WS_POPUP | WS_CAPTION
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+
+   LTEXT "",IDDI_NO_PROFILE_NOTE, 8, 8, 16, 16
+
+END
+
+IDD_OPTIONS DIALOGEX 0,0, 256, 256 + 32 + 8 + 32
+CAPTION "Note"
+STYLE DS_SETFONT | WS_CHILD | WS_POPUP | WS_CAPTION
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+
+   AUTOCHECKBOX "Show these properties every time", IDDI_SHOW_PROPERTIES,10,8,128,14, WS_VISIBLE | WS_TABSTOP
+
+   LTEXT "Please specify the name of your Excel Workbook",-1,10,8 + 14,256 - 10,14
+   EDITTEXT IDDI_WORKBOOK_NAME, 10,8 + 14 + 12,256 - 10 - 32 - 4, 12, ES_AUTOHSCROLL | WS_TABSTOP
+   PUSHBUTTON "...", IDDI_WORKBOOK_GET, 10 + 256 - 10 - 32 - 4 + 4, 8 + 14 + 12,16, 12
+
+   LTEXT "Please choose the spreadsheet",-1,10,8 + 14 + 12 + 12 + 4 + 4,96 + 8,14
+   COMBOBOX IDDI_CHOOSE_SPREADSHEET, 10 + 96 + 8 + 4, 8 + 14 + 12 + 12 + 4, 64 + 32, 64, CBS_DROPDOWNLIST | WS_VSCROLL
+
+   LTEXT "Select the field labels from your CursiVision printing profile.",-1,10,8 + 14 + 12 + 4 + 14 + 20,256 - 20,40
+
+   LTEXT "Field name",-1,10,8 + 14 + 12 + 4 + 14 + 20 + 40,90,14
+   COMBOBOX IDDI_NAME_PREFIX,10,8 + 14 + 12 + 4 + 14 + 20 + 40 + 12,90,12, CBS_DROPDOWN | WS_TABSTOP
+
+   LTEXT "Column Name",-1,10 + 90 + 8,8 + 14 + 12 + 4 + 14 + 20 + 40,70,14
+   EDITTEXT IDDI_COLUMN_NAME,10 + 90 + 8,8 + 14 + 12 + 4 + 14 + 20 + 40 + 12,70,12, ES_AUTOHSCROLL
+
+   LTEXT "Column ID\r(A,B, etc)",-1,10 + 90 + 8 + 70 + 8,8 + 14 + 12 + 4 + 14 + 20 + 40 - 8,40,24
+   EDITTEXT IDDI_COLUMN_ID,10 + 90 + 8 + 70 + 8,8 + 14 + 12 + 4 + 14 + 20 + 40 + 12,40,12, ES_CENTER
+
+   AUTOCHECKBOX "Include the signing date",IDDI_INCLUDE_DATE, 10,10,88, 14, WS_VISIBLE
+   RTEXT "Column:",IDDI_INCLUDE_DATE_LABEL,10,10, 32, 14
+   EDITTEXT IDDI_DATE_COLUMN_ID,10,10,32,12,ES_CENTER
+
+   AUTOCHECKBOX "Include the signing time",IDDI_INCLUDE_TIME, 10,24,88, 14, WS_VISIBLE
+   RTEXT "Column:",IDDI_INCLUDE_TIME_LABEL,10,10, 32, 14
+   EDITTEXT IDDI_TIME_COLUMN_ID,10,10,32,12,ES_CENTER
+
+   AUTOCHECKBOX "Include a link to the signed document",IDDI_INCLUDE_DOCUMENT_LINK, 10, 24, 128 + 8, 14
+   RTEXT "Column:",IDDI_DOCUMENT_LINK_LABEL,10,10, 32, 14
+   EDITTEXT IDDI_DOCUMENT_LINK_COLUMN,10,10,32,12,ES_CENTER
+
+   LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,
+                           0,0,256, 24 
+END
+
+STRINGTABLE 
+{
+   IDS_NO_PROFILE "This CursiVision back end tool is designed to be used with documents that have been printed through the CursiVision Print driver.\r\
+The CursiVision print driver captures text, and it's location, from every document printed.\r\r\
+By editing the printing profile (Tools - Setup - Printing) for the current document, you can specify locations on your documents from which to \
+find this text for each copy of the document printed.\r\r\
+With these definitions, this back end tool can then take the text from those locations off of the printed document and populate your spreadsheet with \
+that text.\r\r\
+When you edit the profile, create fields by going to the Text Fields Tab, press Edit, and use the mouse to select each field. Be sure to right click on each field and create a label for it.\r\r\r\
+There is no print profile defined for this document. To create a print profile, print your source document from your application to the CursiVision print driver."
+}

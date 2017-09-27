@@ -1,0 +1,74 @@
+
+#include <windows.h>
+#include <winres.h>
+#include <commctrl.h>
+
+#include "resource.h"
+#include "..\resource.h"
+
+VS_VERSION_INFO VERSIONINFO
+
+ FILEVERSION 4,0,0,0
+ PRODUCTVERSION 4,0,0,0
+ FILEFLAGSMASK 0x3fL
+ FILEFLAGS 0x0L
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "InnoVisioNate\0"
+            VALUE "FileDescription", "The CursiVision Forward to Receptor Back End\0"
+            VALUE "FileVersion", "5, 0, 1, 0\0"
+            VALUE "InternalName", "ForwardToReceptor.exe\0"
+            VALUE "LegalCopyright", "Copyright © 2010,2011,2012,2013,2014 InnoVisioNate Inc.\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "ForwardToReceptor.exe\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "CursiVision Back End\0"
+            VALUE "ProductVersion", "5.0.1\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+IDD_RECEPTOR DIALOGEX 0, 0, 256, 256
+STYLE DS_SETFONT | DS_3DLOOK | WS_CHILD | WS_VISIBLE  
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+
+   LTEXT "Please specify the name of the server running the CursiVisionReceptor service",IDC_STATIC, 8, 8, 256 - 32, 28
+   LTEXT "A server running this service will present the document for signing to the user logged into that computer.",IDC_STATIC, 8, 8 + 24, 256 - 32, 28
+
+   LTEXT "Server:",IDC_STATIC, 8, 8 + 24 + 20 + 4, 48, 14,ES_RIGHT
+   EDITTEXT IDDI_BACKENDS_RECEPTOR_SERVER,8 + 48 + 2, 8 + 24 + 20, 96, 14,ES_AUTOHSCROLL | WS_TABSTOP
+
+   LTEXT "Then to server:",IDC_STATIC, 8, 8 + 24 + 20 + 4 + 14 + 4, 48, 14,ES_RIGHT
+   EDITTEXT IDDI_BACKENDS_RECEPTOR_NEXT_SERVER,8 + 48 + 2, 8 + 24 + 20 + 14 + 4, 96, 14,ES_AUTOHSCROLL | WS_TABSTOP
+
+   LTEXT "Use the following option to save the document on the server.\r\
+The option is used only to save the document, no one at the server computer will sign it.\r\
+The path specified is in terms of the server's disks",IDC_STATIC,8, 8 + 24 + 20 + 4 + 14 + 4 + 14 + 8, 256 - 16 - 16, 40
+   AUTOCHECKBOX "Save the document on the server",IDDI_SAVE_ON_SERVER, 8,8 + 24 + 20 + 4 + 14 + 4 + 14 + 8 + 40 + 8, 256 - 16 - 16, 14, WS_TABSTOP
+   EDITTEXT IDDI_SERVER_LOCATION, 8,8 + 24 + 20 + 4 + 14 + 4 + 14 + 8 + 40 + 8 + 14 + 8 - 8, 256 - 16 - 16, 14, WS_TABSTOP
+
+#if 0
+   LTEXT "Port:",IDC_STATIC, 8, 8 + 20 + 20 + 4,48, 14,ES_RIGHT
+   EDITTEXT IDDI_BACKENDS_RECEPTOR_PORT,8 + 48 + 2, 8 + 20 + 20, 32, 14,ES_AUTOHSCROLL | WS_TABSTOP
+#endif
+
+   LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,
+                           0,0,256, 24 
+
+END
+

@@ -1,0 +1,44 @@
+
+import "ocidl.idl";
+
+#include <olectl.h>
+
+[ 
+   uuid(800A9812-5DC2-402d-8BF2-131E50384FEF),
+   helpstring("Printing backend plugin"), 
+   lcid(0x0), 
+   version(1.0)
+] 
+
+library CursiVisionPrintingBackEnd { 
+
+    importlib(STDOLE_TLB); 
+    importlib(STDTYPE_TLB);
+
+   [uuid(800A9812-5DC2-402d-8BF2-131E50384FF1),
+      helpstring("CursiVision Printing BackEnd Additional"),
+      nonextensible,pointer_default(unique)] 
+
+   interface IPrintingBackEndAdditional : IUnknown {
+
+      HRESULT TakeMainWindow(HWND hwndMainWindow);
+
+      HRESULT PrintDocument(char *pszDocument);
+
+   }
+
+
+	[uuid(800A9812-5DC2-402d-8BF2-131E50384FF0),
+		helpstring("CursiVision Printing BackEnd object")]
+		coclass CursiVisionPrintingBackEnd {
+		[default] interface IUnknown;
+	};
+
+	[uuid(800A9812-5DC2-402d-8BF2-131E50384FF2),
+		helpstring("CursiVision Printing BackEnd Additional object")]
+		coclass CursiVisionPrintingBackEndAdditional {
+		[default] interface IPrintingBackEndAdditional;
+	};
+
+
+};
