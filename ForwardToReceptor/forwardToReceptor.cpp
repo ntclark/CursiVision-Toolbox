@@ -2,7 +2,7 @@
 #include "forwardToReceptor.h"
 
 #include "pdfEnabler_i.c"
-#include "..\FrontEnd.h"
+#include "CursiVisionReceptor.h"
 
    forwardToReceptor *forwardToReceptor::pCurrentReplicatorBackEnd = NULL;
    forwardToReceptor::_IPropertyPage *forwardToReceptor::pIPropertyPage = NULL;

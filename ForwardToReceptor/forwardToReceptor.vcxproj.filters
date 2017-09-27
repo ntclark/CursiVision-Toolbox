@@ -55,11 +55,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Midl Include="forwardToReceptor.odl">
-      <Filter>Source Files\COM Implementation</Filter>
-    </Midl>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="forwardToReceptor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -71,5 +66,10 @@
     <ResourceCompile Include="ForwardToReceptor.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="forwardToReceptor.odl">
+      <Filter>Source Files\COM Implementation</Filter>
+    </Midl>
   </ItemGroup>
 </Project>

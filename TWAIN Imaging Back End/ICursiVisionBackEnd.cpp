@@ -55,7 +55,7 @@ SetProperties:
    if ( ! szChosenDevice[0] ) {
       char szMessage[512];
       sprintf(szMessage,"The imaging device has not been selected."
-                        "\n\nSelect Retry to respecify the properties, or Cancel to exit without scanning an image",szChosenDevice);
+                        "\n\nSelect Retry to respecify the properties, or Cancel to exit without scanning an image");
       if ( IDRETRY == MessageBox(NULL,szMessage,"Error!",MB_ICONEXCLAMATION | MB_RETRYCANCEL) )
          goto SetProperties;
 
