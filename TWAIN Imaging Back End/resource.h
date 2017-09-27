@@ -1,5 +1,5 @@
 
-#include "..\resource.h"
+#include "ToolBoxResources.h"
 
 #define IDD_SCAN_AGAIN           100
 

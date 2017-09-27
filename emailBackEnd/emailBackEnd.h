@@ -7,7 +7,7 @@
 
 #include "emailUtilities.h"
 #include "resource.h"
-#include "..\resource.h"
+#include "ToolBoxResources.h"
 
 #include "pdfEnabler_i.h"
 #include "PrintingSupport_i.h"

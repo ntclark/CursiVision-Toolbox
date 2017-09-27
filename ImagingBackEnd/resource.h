@@ -1,5 +1,5 @@
 
-#include "..\resource.h"
+#include "ToolBoxResources.h"
 
 #define IDDI_TABS               4001
 #define IDDI_SHOW_PROPERTIES    4002

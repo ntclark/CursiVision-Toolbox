@@ -1,5 +1,5 @@
 
-#include "..\resource.h"
+#include "ToolBoxResources.h"
 
 #define IDDIALOG_PROPERTIES   100
 

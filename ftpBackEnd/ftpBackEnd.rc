@@ -4,7 +4,7 @@
 #include <commctrl.h>
 
 #include "resource.h"
-#include "..\resource.h"
+#include "ToolBoxResources.h"
 
 VS_VERSION_INFO VERSIONINFO
 

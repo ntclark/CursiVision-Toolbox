@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "..\resource.h"
+#include "ToolBoxResources.h"
 
 #define IDD_ICON                   1
 

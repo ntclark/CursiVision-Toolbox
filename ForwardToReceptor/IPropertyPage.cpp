@@ -5,7 +5,7 @@
 */
 
 #include "forwardToReceptor.h"
-#include "..\resource.h"
+#include "ToolBoxResources.h"
 
    long __stdcall forwardToReceptor::_IPropertyPage::QueryInterface(REFIID riid,void **ppv) {
 

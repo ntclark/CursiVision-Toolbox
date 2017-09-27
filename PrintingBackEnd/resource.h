@@ -1,5 +1,5 @@
 
-#include "..\resource.h"
+#include "ToolBoxResources.h"
 
 #define IDDI_PRINTER                201
 #define IDDI_PRINTER_PROPERTIES     202

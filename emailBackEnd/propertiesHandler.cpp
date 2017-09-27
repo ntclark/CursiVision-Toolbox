@@ -1,7 +1,7 @@
 
 #include "emailBackEnd.h"
 
-#include "..\resource.h"
+#include "ToolBoxResources.h"
 
 #define PUT_BOOL(v,id)  SendDlgItemMessage(hwnd,id,BM_SETCHECK,v ? BST_CHECKED : BST_UNCHECKED,0L);
 #define PUT_LONG(v,id)  { char szX[32]; sprintf(szX,"%ld",v); SetDlgItemText(hwnd,id,szX); }
