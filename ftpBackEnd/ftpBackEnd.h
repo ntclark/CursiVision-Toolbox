@@ -96,7 +96,7 @@
 
          STDMETHOD(BeforeAllPropertyPages)();
          STDMETHOD(GetPropertyPagesInfo)(long* countPages,SAFEARRAY** stringDescriptions,SAFEARRAY** pHelpDirs,SAFEARRAY** pSizes);
-         STDMETHOD(CreatePropertyPage)(long indexNumber,long,RECT*,BOOL,long* hwndPropertyPage);
+         STDMETHOD(CreatePropertyPage)(long indexNumber,HWND,RECT*,BOOL,HWND *pHwndPropertyPage);
          STDMETHOD(IsPageDirty)(long,BOOL*);
          STDMETHOD(Help)(BSTR);
          STDMETHOD(TranslateAccelerator)(long,long*);

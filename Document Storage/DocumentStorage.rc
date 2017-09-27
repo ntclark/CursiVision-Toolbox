@@ -1,0 +1,71 @@
+
+#include <windows.h>
+#include <winres.h>
+#include <commctrl.h>
+
+#include "resource.h"
+
+VS_VERSION_INFO VERSIONINFO
+
+ FILEVERSION 2,0,0,0
+ PRODUCTVERSION 2,0,0,0
+ FILEFLAGSMASK 0x3fL
+ FILEFLAGS 0x0L
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "InnoVisioNate\0"
+            VALUE "FileDescription", "CursiVision Document Storage Tool\0"
+            VALUE "FileVersion", "3, 0, 1, 0\0"
+            VALUE "InternalName", "DocumentStorage.ocx\0"
+            VALUE "LegalCopyright", "Copyright © 2010 InnoVisioNate Inc.\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "DocumentStorage.ocx\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "CursiVision Document Storage Tool\0"
+            VALUE "ProductVersion", "3.0.1\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+
+IDDIALOG_PROPERTIES DIALOGEX 0, 0, 256, 256
+STYLE DS_SETFONT | DS_3DLOOK | WS_CHILD | WS_VISIBLE  
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+
+   LTEXT "",IDDI_GENERAL_DESCRIPTION, 10, 10, 128, 64
+
+   LTEXT "Database Location:",-1,10, 80, 128, 14
+   EDITTEXT IDDI_DATABASE_LOCATION, 10, 80 + 14, 128 + 64, 14
+   PUSHBUTTON "...", IDDI_DATABASE_LOCATION_GET, 10 + 128 + 64 + 4, 80 + 14, 20, 14
+   
+
+END
+
+STRINGTABLE {
+
+IDDI_GENERAL_DESCRIPTION "The CursiVision Document Storage Tool is a database implementation you can use to store and manage your documents signed with CursiVision.\n\n \
+With this utility, you can use the power of database technology to work with your documents. For example, find a subset of documents based on various criteria, \
+or search for a particular document based on the text within it, perhaps a customer's name or other information."
+
+IDS_DATABASE_CONNECT_ERROR "The system is unable to connect to the database at location: %s with the name: %s\n\n\
+Select Yes to reset the properties of this database, or No to cancel the processing of this document."
+
+IDS_DATABASE_INSERT_ERROR "The system as unable to insert the file: %s into the database.\n\n
+Select Yes to reset the properties of this database, or No to cancel the processing of this document."
+
+}

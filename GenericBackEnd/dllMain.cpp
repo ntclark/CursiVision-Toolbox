@@ -106,7 +106,7 @@
 
    if ( S_OK != rc ) {
       char szMessage[256];
-      sprintf(szMessage,"SHGetFolderLocation returned %ld");
+      sprintf(szMessage,"SHGetFolderLocation returned %ld",rc);
       MessageBox(NULL,szMessage,"Error",MB_OK);
       szFolderLocation[0] = '\0';
       return 0;
@@ -123,14 +123,14 @@
          WideCharToMultiByte(CP_ACP,0,strRet.pOleStr,-1,szFolderLocation,MAX_PATH,0,0);
       } else {
          char szMessage[256];
-         sprintf(szMessage,"GetDisplayNameOf returned %ld");
+         sprintf(szMessage,"GetDisplayNameOf returned %ld",rc);
          MessageBox(NULL,szMessage,"Error",MB_OK);
          szFolderLocation[0] = '\0';
          return 0;
       }
    } else {
       char szMessage[256];
-      sprintf(szMessage,"SHBindToParent returned %ld");
+      sprintf(szMessage,"SHBindToParent returned %ld",rc);
       MessageBox(NULL,szMessage,"Error",MB_OK);
       szFolderLocation[0] = '\0';
       return 0;

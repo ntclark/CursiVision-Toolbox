@@ -48,7 +48,7 @@
    }
 
 
-   HRESULT GenericBackEnd::_IGPropertyPageClient::CreatePropertyPage(long pageNumber,long hwndParent,RECT* pRect,BOOL fModal,long* pHwnd) {
+   HRESULT GenericBackEnd::_IGPropertyPageClient::CreatePropertyPage(long pageNumber,HWND hwndParent,RECT* pRect,BOOL fModal,HWND *pHwnd) {
    return S_OK;
    }
 

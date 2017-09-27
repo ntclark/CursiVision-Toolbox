@@ -8,20 +8,19 @@
 #include "resource.h"
 
 #include "PrintingSupport_i.h"
-#include "GenericBackEnd_i.h"
+#include "DocumentStorage_i.h"
 #include "Properties_i.h"
-#include "pdfEnabler_i.h"
 #include "SignaturePad_i.h"
+#include "PdfEnabler_i.h"
 #include "CursiVision_i.h"
 
-#include "directories.h"
-#include "resultDisposition.h"
+#include "database.h"
 
-   class GenericBackEnd : public ICursiVisionBackEnd {
+   class DocumentStorage : public ICursiVisionBackEnd {
    public:
 
-      GenericBackEnd(IUnknown *pOuter);
-      ~GenericBackEnd();
+      DocumentStorage(IUnknown *pOuter);
+      ~DocumentStorage();
 
       //   IUnknown
 
@@ -41,15 +40,15 @@
 
       HRESULT __stdcall get_CodeName(BSTR *);
 
-      HRESULT __stdcall put_ParentWindow(HWND);
-
       HRESULT __stdcall get_SavedDocumentName(BSTR *pTheSavedDocumentNameReturnNOT_IMPLIfNotSaved);
 
-      HRESULT __stdcall put_CommandLine(BSTR theCommandLine);
+      HRESULT __stdcall put_ParentWindow(HWND);
 
+      HRESULT __stdcall put_CommandLine(BSTR theCommandLine);
+   
       HRESULT __stdcall put_PrintingSupportProfile(IPrintingSupportProfile *) { return E_NOTIMPL; };
 
-      HRESULT __stdcall get_Description(BSTR *p) { if ( ! p ) return E_POINTER; *p = SysAllocString(L"CursiVision Generic Back End Tool"); return S_OK; };
+      HRESULT __stdcall get_Description(BSTR *p) { if ( ! p ) return E_POINTER; *p = SysAllocString(L"CursiVision Document Storage (Non-Production)"); return S_OK; };
 
       HRESULT __stdcall Dispose(BSTR inputFile,BSTR resultsFile,BSTR topazSignatureData,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile);
 
@@ -57,7 +56,7 @@
 
       HRESULT __stdcall CanRunFromCursiVisionControl() { return S_OK; };
 
-      HRESULT __stdcall ServicesAdvise(ICursiVisionServices *p) { pICursiVisionServices = p; return S_OK; };
+      HRESULT __stdcall ServicesAdvise(ICursiVisionServices *) { return E_NOTIMPL; };
 
       //   IPropertiesClient
 
@@ -65,7 +64,7 @@
 
       public:
    
-            _IGPropertiesClient(GenericBackEnd *pp) : pParent(pp), refCount(0) {};
+            _IGPropertiesClient(DocumentStorage *pp) : pParent(pp), refCount(0) {};
             ~_IGPropertiesClient() {};
 
             //   IUnknown
@@ -83,7 +82,7 @@
 
       private:
 
-            GenericBackEnd *pParent;
+            DocumentStorage *pParent;
             long refCount;
 
       } *pIGPropertiesClient;
@@ -91,7 +90,7 @@
       class _IPropertyPage : public IPropertyPage {
       public:
 
-         _IPropertyPage(GenericBackEnd *pp) : pParent(pp), refCount(0) {};
+         _IPropertyPage(DocumentStorage *pp) : pParent(pp), refCount(0) {};
          ~_IPropertyPage() {};
    
          //   IUnknown
@@ -116,7 +115,7 @@
 
          //   IPropertyPage2
 
-         GenericBackEnd *pParent;
+         DocumentStorage *pParent;
 
          long refCount;
 
@@ -128,7 +127,7 @@
 
       public:
          
-         _IGPropertyPageClient(GenericBackEnd *pp) : pParent(pp) {};
+         _IGPropertyPageClient(DocumentStorage *pp) : pParent(pp) {};
          ~_IGPropertyPageClient();
 
 //      IPropertyPageClient
@@ -153,7 +152,7 @@
 
       private:
    
-         GenericBackEnd* pParent;
+         DocumentStorage* pParent;
 
       } * pIGPropertyPageClient;
 
@@ -163,17 +162,22 @@
 
       HWND hwndProperties,hwndParent;
 
-      bool doExecute;
+      char szDatabaseDirectory[MAX_PATH];
+      char szDatabaseName[MAX_PATH];
 
-      char szBatchFileName[MAX_PATH];
-
-      bool waitForCompletion;
-
-      ICursiVisionServices *pICursiVisionServices;
+      database *pDatabase;
 
       static _IPropertyPage *pIPropertyPage;
 
-      static LRESULT CALLBACK propertiesHandler(HWND,UINT,WPARAM,LPARAM);
+      static LRESULT CALLBACK dispositionSettingsHandler(HWND,UINT,WPARAM,LPARAM);
+      static int CALLBACK initializeBrowse(HWND hwnd,UINT msg,LPARAM lParam,LPARAM lpData);
+
+      friend class _IPropertyPage;
+
+   public:
+
+//      static DocumentStorage::_IPropertyPage *CurrentPropertyPage() { return pIPropertyPage; };
+//      static DocumentStorage *CurrentObject() { return pCurrentEmailBackEnd; };
 
    };
 
@@ -181,10 +185,14 @@
 
    HMODULE hModule = NULL;
    char szModuleName[MAX_PATH];
+   char szApplicationDataDirectory[MAX_PATH];
+   char szUserDirectory[MAX_PATH];
 
 #else
 
    extern HMODULE hModule;
    extern char szModuleName[];
+   extern char szApplicationDataDirectory[];
+   extern char szUserDirectory[];
 
 #endif

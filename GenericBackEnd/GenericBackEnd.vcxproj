@@ -21,6 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1A851C53-B4D8-4B7C-B9C0-3D299A832FA0}</ProjectGuid>
     <RootNamespace>GenericBackEnd</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -53,34 +54,34 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+    <Import Project="..\..\Common\Compiler Options.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+    <Import Project="..\..\Common\Compiler Options.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+    <Import Project="..\..\Common\Compiler Options.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+    <Import Project="..\..\Common\Compiler Options.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>14.0.24720.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>.\$(Configuration)\</OutDir>
-    <IntDir>.\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>.\$(Configuration)\</OutDir>
-    <IntDir>.\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -120,7 +121,6 @@
     <Link>
       <RegisterOutput>true</RegisterOutput>
       <AdditionalDependencies>shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>C:\Program Files\InnoVisioNate\GenericBackEnd.ocx</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>.\GenericBackEnd.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -133,10 +133,7 @@
       <OutputFile>.\Debug/GenericBackEnd.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "%25ProgramFiles%25\InnoVisioNate\CursiVision"
-regsvr32 /s "%25ProgramFiles%25\InnoVisioNate\CursiVision\$(TargetFileName)"
-copy "$(TargetPath)" "$(SolutionDir)\$(Configuration)"
-</Command>
+      <Command>regsvr32 /s /c "$(TargetPath)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -173,7 +170,6 @@ copy "$(TargetPath)" "$(SolutionDir)\$(Configuration)"
     <Link>
       <RegisterOutput>true</RegisterOutput>
       <AdditionalDependencies>shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>C:\Program Files\InnoVisioNate\GenericBackEnd.ocx</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>.\GenericBackEnd.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -185,10 +181,7 @@ copy "$(TargetPath)" "$(SolutionDir)\$(Configuration)"
       <OutputFile>.\Debug/GenericBackEnd.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "%25ProgramFiles%25\InnoVisioNate\CursiVision"
-regsvr32 /s "%25ProgramFiles%25\InnoVisioNate\CursiVision\$(TargetFileName)"
-copy "$(TargetPath)" "$(SolutionDir)\$(Configuration)"
-</Command>
+      <Command>regsvr32 /s /c "$(TargetPath)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -218,7 +211,6 @@ copy "$(TargetPath)" "$(SolutionDir)\$(Configuration)"
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)GenericBackEnd.ocx</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>.\GenericBackEnd.def</ModuleDefinitionFile>
       <ProgramDatabaseFile />
@@ -230,10 +222,7 @@ copy "$(TargetPath)" "$(SolutionDir)\$(Configuration)"
       <OutputFile>.\Release/GenericBackEnd.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "%25ProgramFiles%25\InnoVisioNate\CursiVision"
-regsvr32 /s "%25ProgramFiles%25\InnoVisioNate\CursiVision\$(TargetFileName)"
-copy "$(TargetPath)" "$(SolutionDir)\$(Configuration)"
-</Command>
+      <Command>regsvr32 /s /c "$(TargetPath)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -262,7 +251,6 @@ copy "$(TargetPath)" "$(SolutionDir)\$(Configuration)"
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)GenericBackEnd.ocx</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>.\GenericBackEnd.def</ModuleDefinitionFile>
       <ProgramDatabaseFile>
@@ -274,10 +262,7 @@ copy "$(TargetPath)" "$(SolutionDir)\$(Configuration)"
       <OutputFile>.\Release/GenericBackEnd.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "%25ProgramFiles%25\InnoVisioNate\CursiVision"
-regsvr32 /s "%25ProgramFiles%25\InnoVisioNate\CursiVision\$(TargetFileName)"
-copy "$(TargetPath)" "$(SolutionDir)\$(Configuration)"
-</Command>
+      <Command>regsvr32 /s /c "$(TargetPath)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -9,11 +9,11 @@
 
 #define DEFINE_DATA
 
-#include "ftpBackEnd.h"
+#include "DocumentStorage.h"
 
 #include "Properties_i.c"
-
-#include "ftpBackEnd_i.c"
+#include "pdfEnabler_i.c"
+#include "DocumentStorage_i.c"
 #include "CursiVision_i.c"
 
    extern "C" int GetCommonAppDataLocation(HWND hwnd,char *);
@@ -28,26 +28,14 @@
 
    case DLL_PROCESS_ATTACH: {
 
+      CoInitialize(NULL);
+
       hModule = hI;
 
       GetModuleFileName(hModule,szModuleName,1024);
       memset(wstrModuleName,0,sizeof(wstrModuleName));
 
       MultiByteToWideChar(CP_ACP, 0, szModuleName, -1, wstrModuleName, 1024);  
-
-      HKEY hKeySettings = NULL;
-
-      RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\InnoVisioNate\\CursiVision",0L,KEY_QUERY_VALUE,&hKeySettings);
-      
-      if ( ! ( NULL == hKeySettings ) ) {
-
-         DWORD cb = MAX_PATH;
-         DWORD dwType = REG_SZ;
-         RegQueryValueEx(hKeySettings,"Global Settings Store",NULL,&dwType,(BYTE *)&szGlobalDataStore,&cb);
-
-         RegCloseKey(hKeySettings);
-
-      } 
 
       char szTemp[MAX_PATH];
 
@@ -63,10 +51,9 @@
 
       sprintf(szApplicationDataDirectory,"%s\\CursiVision",szTemp);
 
-      HMODULE hRichEdit = LoadLibrary("Msftedit.dll");
+      GetDocumentsLocation(NULL,szTemp);
 
-      if ( ! hRichEdit )
-         hRichEdit = LoadLibrary("riched20.dll");
+      sprintf(szUserDirectory,"%s\\CursiVision Files",szTemp);
 
       }
 
@@ -79,7 +66,67 @@
   
    return TRUE;
    }
+  
+    
+     extern "C" int  __cdecl GetDocumentsLocation(HWND hwnd,char *szFolderLocation) {
+   GetLocation(hwnd,CSIDL_PERSONAL,szFolderLocation);
+   return 0;
+   }
 
+   extern "C" int __cdecl GetCommonAppDataLocation(HWND hwnd,char *szFolderLocation) {
+   GetLocation(hwnd,CSIDL_COMMON_APPDATA,szFolderLocation);
+   return 0;
+   }
+ 
+   int GetLocation(HWND hwnd,long key,char *szFolderLocation) {
+
+   ITEMIDLIST *ppItemIDList;
+   IShellFolder *pIShellFolder;
+   LPCITEMIDLIST pcParentIDList;
+
+   HRESULT wasInitialized = CoInitialize(NULL);
+
+   szFolderLocation[0] = '\0';
+
+   HRESULT rc = SHGetFolderLocation(hwnd,key,NULL,0,&ppItemIDList);
+
+   if ( S_OK != rc ) {
+      char szMessage[256];
+      sprintf(szMessage,"SHGetFolderLocation returned %ld",rc);
+      MessageBox(NULL,szMessage,"Error",MB_OK);
+      szFolderLocation[0] = '\0';
+      return 0;
+   }
+
+   rc = SHBindToParent(ppItemIDList, IID_IShellFolder, (void **) &pIShellFolder, &pcParentIDList);
+
+   if ( S_OK == rc ) {
+
+      STRRET strRet;
+      rc = pIShellFolder -> GetDisplayNameOf(pcParentIDList,SHGDN_FORPARSING,&strRet);
+      pIShellFolder -> Release();
+      if ( S_OK == rc ) {
+         WideCharToMultiByte(CP_ACP,0,strRet.pOleStr,-1,szFolderLocation,MAX_PATH,0,0);
+      } else {
+         char szMessage[256];
+         sprintf(szMessage,"GetDisplayNameOf returned %ld",rc);
+         MessageBox(NULL,szMessage,"Error",MB_OK);
+         szFolderLocation[0] = '\0';
+         return 0;
+      }
+   } else {
+      char szMessage[256];
+      sprintf(szMessage,"SHBindToParent returned %ld",rc);
+      MessageBox(NULL,szMessage,"Error",MB_OK);
+      szFolderLocation[0] = '\0';
+      return 0;
+   }
+
+   if ( S_FALSE == wasInitialized )
+      CoUninitialize();
+
+   return 0;
+   }
 
    class Factory : public IClassFactory {
 
@@ -111,7 +158,7 @@
   
    STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID* ppObject) {
    *ppObject = NULL;
-   if ( CLSID_CursiVisionFTPBackEnd != rclsid  ) 
+   if ( CLSID_CursiVisionDocumentStorage != rclsid  ) 
       return CLASS_E_CLASSNOTAVAILABLE;
    return objectFactory.QueryInterface(riid,ppObject);
    }
@@ -119,19 +166,19 @@
    char *OBJECT_NAME;
    char *OBJECT_NAME_V;
    GUID OBJECT_CLSID;
-  
+
    STDAPI DllRegisterServer() {
 
    char *OBJECT_VERSION;
    GUID OBJECT_LIBID;
    char *OBJECT_DESCRIPTION;
 
-   OBJECT_NAME = "InnoVisioNate.CursiVisionFTPBackEnd";
-   OBJECT_NAME_V = "InnoVisioNate.CursiVisionFTPBackEnd.1";
+   OBJECT_NAME = "InnoVisioNate.CursiVisionDocumentStorage";
+   OBJECT_NAME_V = "InnoVisioNate.CursiVisionDocumentStorage.1";
    OBJECT_VERSION = "1.0";
-   memcpy(&OBJECT_CLSID,&CLSID_CursiVisionFTPBackEnd,sizeof(GUID));
-   memcpy(&OBJECT_LIBID,&LIBID_CursiVisionFTPBackEnd,sizeof(GUID));
-   OBJECT_DESCRIPTION = "CursiVision FTP Tool";
+   memcpy(&OBJECT_CLSID,&CLSID_CursiVisionDocumentStorage,sizeof(GUID));
+   memcpy(&OBJECT_LIBID,&LIBID_CursiVisionDocumentStorage,sizeof(GUID));
+   OBJECT_DESCRIPTION = "CursiVision Document Storage Tool";
 
    HRESULT rc = S_OK;
    ITypeLib *ptLib;
@@ -210,7 +257,6 @@
                  OLEMISC_INSIDEOUT |
                  OLEMISC_SETCLIENTSITEFIRST |
                  OLEMISC_CANTLINKINSIDE );
-//sprintf(szTemp,"%ld",131473L);
       RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,strlen(szTemp));
   
    RegCreateKeyEx(HKEY_CLASSES_ROOT,OBJECT_NAME,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
@@ -229,7 +275,7 @@
 
    CATID categoryId = IID_ICursiVisionBackEnd;
 
-   pICatRegister -> RegisterClassImplCategories(CLSID_CursiVisionFTPBackEnd,1,&categoryId);
+   pICatRegister -> RegisterClassImplCategories(CLSID_CursiVisionDocumentStorage,1,&categoryId);
 
    pICatRegister -> Release();
 
@@ -244,12 +290,12 @@
    ICatRegister *pICatRegister;
    long rc = CoCreateInstance(CLSID_StdComponentCategoriesMgr,NULL,CLSCTX_ALL,IID_ICatRegister,reinterpret_cast<void **>(&pICatRegister));
    CATID categoryId = IID_ICursiVisionBackEnd;
-   pICatRegister -> UnRegisterClassImplCategories(CLSID_CursiVisionFTPBackEnd,1,&categoryId);
+   pICatRegister -> UnRegisterClassImplCategories(CLSID_CursiVisionDocumentStorage,1,&categoryId);
    pICatRegister -> Release();
 
-   OBJECT_NAME = "InnoVisioNate.CursiVisionFTPBackEnd";
-   OBJECT_NAME_V = "InnoVisioNate.CursiVisionFTPBackEnd.1";
-   memcpy(&OBJECT_CLSID,&CLSID_CursiVisionFTPBackEnd,sizeof(GUID));
+   OBJECT_NAME = "InnoVisioNate.CursiVisionDocumentStorage";
+   OBJECT_NAME_V = "InnoVisioNate.CursiVisionDocumentStorage.1";
+   memcpy(&OBJECT_CLSID,&CLSID_CursiVisionDocumentStorage,sizeof(GUID));
 
    HKEY keyHandle;
    char szCLSID[256];
@@ -292,11 +338,17 @@
   
   
    HRESULT STDMETHODCALLTYPE Factory::CreateInstance(IUnknown *punkOuter, REFIID riid, void **ppv) { 
+
+   HRESULT hres;
+
    *ppv = NULL; 
-   FTPBackEnd *pef = new FTPBackEnd(punkOuter);
-   HRESULT hres = pef -> QueryInterface(riid,ppv);
+
+   DocumentStorage *pef = new DocumentStorage(punkOuter);
+   hres = pef -> QueryInterface(riid,ppv);
+
    if ( ! *ppv ) 
       delete pef;
+
    return hres;
    } 
   
@@ -304,70 +356,3 @@
    long __stdcall Factory::LockServer(int fLock) { 
    return S_OK; 
    }
-
-
-extern "C" int __cdecl GetDocumentsLocation(HWND hwnd,char *szFolderLocation) {
-    GetLocation(hwnd,CSIDL_PERSONAL,szFolderLocation);
-    return 0;
-}
-
-extern "C" int __cdecl GetCommonAppDataLocation(HWND hwnd,char *szFolderLocation) {
-    GetLocation(hwnd,CSIDL_COMMON_APPDATA,szFolderLocation);
-    return 0;
-}
- 
-extern "C" DWORD CALLBACK foregroundIdleProc(int code,DWORD wParam,LONG lParam) {
-Beep(2000,100);
-   return 0L;
-   }
-
-int GetLocation(HWND hwnd,long key,char *szFolderLocation) {
-
-   ITEMIDLIST *ppItemIDList;
-   IShellFolder *pIShellFolder;
-   LPCITEMIDLIST pcParentIDList;
-
-   HRESULT wasInitialized = CoInitialize(NULL);
-
-   szFolderLocation[0] = '\0';
-
-   HRESULT rc = SHGetFolderLocation(hwnd,key,NULL,0,&ppItemIDList);
-
-   if ( S_OK != rc ) {
-      char szMessage[256];
-      sprintf(szMessage,"SHGetFolderLocation returned %ld",rc);
-      MessageBox(NULL,szMessage,"Error",MB_OK);
-      szFolderLocation[0] = '\0';
-      return 0;
-   }
-
-   rc = SHBindToParent(ppItemIDList, IID_IShellFolder, (void **) &pIShellFolder, &pcParentIDList);
-
-   if ( S_OK == rc ) {
-
-      STRRET strRet;
-      rc = pIShellFolder -> GetDisplayNameOf(pcParentIDList,SHGDN_FORPARSING,&strRet);
-      pIShellFolder -> Release();
-      if ( S_OK == rc ) {
-         WideCharToMultiByte(CP_ACP,0,strRet.pOleStr,-1,szFolderLocation,MAX_PATH,0,0);
-      } else {
-         char szMessage[256];
-         sprintf(szMessage,"GetDisplayNameOf returned %ld",rc);
-         MessageBox(NULL,szMessage,"Error",MB_OK);
-         szFolderLocation[0] = '\0';
-         return 0;
-      }
-   } else {
-      char szMessage[256];
-      sprintf(szMessage,"SHBindToParent returned %ld",rc);
-      MessageBox(NULL,szMessage,"Error",MB_OK);
-      szFolderLocation[0] = '\0';
-      return 0;
-   }
-
-   if ( S_FALSE == wasInitialized )
-      CoUninitialize();
-
-   return 0;
-   }
-

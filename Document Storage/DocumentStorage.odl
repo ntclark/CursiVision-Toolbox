@@ -1,0 +1,24 @@
+
+import "ocidl.idl";
+
+#include <olectl.h>
+
+[ 
+   uuid(13F8ADD1-708B-4323-8ED0-D16A597D86FF),
+   helpstring("Document Storage plugin"), 
+   lcid(0x0), 
+   version(1.0)
+] 
+
+library CursiVisionDocumentStorage { 
+
+    importlib(STDOLE_TLB); 
+    importlib(STDTYPE_TLB);
+
+	[uuid(13F8ADD1-708B-4323-8ED0-D16A597D8700),
+		helpstring("CursiVision Document Storage Tool")]
+		coclass CursiVisionDocumentStorage {
+		[default] interface IUnknown;
+	};
+
+};

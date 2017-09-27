@@ -35,7 +35,7 @@ SetProperties:
 
       IUnknown *pIUnknown = NULL;
       QueryInterface(IID_IUnknown,reinterpret_cast<void **>(&pIUnknown));
-      pIGProperties -> ShowProperties((long)hwndParent,pIUnknown);
+      pIGProperties -> ShowProperties(hwndParent,pIUnknown);
       pIUnknown -> Release();
 
       if ( ! doExecute )

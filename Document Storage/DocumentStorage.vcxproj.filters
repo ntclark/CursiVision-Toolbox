@@ -2,32 +2,32 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{2c14eb8c-91a0-4eab-baaa-9ddd75c60b9c}</UniqueIdentifier>
+      <UniqueIdentifier>{84bdabac-5947-44ae-9944-428c19ef835f}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
     </Filter>
     <Filter Include="Source Files\COM Implementation">
-      <UniqueIdentifier>{11b623d3-7ed2-45b5-962b-d1e477ce59e8}</UniqueIdentifier>
+      <UniqueIdentifier>{d0a4c640-f603-4e25-adae-7d313b9d1d78}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\COM Interfaces">
-      <UniqueIdentifier>{44821186-1dab-49fe-b407-ea3a42d314e2}</UniqueIdentifier>
+      <UniqueIdentifier>{3c7674de-0049-40b4-9d48-2ca788c086bc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\FTP">
-      <UniqueIdentifier>{ebfd7693-24f5-4b92-bc25-a762afdf08f1}</UniqueIdentifier>
+    <Filter Include="Source Files\Database">
+      <UniqueIdentifier>{a9d9c8c2-2c94-4371-9ece-b5153c78b7d9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{4c619557-b905-4b55-97d1-a78cadf42855}</UniqueIdentifier>
+      <UniqueIdentifier>{307c819e-418c-4438-9225-f71bd5bf675b}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>
     </Filter>
     <Filter Include="Resource Files">
-      <UniqueIdentifier>{724b2eb7-360a-4f37-bc9c-5bb7d1d41c10}</UniqueIdentifier>
+      <UniqueIdentifier>{cda16be3-9e95-4845-9216-e761a488006d}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ftpBackEnd.cpp">
+    <ClCompile Include="dispositionSettingsHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="propertiesHandler.cpp">
+    <ClCompile Include="DocumentStorage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dllMain.cpp">
@@ -45,17 +45,25 @@
     <ClCompile Include="IUnknown.cpp">
       <Filter>Source Files\COM Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="emails\sendDocument.cpp">
-      <Filter>Source Files\FTP</Filter>
+    <ClCompile Include="database.cpp">
+      <Filter>Source Files\Database</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ftpBackEnd.def">
+    <None Include="DocumentStorage.def">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ftpBackEnd.h">
+    <Midl Include="DocumentStorage.odl">
+      <Filter>Source Files\COM Implementation</Filter>
+    </Midl>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="database.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DocumentStorage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
@@ -63,16 +71,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="ftpBackEnd.rc">
+    <ResourceCompile Include="DocumentStorage.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="fms.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Midl Include="ftpBackEnd.odl">
-      <Filter>Source Files\COM Implementation</Filter>
-    </Midl>
   </ItemGroup>
 </Project>
