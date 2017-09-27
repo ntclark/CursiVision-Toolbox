@@ -1,0 +1,86 @@
+
+IDDI_DISPOSITION_SHOW_STARTUP_PROPERTIES "When CursiVision starts, should it show these properties ?"
+IDDI_DISPOSITION_OPEN_LAST_DOCUMENT "When CursiVision starts, should it open the document that was last open ?"
+IDDI_DISPLAY_WAITING_SHOW "When you are using a signature pad and when CursiVision is waiting for you to define the signing location(s) \
+with the mouse, this option will cause a beep and message to remind you to select the signing location."
+
+IDDI_DISPOSITION_APPEND "Should CursiVision append any of the following\rto the name of the document before saving it ?"
+IDDI_DISPOSITION_SUFFIX "You can append any value to the file name of the signed documents\rto distinguish them as signed copies of this particular document, for example."
+IDDI_DISPOSITION_APPEND_DATE "Append the current date to the name of the signed document"
+IDDI_DISPOSITION_APPEND_TIME "Append the current time to the name of the signed document"
+
+IDDI_DISPOSITION_SAVE "Should CursiVision save the signed document ?\r\rYou may choose not to save the document if a back-end process handles it."
+IDDI_DISPOSITION_REPLACE "Should CursiVision automatically replace a file\rwith the same name if it is already there ?"
+IDDI_DISPOSITION_SEQUENCE "Should CursiVision calculate and append an integer\rto the signed document name before saving it ?"
+IDDI_DISPOSITION_SAVE_MY_DOCUMENTS "Should CursiVision save your signed documents in the\rMy Signed Documents folder in your Documents folder ?"
+IDDI_DISPOSITION_SAVE_BY_ORIGINAL "Should CursiVision save the signed document in the same folder as the original ?\r\rNote that if you also do not append anything to the name,\ror use Sequence, you will overwrite your original document."
+IDDI_DISPOSITION_SAVE_IN "You can specify the directory where CursiVision\rwill save the signed copies of this file."
+IDDI_DISPOSITION_PRINT ""
+
+IDDI_DISPOSITION_SAVE_VALIDATION "With Topaz signature pads, CursiVision can save a file containing the Topaz Signature Validation data\r\
+This file is saved with the same name as the signed document using the extension '.sig\r\r\
+the file is placed in the same folder as the signed document"
+
+IDDI_DISPOSITION_SHOW_PROPERTIES "Select this option if you need to adjust these settings\rafter the document is signed but before it is processed."
+
+IDDI_DISPOSITION_RETAIN_SIGNED "After the signed document has been saved or processed,\rshould CursiVision remain open with the signed document in view ?"
+IDDI_DISPOSITION_REOPEN_ORIGINAL "After the signed document has been saved or processed,\rshould CursiVision reopen the original document ?"
+IDDI_DISPOSITION_CLOSE_DOCUMENT "After the signed document has been saved or processed,\rshould CursiVision close the document and remain running ?"
+IDDI_DISPOSITION_EXIT "After the signed document has been processed, exit CursiVision.\r\rUse this option to automate the signature process for this file."
+
+IDDI_DISPOSITION_WHILE_SIGNING_SHOW_PAD " provide text "
+
+IDDI_DISPOSITION_CONTINUOUS_DOODLE_OFF 
+"When not in Continuous writing mode, CursiVision will remember a single location on the document to sign.\r\r\
+Changing to this value for a document that has multiple locations defined will cause the system to forget those locations\r\
+so that you can redefine the one location."
+IDDI_DISPOSITION_CONTINUOUS_DOODLE_ON 
+"With Continous writing, CursiVision remembers multiple locations on this document to sign.\r\r\
+Click the mouse on the document and sign for each location. When all are defined, press the Escape ([esc]) key.\r\r\
+Changing this value for a document that has a single location to sign will cause the system to forget that \r\
+location so you can then define multiple locations."
+
+IDDI_DISPOSITION_REMEMBER
+"CursiVision normally remembers the location(s) you sign a particular document (with a given name\r\
+and from a particular folder).\r\
+You can choose not to remember these location(s) if the signing locations will vary."
+
+IDDI_DISPOSITION_SAVE_LOCATION "This is the location where signed copies of this document will be stored."
+IDDI_DISPOSITION_PRINTER " provide text "
+
+IDDI_DISPOSITION_MORE "You can direct CursiVision to save the signed documents in a Month-Year\r\
+and/or a Day-Month sub-directory in addition to the options on the left."
+
+#ifdef CURSIVISION_CONTROL_BUILD
+IDDI_DISPOSITION_SHOW_ADOBE_TOOLBAR "If the Adobe Toolbar is showing - it can be used, but it should not be used while signing a document."
+IDDI_DISPOSITION_SHOW_CONTROL_PANEL "You can show or hide the CursiVision Signature Control Panel"
+#endif
+
+IDS_PAD_NOT_CONNECTED
+"There is no signature pad connected to your computer or, if it is, it is not responding.\r\r\
+If a pad is connected, please disconnect and reconnect it. Otherwise, please attach the signature pad to the computer"
+
+IDDI_CV_RECOGNITION_INSTRUCTIONS "Click on locations in the document used to identify this document type\r\
+Or, click and drag to select a region. Use the CTRL key to add \r\
+multiple locations."
+
+IDDI_CV_LOCATIONS_INSTRUCTIONS "Right-click and choose Add to create signing location(s)\r\
+You can move the locations with click-drag."
+
+IDDI_DATA_FIELDS_INSTRUCTIONS "Click on locations in the document used as fields for data.\r\
+Right click each field and supply a label for the field.\r\
+Click a field again to remove it."
+
+IDDI_PROFILE_INSTRUCTIONS "This utility is used to create CursiVision document signature capture profiles.\r\
+These profiles specify the settings that CursiVision will apply to documents signed by it.\r\r\
+Use the File menu to create and edit profiles in your network repository. Specify the other settings on this \
+page to create a setup initialization file used while installing the clients to correctly utilize your repository."
+
+#ifdef CURSIVISION_CONTROL_BUILD
+IDDI_DISPOSITION_SHOW_CURSIVISION_TOOLBAR "When running as a control, should CursiVision show the CursiVision ToolBar?"
+IDDI_DISPOSITION_SHOW_CURSIVISION_STATUSBAR " When running as a control, should CursiVision show it's StatusBar?"
+#endif
+
+//IDDI_DISPOSITION_MULTI_SIGN_RIGHT_MOTION
+//IDDI_DISPOSITION_MULTI_SIGN_DOWN_MOTION
+//IDDI_DISPOSITION_SAVE_AFTER_SIGN_COUNT
