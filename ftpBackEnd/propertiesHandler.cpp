@@ -44,7 +44,7 @@
          GetWindowRect(GetDlgItem(hwnd,IDDI_FTP_GROUP),&rcGroup);
          GetWindowRect(hwnd,&rcParent);
          p -> hwndLog = CreateWindowEx(WS_EX_CLIENTEDGE,"RICHEDIT50W","",WS_CHILD | WS_VSCROLL | ES_READONLY | ES_MULTILINE | ES_AUTOVSCROLL | WS_VISIBLE,
-                     rcGroup.left - rcParent.left,rcGroup.bottom - rcParent.top + 8,rcGroup.right - rcGroup.left,1.65 * (rcGroup.bottom - rcGroup.top),hwnd,NULL,NULL,NULL);
+                     rcGroup.left - rcParent.left,rcGroup.bottom - rcParent.top + 8,rcGroup.right - rcGroup.left,(long)(1.65 * (double)(rcGroup.bottom - rcGroup.top)),hwnd,NULL,NULL,NULL);
          HFONT hGUIFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
          SendMessage(p -> hwndLog,WM_SETFONT,(WPARAM)hGUIFont,(LPARAM)TRUE);
       }
