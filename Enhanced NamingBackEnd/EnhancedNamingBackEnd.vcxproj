@@ -181,6 +181,7 @@ regsvr32 /s /c "$(TargetPath)"</Command>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>.\Debug/NamingBackEnd.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -266,6 +267,7 @@ regsvr32 /s /c "$(TargetPath)"</Command>
       <ProgramDatabaseFile>
       </ProgramDatabaseFile>
       <ImportLibrary>$(OutDir)NamingBackEnd.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>

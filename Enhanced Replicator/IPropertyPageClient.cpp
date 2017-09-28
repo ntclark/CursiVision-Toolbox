@@ -157,7 +157,7 @@
    void *pResource = LockResource(hResource);
    BYTE *pDialog = new BYTE[SizeofResource(hModule,hDialog)];
    memcpy(pDialog,pResource,SizeofResource(hModule,hDialog));
-   pPropSheetPages[1].pResource = (PROPSHEETPAGE_RESOURCE)pDialog;
+   pPropSheetPages[0].pResource = (PROPSHEETPAGE_RESOURCE)pDialog;
 #endif
 
   adjustPropertiesDialogSize(&sizelDisplay,(DLGTEMPLATEEX *)pPropSheetPages[0].pResource,128);
