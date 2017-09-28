@@ -274,6 +274,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Common\source\utilities.cpp" />
     <ClCompile Include="dllMain.cpp" />
     <ClCompile Include="emails\sendDocument.cpp" />
     <ClCompile Include="ftpBackEnd.cpp" />

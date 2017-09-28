@@ -51,7 +51,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
    LRESULT CALLBACK PrintingBackEnd::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   resultDisposition *p = (resultDisposition *)GetWindowLong(hwnd,GWL_USERDATA);
+   resultDisposition *p = (resultDisposition *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
 
    static long controlsLoaded = 0L;
 
@@ -61,7 +61,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
       PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
       p = (resultDisposition *)pPage -> lParam;
-      SetWindowLong(hwnd,GWL_USERDATA,(long)p);
+      SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
 
       PrintingBackEnd *pObject = (PrintingBackEnd *)(p -> pParent);
 
@@ -171,7 +171,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
          UNLOAD_CONTROLS
 
-         SetWindowLong(hwnd,DWL_MSGRESULT,FALSE);
+         SetWindowLongPtr(hwnd,DWLP_MSGRESULT,FALSE);
 
          }
          break;
@@ -194,7 +194,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
             pObject -> PushProperties();
          }
 
-         SetWindowLong(hwnd,DWL_MSGRESULT,PSNRET_NOERROR);
+         SetWindowLongPtr(hwnd,DWLP_MSGRESULT,PSNRET_NOERROR);
 
          return (LRESULT)TRUE;
          }

@@ -284,6 +284,7 @@ regsvr32 /s /c "$(TargetPath)"</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Common\source\resultdisposition.cpp" />
+    <ClCompile Include="..\..\Common\source\utilities.cpp" />
     <ClCompile Include="additionalSaveOptionsHandler.cpp" />
     <ClCompile Include="dispositionSettingsHandler.cpp" />
     <ClCompile Include="dllMain.cpp" />

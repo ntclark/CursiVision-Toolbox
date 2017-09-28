@@ -39,7 +39,7 @@
 
    LRESULT CALLBACK NamingBackEnd::dispositionSettingsHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   resultDisposition *p = (resultDisposition *)GetWindowLong(hwnd,GWL_USERDATA);
+   resultDisposition *p = (resultDisposition *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
 
 #include "dispositionSettingsBody.cpp"
 
@@ -105,7 +105,7 @@
 
    BOOL CALLBACK doDisable(HWND hwndTest,LPARAM lParam) {
    long *pExceptions = (long *)lParam;
-   long id = GetWindowLong(hwndTest,GWL_ID);
+   long id = GetWindowLongPtr(hwndTest,GWL_ID);
    for ( long k = 0; 1; k++ ) {
       if ( ! pExceptions[k] )
          break;
@@ -121,7 +121,7 @@
 
    BOOL CALLBACK doEnable(HWND hwndTest,LPARAM lParam) {
    long *pExceptions = (long *)lParam;
-   long id = GetWindowLong(hwndTest,GWL_ID);
+   long id = GetWindowLongPtr(hwndTest,GWL_ID);
    for ( long k = 0; 1; k++ ) {
       if ( ! pExceptions[k] )
          break;
@@ -137,7 +137,7 @@
 
    BOOL CALLBACK doMoveUp(HWND hwndTest,LPARAM lParam) {
    long *pExceptions = (long *)lParam;
-   long id = GetWindowLong(hwndTest,GWL_ID);
+   long id = GetWindowLongPtr(hwndTest,GWL_ID);
    for ( long k = 0; 1; k++ ) {
       if ( ! pExceptions[k] )
          break;
@@ -154,7 +154,7 @@
 
    BOOL CALLBACK doHide(HWND hwndTest,LPARAM lParam) {
    long *pExceptions = (long *)lParam;
-   long id = GetWindowLong(hwndTest,GWL_ID);
+   long id = GetWindowLongPtr(hwndTest,GWL_ID);
    for ( long k = 0; 1; k++ ) {
       if ( ! pExceptions[k] )
          break;
@@ -168,7 +168,7 @@
 
    BOOL CALLBACK doShow(HWND hwndTest,LPARAM lParam) {
    long *pExceptions = (long *)lParam;
-   long id = GetWindowLong(hwndTest,GWL_ID);
+   long id = GetWindowLongPtr(hwndTest,GWL_ID);
    for ( long k = 0; 1; k++ ) {
       if ( ! pExceptions[k] )
          break;

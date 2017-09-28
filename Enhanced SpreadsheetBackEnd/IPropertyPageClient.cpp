@@ -128,7 +128,7 @@
    }
 
    pPropSheetPages[0].pszTitle = "Spreadsheet Settings";
-   pPropSheetPages[0].lParam = (long)&pParent -> processingDisposition;
+   pPropSheetPages[0].lParam = (LONG_PTR)&pParent -> processingDisposition;
    pPropSheetPages[0].pfnCallback = NULL;
 
    return S_OK;

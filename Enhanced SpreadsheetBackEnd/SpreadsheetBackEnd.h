@@ -16,6 +16,8 @@
 #include "SignaturePad_i.h"
 #include "CursiVision_i.h"
 
+#include "utilities.h"
+
 #include "resultDisposition.h"
 
 #import "C:\Program Files (x86)\Common Files\Microsoft Shared\Office12\MSO.dll" \
@@ -225,9 +227,6 @@ using namespace VBIDE;
       static SpreadsheetBackEnd::_IPropertyPage *CurrentPropertyPage() { return pIPropertyPage; };
 
    };
-
-   LONG APIENTRY FindWindowWithClass(long hwndP,char* theClass);
-   BOOL CALLBACK findChildWithClass(HWND hwndTest,LPARAM lParam);
 
 #ifdef DEFINE_DATA
 

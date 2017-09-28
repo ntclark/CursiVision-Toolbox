@@ -39,7 +39,7 @@ char szCommand[32768];
       return IDCANCEL == MessageBox(NULL,szMessage,"Error!",MB_ICONEXCLAMATION | MB_RETRYCANCEL | MB_DEFBUTTON1);
    }
 
-   long theCommandSocket = socket(pCommandAddress -> ai_family,pCommandAddress -> ai_socktype,pCommandAddress -> ai_protocol);
+   SOCKET theCommandSocket = socket(pCommandAddress -> ai_family,pCommandAddress -> ai_socktype,pCommandAddress -> ai_protocol);
 
    if ( -1L == theCommandSocket ) {
       sprintf(szMessage,"\nERROR: The system was not able to create a socket for the FTP.\n"
@@ -48,7 +48,7 @@ char szCommand[32768];
       return IDCANCEL == MessageBox(NULL,szMessage,"Error!",MB_ICONEXCLAMATION | MB_RETRYCANCEL | MB_DEFBUTTON1);
    }  
 
-   if ( -1L == connect(theCommandSocket,pCommandAddress -> ai_addr,pCommandAddress -> ai_addrlen) ) {
+   if ( -1L == connect(theCommandSocket,pCommandAddress -> ai_addr,(int)pCommandAddress -> ai_addrlen) ) {
       sprintf(szMessage,"\n\nERROR: The system was not able to connect the socket for the FTP, \n\n\trc = %ld\n\n"
                            "\nPress Retry to specify the properties or Cancel to exit.",WSAGetLastError());
       WSACleanup();
@@ -77,7 +77,7 @@ char szCommand[32768];
    }
 
    sprintf(szCommand,"user %s\n",userName);
-   send(theCommandSocket,szCommand,strlen(szCommand),0L);
+   send(theCommandSocket,szCommand,(DWORD)strlen(szCommand),0L);
 
    memset(szInput,0,sizeof(szInput));
    recv(theCommandSocket,szInput,1024,0L);
@@ -104,7 +104,7 @@ char szCommand[32768];
    }
 
    sprintf(szCommand,"pass %s\n",password);
-   send(theCommandSocket,szCommand,strlen(szCommand),0L);
+   send(theCommandSocket,szCommand,(DWORD)strlen(szCommand),0L);
 
    memset(szInput,0,sizeof(szInput));
    recv(theCommandSocket,szInput,1024,0L);
@@ -131,7 +131,7 @@ char szCommand[32768];
    }
 
    sprintf(szCommand,"MODE S\n");
-   send(theCommandSocket,szCommand,strlen(szCommand),0L);
+   send(theCommandSocket,szCommand,(DWORD)strlen(szCommand),0L);
 
    memset(szInput,0,sizeof(szInput));
    recv(theCommandSocket,szInput,1024,0L);
@@ -148,7 +148,7 @@ char szCommand[32768];
    }
 
    sprintf(szCommand,"TYPE Image\n");
-   send(theCommandSocket,szCommand,strlen(szCommand),0L);
+   send(theCommandSocket,szCommand,(DWORD)strlen(szCommand),0L);
 
    memset(szInput,0,sizeof(szInput));
    recv(theCommandSocket,szInput,1024,0L);
@@ -165,7 +165,7 @@ char szCommand[32768];
    }
 
    sprintf(szCommand,"STRU F\n");
-   send(theCommandSocket,szCommand,strlen(szCommand),0L);
+   send(theCommandSocket,szCommand,(DWORD)strlen(szCommand),0L);
 
    memset(szInput,0,sizeof(szInput));
    recv(theCommandSocket,szInput,1024,0L);
@@ -184,7 +184,7 @@ char szCommand[32768];
    char szServerUpload[32];
 
    sprintf(szCommand,"pasv\n");
-   send(theCommandSocket,szCommand,strlen(szCommand),0L);
+   send(theCommandSocket,szCommand,(DWORD)strlen(szCommand),0L);
 
    memset(szInput,0,sizeof(szInput));
    recv(theCommandSocket,szInput,1024,0L);
@@ -217,7 +217,7 @@ char szCommand[32768];
 
    foundHost = getaddrinfo(szServerUpload,szPort,&validOptions,&pDataAddress);
 
-   long theDataSocket = socket(pDataAddress -> ai_family,pDataAddress -> ai_socktype,pDataAddress -> ai_protocol);
+   SOCKET theDataSocket = socket(pDataAddress -> ai_family,pDataAddress -> ai_socktype,pDataAddress -> ai_protocol);
 
    if ( -1L == theDataSocket ) {
       sprintf(szMessage,"\nERROR: The system was not able to create a socket for the FTP server.\n"
@@ -226,7 +226,7 @@ char szCommand[32768];
       return IDCANCEL == MessageBox(NULL,szMessage,"Error!",MB_ICONEXCLAMATION | MB_RETRYCANCEL | MB_DEFBUTTON1);
    }  
 
-   if ( -1L == connect(theDataSocket,pDataAddress -> ai_addr,pDataAddress -> ai_addrlen) ) {
+   if ( -1L == connect(theDataSocket,pDataAddress -> ai_addr,(int)pDataAddress -> ai_addrlen) ) {
       sprintf(szMessage,"\n\nERROR: The system was not able to connect the socket for the FTP server, \n\n\trc = %ld\n\n"
                            "\nPress Retry to specify the properties or Cancel to exit.",WSAGetLastError());
       WSACleanup();
@@ -240,7 +240,7 @@ char szCommand[32768];
    pRootName++;
 
    sprintf(szCommand,"STOR %s\n",pRootName);
-   send(theCommandSocket,szCommand,strlen(szCommand),0L);
+   send(theCommandSocket,szCommand,(DWORD)strlen(szCommand),0L);
 
    memset(szInput,0,sizeof(szInput));
    recv(theCommandSocket,szInput,1024,0L);
@@ -263,7 +263,7 @@ char szCommand[32768];
    closesocket(theDataSocket);
 
    sprintf(szCommand,"BYE\r\n");
-   send(theCommandSocket,szCommand,strlen(szCommand),0L);
+   send(theCommandSocket,szCommand,(DWORD)strlen(szCommand),0L);
 
 //   memset(szInput,0,sizeof(szInput));
 //   recv(theCommandSocket,szInput,1024,0L);
@@ -283,7 +283,7 @@ char szCommand[32768];
    DWORD __stdcall loadLog(DWORD_PTR dwCookie,BYTE *pBuffer,LONG bufferSize,LONG *pBytesReturned) {
    if ( ! szLog[0] )
       return 1L;
-   *pBytesReturned = strlen(szLog);
+   *pBytesReturned = (DWORD)strlen(szLog);
    memcpy(pBuffer,szLog,*pBytesReturned);
    szLog[0] = '\0';
    return 0L;

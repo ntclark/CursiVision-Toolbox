@@ -51,6 +51,9 @@
     <ClCompile Include="IWiaTransferCallback.cpp">
       <Filter>Source Files\COM Interfaces</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Common\source\utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ImagingBackEnd.def">

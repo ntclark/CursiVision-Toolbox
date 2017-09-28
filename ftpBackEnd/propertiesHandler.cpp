@@ -28,14 +28,14 @@
 }
    LRESULT CALLBACK FTPBackEnd::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   FTPBackEnd *p = (FTPBackEnd *)GetWindowLong(hwnd,GWL_USERDATA);
+   FTPBackEnd *p = (FTPBackEnd *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
 
    switch ( msg ) {
 
    case WM_INITDIALOG: {
       PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
       p = (FTPBackEnd *)pPage -> lParam;
-      SetWindowLong(hwnd,GWL_USERDATA,(long)p);
+      SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
 
       if ( ! p -> isProcessing ) {
          ShowWindow(GetDlgItem(hwnd,IDDI_FTP_SEND),SW_HIDE);
@@ -95,7 +95,7 @@
          break;
 
       case PSN_KILLACTIVE:
-         SetWindowLong(pNotifyHeader -> hwndFrom,DWL_MSGRESULT,FALSE);
+         SetWindowLongPtr(pNotifyHeader -> hwndFrom,DWLP_MSGRESULT,FALSE);
          break;
 
       case PSN_APPLY: {
@@ -116,7 +116,7 @@
             p -> pIGProperties -> Push();
          }
 
-         SetWindowLong(pNotifyHeader -> hwndFrom,DWL_MSGRESULT,PSNRET_NOERROR);
+         SetWindowLongPtr(pNotifyHeader -> hwndFrom,DWLP_MSGRESULT,PSNRET_NOERROR);
 
          }
          break;

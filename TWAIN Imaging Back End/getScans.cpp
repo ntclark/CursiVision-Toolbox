@@ -115,7 +115,7 @@
 
    LRESULT CALLBACK ImagingBackEnd::scannerHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   ImagingBackEnd *p = (ImagingBackEnd *)GetWindowLong(hwnd,GWL_USERDATA);
+   ImagingBackEnd *p = (ImagingBackEnd *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
 
    switch ( msg ) {
 
@@ -123,7 +123,7 @@
    case WM_CREATE: {
       CREATESTRUCT *pc = reinterpret_cast<CREATESTRUCT *>(lParam);
       p = reinterpret_cast<ImagingBackEnd *>(pc -> lpCreateParams);
-      SetWindowLong(hwnd,GWL_USERDATA,reinterpret_cast<long>(p));   
+      SetWindowLongPtr(hwnd,GWLP_USERDATA,reinterpret_cast<LONG_PTR>(p));   
       }
       return (LRESULT)1L;
 
@@ -372,7 +372,7 @@
 
    LRESULT CALLBACK ImagingBackEnd::reScanOptionHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   ImagingBackEnd *p = (ImagingBackEnd *)GetWindowLong(hwnd,GWL_USERDATA);
+   ImagingBackEnd *p = (ImagingBackEnd *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
 
    switch ( msg ) {
    case WM_INITDIALOG:

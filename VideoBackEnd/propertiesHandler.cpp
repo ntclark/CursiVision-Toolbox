@@ -81,7 +81,7 @@ static HWND hwndCameras = NULL;
 
    LRESULT CALLBACK VideoBackEnd::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   resultDisposition *p = (resultDisposition *)GetWindowLong(hwnd,GWL_USERDATA);
+   resultDisposition *p = (resultDisposition *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
    VideoBackEnd *pObject = NULL;
    if ( p )
       pObject = (VideoBackEnd *)(p -> pParent);
@@ -92,7 +92,7 @@ static HWND hwndCameras = NULL;
 
       PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
       p = (resultDisposition *)pPage -> lParam;
-      SetWindowLong(hwnd,GWL_USERDATA,(long)p);
+      SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
 
       pObject = (VideoBackEnd *)(p -> pParent);
 
@@ -156,7 +156,7 @@ static HWND hwndCameras = NULL;
       rcVideo.right += (rcVideo.right - rcVideo.left) % 8;
       rcVideo.bottom += (rcVideo.bottom - rcVideo.top) % 8;
 
-      AdjustWindowRectEx(&rcVideo,GetWindowLong(GetDlgItem(hwnd,IDDI_VIDEO),GWL_STYLE),FALSE,GetWindowLong(GetDlgItem(hwnd,IDDI_VIDEO),GWL_EXSTYLE));
+      AdjustWindowRectEx(&rcVideo,GetWindowLongPtr(GetDlgItem(hwnd,IDDI_VIDEO),GWL_STYLE),FALSE,GetWindowLongPtr(GetDlgItem(hwnd,IDDI_VIDEO),GWL_EXSTYLE));
 
       SetWindowPos(GetDlgItem(hwnd,IDDI_VIDEO),HWND_TOP,0,0,rcVideo.right - rcVideo.left,rcVideo.bottom - rcVideo.top,SWP_NOMOVE);
 
@@ -192,8 +192,9 @@ static HWND hwndCameras = NULL;
 
       SetWindowPos(GetDlgItem(hwnd,IDDI_TABS),HWND_TOP,0,0,rcTabs.right - rcTabs.left,rcTabs.bottom - rcTabs.top + deltaY,SWP_NOMOVE | SWP_NOZORDER);
 
-      SetWindowLong(GetDlgItem(hwnd,IDDI_VIDEO),GWL_USERDATA,(long)pObject);
-      VideoBackEnd::defaultImageHandler = (WNDPROC)SetWindowLong(GetDlgItem(hwnd,IDDI_VIDEO),GWL_WNDPROC,(long)VideoBackEnd::imageHandler);
+      SetWindowLongPtr(GetDlgItem(hwnd,IDDI_VIDEO),GWLP_USERDATA,(LONG_PTR)pObject);
+
+      VideoBackEnd::defaultImageHandler = (WNDPROC)SetWindowLongPtr(GetDlgItem(hwnd,IDDI_VIDEO),GWLP_WNDPROC,(LONG_PTR)VideoBackEnd::imageHandler);
 
       UDACCEL accelerators[1];
       accelerators[0].nSec = 0;
@@ -492,7 +493,7 @@ static HWND hwndCameras = NULL;
       case PSN_KILLACTIVE: {
          UNLOAD_CONTROLS
          UNLOAD_ADDITIONAL
-         SetWindowLong(hwnd,DWL_MSGRESULT,FALSE);
+         SetWindowLongPtr(hwnd,DWLP_MSGRESULT,FALSE);
          }
          break;
 
@@ -519,7 +520,7 @@ static HWND hwndCameras = NULL;
          if ( pObject -> isProcessing ) 
             SendMessage(hwnd,WM_SNAP_PHOTO,0L,0L);
 
-         SetWindowLong(hwnd,DWL_MSGRESULT,PSNRET_NOERROR);
+         SetWindowLongPtr(hwnd,DWLP_MSGRESULT,PSNRET_NOERROR);
 
          return (LRESULT)TRUE;
          }
@@ -547,7 +548,7 @@ static HWND hwndCameras = NULL;
 
    LRESULT CALLBACK VideoBackEnd::imageHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   VideoBackEnd *p = (VideoBackEnd *)GetWindowLong(hwnd,GWL_USERDATA);
+   VideoBackEnd *p = (VideoBackEnd *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
 
    switch ( msg ) {
 
@@ -570,7 +571,7 @@ static HWND hwndCameras = NULL;
    }
 
    BOOL CALLBACK adjustTop(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLong(hwndTest,GWL_ID);
+   long id = GetWindowLongPtr(hwndTest,GWL_ID);
    if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) || ( 3000 < id && id < 3100 ) ) {
       RECT rcNow,rcParent;
       GetWindowRect(GetParent(hwndTest),&rcParent);
@@ -584,7 +585,7 @@ static HWND hwndCameras = NULL;
 
 
    BOOL CALLBACK page1(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLong(hwndTest,GWL_ID);
+   long id = GetWindowLongPtr(hwndTest,GWL_ID);
    if ( 1000 < id && id < 1100 )
       ShowWindow(hwndTest,SW_SHOW);
    else
@@ -594,7 +595,7 @@ static HWND hwndCameras = NULL;
    }
 
    BOOL CALLBACK page2(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLong(hwndTest,GWL_ID);
+   long id = GetWindowLongPtr(hwndTest,GWL_ID);
    if ( 2000 < id && id < 2100 )
       ShowWindow(hwndTest,SW_SHOW);
    else 
@@ -604,7 +605,7 @@ static HWND hwndCameras = NULL;
    }
 
    BOOL CALLBACK page3(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLong(hwndTest,GWL_ID);
+   long id = GetWindowLongPtr(hwndTest,GWL_ID);
    if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) )
       ShowWindow(hwndTest,SW_HIDE);
    else  

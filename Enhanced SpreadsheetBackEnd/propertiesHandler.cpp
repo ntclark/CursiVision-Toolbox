@@ -58,7 +58,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
    LRESULT CALLBACK SpreadsheetBackEnd::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   resultDisposition *p = (resultDisposition *)GetWindowLong(hwnd,GWL_USERDATA);
+   resultDisposition *p = (resultDisposition *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
 
    static long controlsLoaded = 0L;
 
@@ -68,7 +68,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
       PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
       p = (resultDisposition *)pPage -> lParam;
-      SetWindowLong(hwnd,GWL_USERDATA,(long)p);
+      SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
 
       SpreadsheetBackEnd *pObject = (SpreadsheetBackEnd *)(p -> pParent);
 
@@ -269,7 +269,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
       switch ( pNotifyHeader -> code ) {
 
       case PSN_QUERYINITIALFOCUS:
-         SetWindowLong(hwnd,DWL_MSGRESULT,(long)GetDlgItem(hwnd,IDDI_SHOW_PROPERTIES));
+         SetWindowLongPtr(hwnd,DWLP_MSGRESULT,(long)GetDlgItem(hwnd,IDDI_SHOW_PROPERTIES));
          return (LRESULT)TRUE;
 
       case PSN_SETACTIVE: {
@@ -280,7 +280,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
          UNLOAD_CONTROLS
 
-         SetWindowLong(hwnd,DWL_MSGRESULT,FALSE);
+         SetWindowLongPtr(hwnd,DWLP_MSGRESULT,FALSE);
 
          }
          break;
@@ -303,7 +303,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
             pObject -> PushProperties();
          }
 
-         SetWindowLong(hwnd,DWL_MSGRESULT,PSNRET_NOERROR);
+         SetWindowLongPtr(hwnd,DWLP_MSGRESULT,PSNRET_NOERROR);
 
          }
          return (LRESULT)TRUE;

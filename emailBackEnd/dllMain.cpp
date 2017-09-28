@@ -10,16 +10,14 @@
 
 #define DEFINE_DATA
 
+#include "utilities.h"
+
 #include "emailBackEnd.h"
 
 #include "Properties_i.c"
 
 #include "emailBackEnd_i.c"
 #include "CursiVision_i.c"
-
-   extern "C" int GetCommonAppDataLocation(HWND hwnd,char *);
-   extern "C" int GetDocumentsLocation(HWND hwnd,char *);
-   int GetLocation(HWND hwnd,long key,char *szFolderLocation);
 
    OLECHAR wstrModuleName[256];
 
@@ -83,67 +81,6 @@
    }
   
    return TRUE;
-   }
-  
-  
-   extern "C" int  __cdecl GetDocumentsLocation(HWND hwnd,char *szFolderLocation) {
-   GetLocation(hwnd,CSIDL_PERSONAL,szFolderLocation);
-   return 0;
-   }
-
-   extern "C" int __cdecl GetCommonAppDataLocation(HWND hwnd,char *szFolderLocation) {
-   GetLocation(hwnd,CSIDL_COMMON_APPDATA,szFolderLocation);
-   return 0;
-   }
- 
-   int GetLocation(HWND hwnd,long key,char *szFolderLocation) {
-
-   ITEMIDLIST *ppItemIDList;
-   IShellFolder *pIShellFolder;
-   LPCITEMIDLIST pcParentIDList;
-
-   HRESULT wasInitialized = CoInitialize(NULL);
-
-   szFolderLocation[0] = '\0';
-
-   HRESULT rc = SHGetFolderLocation(hwnd,key,NULL,0,&ppItemIDList);
-
-   if ( S_OK != rc ) {
-      char szMessage[256];
-      sprintf(szMessage,"SHGetFolderLocation returned %ld",rc);
-      MessageBox(NULL,szMessage,"Error",MB_OK);
-      szFolderLocation[0] = '\0';
-      return 0;
-   }
-
-   rc = SHBindToParent(ppItemIDList, IID_IShellFolder, (void **) &pIShellFolder, &pcParentIDList);
-
-   if ( S_OK == rc ) {
-
-      STRRET strRet;
-      rc = pIShellFolder -> GetDisplayNameOf(pcParentIDList,SHGDN_FORPARSING,&strRet);
-      pIShellFolder -> Release();
-      if ( S_OK == rc ) {
-         WideCharToMultiByte(CP_ACP,0,strRet.pOleStr,-1,szFolderLocation,MAX_PATH,0,0);
-      } else {
-         char szMessage[256];
-         sprintf(szMessage,"GetDisplayNameOf returned %ld",rc);
-         MessageBox(NULL,szMessage,"Error",MB_OK);
-         szFolderLocation[0] = '\0';
-         return 0;
-      }
-   } else {
-      char szMessage[256];
-      sprintf(szMessage,"SHBindToParent returned %ld",rc);
-      MessageBox(NULL,szMessage,"Error",MB_OK);
-      szFolderLocation[0] = '\0';
-      return 0;
-   }
-
-   if ( S_FALSE == wasInitialized )
-      CoUninitialize();
-
-   return 0;
    }
 
    class Factory : public IClassFactory {
@@ -218,53 +155,53 @@
   
       RegCreateKeyEx(keyHandle,szCLSID,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&clsidHandle,&disposition);
       sprintf(szTemp,OBJECT_DESCRIPTION);
-      RegSetValueEx(clsidHandle,NULL,0,REG_SZ,(BYTE *)szTemp,strlen(szTemp));
+      RegSetValueEx(clsidHandle,NULL,0,REG_SZ,(BYTE *)szTemp,(DWORD)strlen(szTemp));
   
       sprintf(szTemp,"Control");
       RegCreateKeyEx(clsidHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
       sprintf(szTemp,"");
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,strlen(szTemp));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,(DWORD)strlen(szTemp));
   
       sprintf(szTemp,"ProgID");
       RegCreateKeyEx(clsidHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
       sprintf(szTemp,OBJECT_NAME_V);
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,strlen(szTemp));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,(DWORD)strlen(szTemp));
   
       sprintf(szTemp,"InprocServer");
       RegCreateKeyEx(clsidHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szModuleName,strlen(szModuleName));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szModuleName,(DWORD)strlen(szModuleName));
   
       sprintf(szTemp,"InprocServer32");
       RegCreateKeyEx(clsidHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szModuleName,strlen(szModuleName));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szModuleName,(DWORD)strlen(szModuleName));
 //      RegSetValueEx(keyHandle,"ThreadingModel",0,REG_SZ,(BYTE *)"Free",5);
       RegSetValueEx(keyHandle,"ThreadingModel",0,REG_SZ,(BYTE *)"Apartment",9);
   
       sprintf(szTemp,"LocalServer");
       RegCreateKeyEx(clsidHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szModuleName,strlen(szModuleName));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szModuleName,(DWORD)strlen(szModuleName));
     
       sprintf(szTemp,"TypeLib");
       RegCreateKeyEx(clsidHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
     
       StringFromCLSID(OBJECT_LIBID,&oleString);
       WideCharToMultiByte(CP_ACP,0,oleString,-1,szTemp,256,0,0);
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,strlen(szTemp));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,(DWORD)strlen(szTemp));
         
       sprintf(szTemp,"ToolboxBitmap32");
       RegCreateKeyEx(clsidHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
 //      sprintf(szTemp,"%s, 1",szModuleName);
-//      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,strlen(szModuleName));
+//      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,(DWORD)strlen(szModuleName));
   
       sprintf(szTemp,"Version");
       RegCreateKeyEx(clsidHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
       sprintf(szTemp,OBJECT_VERSION);
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,strlen(szTemp));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,(DWORD)strlen(szTemp));
   
       sprintf(szTemp,"MiscStatus");
       RegCreateKeyEx(clsidHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
       sprintf(szTemp,"0");
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,strlen(szTemp));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,(DWORD)strlen(szTemp));
   
       sprintf(szTemp,"1");
       RegCreateKeyEx(keyHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
@@ -276,16 +213,16 @@
                  OLEMISC_SETCLIENTSITEFIRST |
                  OLEMISC_CANTLINKINSIDE );
 //sprintf(szTemp,"%ld",131473L);
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,strlen(szTemp));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,(DWORD)strlen(szTemp));
   
    RegCreateKeyEx(HKEY_CLASSES_ROOT,OBJECT_NAME,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
       RegCreateKeyEx(keyHandle,"CurVer",0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
       sprintf(szTemp,OBJECT_NAME_V);
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,strlen(szTemp));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,(DWORD)strlen(szTemp));
   
    RegCreateKeyEx(HKEY_CLASSES_ROOT,OBJECT_NAME_V,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
       RegCreateKeyEx(keyHandle,"CLSID",0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szCLSID,strlen(szCLSID));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szCLSID,(DWORD)strlen(szCLSID));
   
 
    ICatRegister *pICatRegister;

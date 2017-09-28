@@ -6,7 +6,7 @@
 
    LRESULT CALLBACK GenericBackEnd::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   GenericBackEnd *p = (GenericBackEnd *)GetWindowLong(hwnd,GWL_USERDATA);
+   GenericBackEnd *p = (GenericBackEnd *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
 
    switch ( msg ) {
 
@@ -16,7 +16,7 @@
 
       p = (GenericBackEnd *)pPage -> lParam;
 
-      SetWindowLong(hwnd,GWL_USERDATA,(long)p);
+      SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
 
       p -> PushProperties();
       p -> PushProperties();
@@ -104,7 +104,7 @@
 
          GetDlgItemText(hwnd,IDDI_BATCH_FILE,p -> szBatchFileName,MAX_PATH);
 
-         SetWindowLong(hwnd,DWL_MSGRESULT,FALSE);
+         SetWindowLongPtr(hwnd,DWLP_MSGRESULT,FALSE);
          }
          break;
 
@@ -121,7 +121,7 @@
 
          p -> waitForCompletion = BST_CHECKED == SendMessage(GetDlgItem(hwnd,IDDI_WAIT_FOR_COMPLETION),BM_GETCHECK,0L,0L);
 
-         SetWindowLong(hwnd,DWL_MSGRESULT,PSNRET_NOERROR);
+         SetWindowLongPtr(hwnd,DWLP_MSGRESULT,PSNRET_NOERROR);
 
          return (LRESULT)TRUE;
          }

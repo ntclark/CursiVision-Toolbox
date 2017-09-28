@@ -9,7 +9,7 @@
 
    LRESULT CALLBACK theReplicator::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   theReplicator *p = (theReplicator *)GetWindowLong(hwnd,GWL_USERDATA);
+   theReplicator *p = (theReplicator *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
 
    switch ( msg ) {
 
@@ -19,7 +19,7 @@
 
       p = (theReplicator *)pPage -> lParam;
 
-      SetWindowLong(hwnd,GWL_USERDATA,(long)p);
+      SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
 
       p -> hwndProperties = hwnd;
 
@@ -481,7 +481,7 @@
       switch ( pNotifyHeader -> code ) {
 
       case PSN_KILLACTIVE:
-         SetWindowLong(pNotifyHeader -> hwndFrom,DWL_MSGRESULT,FALSE);
+         SetWindowLongPtr(pNotifyHeader -> hwndFrom,DWLP_MSGRESULT,FALSE);
          break;
 
       case PSN_APPLY: {
@@ -501,7 +501,7 @@
             p -> pIGProperties -> Push();
          }
 
-         SetWindowLong(pNotifyHeader -> hwndFrom,DWL_MSGRESULT,PSNRET_NOERROR);
+         SetWindowLongPtr(pNotifyHeader -> hwndFrom,DWLP_MSGRESULT,PSNRET_NOERROR);
 
          }
          break;

@@ -4,7 +4,7 @@
 #if 0
    LRESULT CALLBACK documentView::editHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   documentView *p = (documentView *)GetWindowLong(hwnd,GWL_USERDATA);
+   documentView *p = (documentView *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
 
    switch ( msg ) {
 
@@ -12,7 +12,7 @@
 
       p = (documentView *)lParam;
 
-      SetWindowLong(hwnd,GWL_USERDATA,(long)p);
+      SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
 
       char szInfo[1024];
       LoadString(hModule,IDS_EDIT_INSTRUCTIONS,szInfo,1024);
@@ -134,7 +134,7 @@
       RECT rcScroll,rcDocument,rcOk,rcCancel,rcParent,rcAdjust;
 
       memset(&rcAdjust,0,sizeof(RECT));
-      AdjustWindowRect(&rcAdjust,GetWindowLong(hwnd,GWL_STYLE),FALSE);
+      AdjustWindowRect(&rcAdjust,GetWindowLongPtr(hwnd,GWL_STYLE),FALSE);
 
       GetWindowRect(hwnd,&rcParent);
       GetWindowRect(p -> hwndScroll,&rcScroll);

@@ -278,6 +278,7 @@ regsvr32 /s /c "$(TargetPath)"
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Common\source\utilities.cpp" />
     <ClCompile Include="bodyHandler.cpp" />
     <ClCompile Include="dllMain.cpp" />
     <ClCompile Include="emailBackEnd.cpp" />

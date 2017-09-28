@@ -151,7 +151,7 @@
 
    HWND hwndExcel = FindWindow("XLMain",NULL);
    if ( hwndExcel )
-      hwndExcel = (HWND)FindWindowWithClass((long)hwndExcel,"Excel7");
+      hwndExcel = (HWND)FindWindowWithClass(hwndExcel,"Excel7");
 
    HRESULT hr = S_OK;
 
@@ -284,27 +284,3 @@
    return count;
    }
 
-
-   static HWND hwndFoundChild = NULL;
-
-   LONG APIENTRY FindWindowWithClass(long hwndP,char* theClass) {
-   HWND hwndParent = (HWND)hwndP;
-   hwndFoundChild = NULL;
-   EnumChildWindows(hwndParent,findChildWithClass,(LPARAM)theClass);
-   return (long)hwndFoundChild;
-   }
- 
-   BOOL CALLBACK findChildWithClass(HWND hwndTest,LPARAM lParam) {
-   char *pszClass = (char *)lParam;
-   char szClass[64];
-   GetClassName(hwndTest,szClass,64);
-   if ( strlen(szClass) < 1 ) return TRUE;
-   if ( 0 == _strnicmp(pszClass,szClass,min(strlen(pszClass),strlen(szClass))) ) {
-       hwndFoundChild = hwndTest;
-       return FALSE;
-   }
-   EnumChildWindows(hwndTest,findChildWithClass,lParam);
-   if ( hwndFoundChild )
-      return FALSE;
-   return TRUE;
-   }

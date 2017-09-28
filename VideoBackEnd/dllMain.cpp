@@ -9,14 +9,14 @@
 
 #define DEFINE_DATA
 
+#include "utilities.h"
+
 #include "VideoBackEnd.h"
 
 #include "Properties_i.c"
 #include "pdfEnabler_i.c"
 #include "VideoBackEnd_i.c"
 #include "CursiVision_i.c"
-
-   int GetLocation(HWND hwnd,long key,char *szFolderLocation);
 
    OLECHAR wstrModuleName[256];
 
@@ -80,45 +80,6 @@
    return TRUE;
    }
 
-
-   extern "C" int  __cdecl GetDocumentsLocation(HWND hwnd,char *szFolderLocation) {
-   GetLocation(hwnd,CSIDL_PERSONAL,szFolderLocation);
-   return 0;
-   }
-
-
-   int GetLocation(HWND hwnd,long key,char *szFolderLocation) {
-
-   ITEMIDLIST *ppItemIDList;
-   IShellFolder *pIShellFolder;
-   LPCITEMIDLIST pcParentIDList;
-
-   HRESULT wasInitialized = CoInitialize(NULL);
-
-   szFolderLocation[0] = '\0';
-
-   HRESULT rc = SHGetFolderLocation(hwnd,key,NULL,0,&ppItemIDList);
-
-   if ( S_OK != rc ) 
-      return 0;
-
-   rc = SHBindToParent(ppItemIDList, IID_IShellFolder, (void **) &pIShellFolder, &pcParentIDList);
-   if ( S_OK != rc )
-      return 0;
-
-   STRRET strRet;
-   rc = pIShellFolder -> GetDisplayNameOf(pcParentIDList,SHGDN_FORPARSING,&strRet);
-   pIShellFolder -> Release();
-   if ( S_OK != rc ) 
-      return 0;
-
-   WideCharToMultiByte(CP_ACP,0,strRet.pOleStr,-1,szFolderLocation,MAX_PATH,0,0);
-
-   if ( S_FALSE == wasInitialized )
-      CoUninitialize();
-
-   return 0;
-   }  
   
    class Factory : public IClassFactory {
 
@@ -192,53 +153,53 @@
   
       RegCreateKeyEx(keyHandle,szCLSID,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&clsidHandle,&disposition);
       sprintf(szTemp,OBJECT_DESCRIPTION);
-      RegSetValueEx(clsidHandle,NULL,0,REG_SZ,(BYTE *)szTemp,strlen(szTemp));
+      RegSetValueEx(clsidHandle,NULL,0,REG_SZ,(BYTE *)szTemp,(DWORD)strlen(szTemp));
   
       sprintf(szTemp,"Control");
       RegCreateKeyEx(clsidHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
       sprintf(szTemp,"");
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,strlen(szTemp));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,(DWORD)strlen(szTemp));
   
       sprintf(szTemp,"ProgID");
       RegCreateKeyEx(clsidHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
       sprintf(szTemp,OBJECT_NAME_V);
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,strlen(szTemp));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,(DWORD)strlen(szTemp));
   
       sprintf(szTemp,"InprocServer");
       RegCreateKeyEx(clsidHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szModuleName,strlen(szModuleName));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szModuleName,(DWORD)strlen(szModuleName));
   
       sprintf(szTemp,"InprocServer32");
       RegCreateKeyEx(clsidHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szModuleName,strlen(szModuleName));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szModuleName,(DWORD)strlen(szModuleName));
 //      RegSetValueEx(keyHandle,"ThreadingModel",0,REG_SZ,(BYTE *)"Free",5);
       RegSetValueEx(keyHandle,"ThreadingModel",0,REG_SZ,(BYTE *)"Apartment",9);
   
       sprintf(szTemp,"LocalServer");
       RegCreateKeyEx(clsidHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szModuleName,strlen(szModuleName));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szModuleName,(DWORD)strlen(szModuleName));
     
       sprintf(szTemp,"TypeLib");
       RegCreateKeyEx(clsidHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
     
       StringFromCLSID(OBJECT_LIBID,&oleString);
       WideCharToMultiByte(CP_ACP,0,oleString,-1,szTemp,256,0,0);
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,strlen(szTemp));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,(DWORD)strlen(szTemp));
         
       sprintf(szTemp,"ToolboxBitmap32");
       RegCreateKeyEx(clsidHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
 //      sprintf(szTemp,"%s, 1",szModuleName);
-//      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,strlen(szModuleName));
+//      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,(DWORD)strlen(szModuleName));
   
       sprintf(szTemp,"Version");
       RegCreateKeyEx(clsidHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
       sprintf(szTemp,OBJECT_VERSION);
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,strlen(szTemp));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,(DWORD)strlen(szTemp));
   
       sprintf(szTemp,"MiscStatus");
       RegCreateKeyEx(clsidHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
       sprintf(szTemp,"0");
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,strlen(szTemp));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,(DWORD)strlen(szTemp));
   
       sprintf(szTemp,"1");
       RegCreateKeyEx(keyHandle,szTemp,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
@@ -249,16 +210,16 @@
                  OLEMISC_INSIDEOUT |
                  OLEMISC_SETCLIENTSITEFIRST |
                  OLEMISC_CANTLINKINSIDE );
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,strlen(szTemp));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,(DWORD)strlen(szTemp));
   
    RegCreateKeyEx(HKEY_CLASSES_ROOT,OBJECT_NAME,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
       RegCreateKeyEx(keyHandle,"CurVer",0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
       sprintf(szTemp,OBJECT_NAME_V);
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,strlen(szTemp));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szTemp,(DWORD)strlen(szTemp));
   
    RegCreateKeyEx(HKEY_CLASSES_ROOT,OBJECT_NAME_V,0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
       RegCreateKeyEx(keyHandle,"CLSID",0,NULL,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&keyHandle,&disposition);
-      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szCLSID,strlen(szCLSID));
+      RegSetValueEx(keyHandle,NULL,0,REG_SZ,(BYTE *)szCLSID,(DWORD)strlen(szCLSID));
   
 
    ICatRegister *pICatRegister;

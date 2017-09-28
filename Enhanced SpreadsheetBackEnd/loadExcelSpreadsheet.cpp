@@ -31,7 +31,7 @@
 
    HWND hwndExcel = FindWindow("XLMain",NULL);
    if ( hwndExcel )
-      hwndExcel = (HWND)FindWindowWithClass((long)hwndExcel,"Excel7");
+      hwndExcel = (HWND)FindWindowWithClass(hwndExcel,"Excel7");
 
    HRESULT hr = S_OK;
 

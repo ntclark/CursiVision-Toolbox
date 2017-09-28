@@ -34,7 +34,7 @@
 
    LRESULT CALLBACK forwardToReceptor::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   forwardToReceptor *p = (forwardToReceptor *)GetWindowLong(hwnd,GWL_USERDATA);
+   forwardToReceptor *p = (forwardToReceptor *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
 
    static long controlsLoaded = false;
 
@@ -43,7 +43,7 @@
    case WM_INITDIALOG: {
       PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
       p = (forwardToReceptor *)pPage -> lParam;
-      SetWindowLong(hwnd,GWL_USERDATA,(long)p);
+      SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
       p -> pIGProperties -> Push();
       p -> pIGProperties -> Push();
       controlsLoaded = false;
@@ -99,7 +99,7 @@
          break;
 
       case PSN_KILLACTIVE: {
-         SetWindowLong(pNotifyHeader -> hwndFrom,DWL_MSGRESULT,FALSE);
+         SetWindowLongPtr(pNotifyHeader -> hwndFrom,DWLP_MSGRESULT,FALSE);
          }
          break;
 
@@ -121,7 +121,7 @@
             p -> pIGProperties -> Push();
          }
 
-         SetWindowLong(pNotifyHeader -> hwndFrom,DWL_MSGRESULT,PSNRET_NOERROR);
+         SetWindowLongPtr(pNotifyHeader -> hwndFrom,DWLP_MSGRESULT,PSNRET_NOERROR);
 
          }
          break;

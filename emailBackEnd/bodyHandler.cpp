@@ -3,7 +3,7 @@
 
    LRESULT CALLBACK EmailBackEnd::bodyHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   EmailBackEnd *p = (EmailBackEnd *)GetWindowLong(hwnd,GWL_USERDATA);
+   EmailBackEnd *p = (EmailBackEnd *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
 
    switch ( msg ) {
 
@@ -12,7 +12,7 @@
       char szText[1024];
 
       p = (EmailBackEnd *)lParam;
-      SetWindowLong(hwnd,GWL_USERDATA,(long)p);
+      SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
 
       ShowWindow(GetDlgItem(hwnd,IDDI_OK),SW_HIDE);
       ShowWindow(GetDlgItem(hwnd,IDDI_CANCEL),SW_HIDE);
@@ -39,7 +39,7 @@
 
       memcpy(&rcClient,&rcFrame,sizeof(RECT));
 
-      AdjustWindowRect(&rcClient,GetWindowLong(hwnd,GWL_STYLE),FALSE);
+      AdjustWindowRect(&rcClient,(DWORD)GetWindowLongPtr(hwnd,GWL_STYLE),FALSE);
 
       long dx = (rcClient.right - rcClient.left) - (rcFrame.right - rcFrame.left);
       long dy = (rcClient.bottom - rcClient.top) - (rcFrame.bottom - rcFrame.top);

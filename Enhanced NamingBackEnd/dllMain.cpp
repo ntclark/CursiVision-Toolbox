@@ -9,16 +9,14 @@
 
 #define DEFINE_DATA
 
+#include "utilities.h"
+
 #include "EnhancedNamingBackEnd.h"
 
 #include "Properties_i.c"
 #include "pdfEnabler_i.c"
 #include "EnhancedNamingBackEnd_i.c"
 #include "CursiVision_i.c"
-
-   extern "C" int GetCommonAppDataLocation(HWND hwnd,char *);
-   extern "C" int GetDocumentsLocation(HWND hwnd,char *);
-   int GetLocation(HWND hwnd,long key,char *szFolderLocation);
 
    OLECHAR wstrModuleName[256];
 
@@ -81,66 +79,7 @@
    return TRUE;
    }
   
-   extern "C" int  __cdecl GetDocumentsLocation(HWND hwnd,char *szFolderLocation) {
-   GetLocation(hwnd,CSIDL_PERSONAL,szFolderLocation);
-   return 0;
-   }
 
-   extern "C" int __cdecl GetCommonAppDataLocation(HWND hwnd,char *szFolderLocation) {
-   GetLocation(hwnd,CSIDL_COMMON_APPDATA,szFolderLocation);
-   return 0;
-   }
- 
-   int GetLocation(HWND hwnd,long key,char *szFolderLocation) {
-
-   ITEMIDLIST *ppItemIDList;
-   IShellFolder *pIShellFolder;
-   LPCITEMIDLIST pcParentIDList;
-
-   HRESULT wasInitialized = CoInitialize(NULL);
-
-   szFolderLocation[0] = '\0';
-
-   HRESULT rc = SHGetFolderLocation(hwnd,key,NULL,0,&ppItemIDList);
-
-   if ( S_OK != rc ) {
-      char szMessage[256];
-      sprintf(szMessage,"SHGetFolderLocation returned %ld",rc);
-      MessageBox(NULL,szMessage,"Error",MB_OK);
-      szFolderLocation[0] = '\0';
-      return 0;
-   }
-
-   rc = SHBindToParent(ppItemIDList, IID_IShellFolder, (void **) &pIShellFolder, &pcParentIDList);
-
-   if ( S_OK == rc ) {
-
-      STRRET strRet;
-      rc = pIShellFolder -> GetDisplayNameOf(pcParentIDList,SHGDN_FORPARSING,&strRet);
-      pIShellFolder -> Release();
-      if ( S_OK == rc ) {
-         WideCharToMultiByte(CP_ACP,0,strRet.pOleStr,-1,szFolderLocation,MAX_PATH,0,0);
-      } else {
-         char szMessage[256];
-         sprintf(szMessage,"GetDisplayNameOf returned %ld",rc);
-         MessageBox(NULL,szMessage,"Error",MB_OK);
-         szFolderLocation[0] = '\0';
-         return 0;
-      }
-   } else {
-      char szMessage[256];
-      sprintf(szMessage,"SHBindToParent returned %ld",rc);
-      MessageBox(NULL,szMessage,"Error",MB_OK);
-      szFolderLocation[0] = '\0';
-      return 0;
-   }
-
-   if ( S_FALSE == wasInitialized )
-      CoUninitialize();
-
-   return 0;
-   }
-  
    class Factory : public IClassFactory {
 
    public:

@@ -59,7 +59,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
    LRESULT CALLBACK ImagingBackEnd::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   resultDisposition *p = (resultDisposition *)GetWindowLong(hwnd,GWL_USERDATA);
+   resultDisposition *p = (resultDisposition *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
    ImagingBackEnd *pObject = NULL;
    if ( p )
       pObject = (ImagingBackEnd *)(p -> pParent);
@@ -70,7 +70,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
       PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
       p = (resultDisposition *)pPage -> lParam;
-      SetWindowLong(hwnd,GWL_USERDATA,(long)p);
+      SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
 
       pObject = (ImagingBackEnd *)(p -> pParent);
 
@@ -258,7 +258,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
       case PSN_KILLACTIVE: {
          UNLOAD_CONTROLS
          UNLOAD_ADDITIONAL
-         SetWindowLong(hwnd,DWL_MSGRESULT,FALSE);
+         SetWindowLongPtr(hwnd,DWLP_MSGRESULT,FALSE);
          }
          break;
 
@@ -282,7 +282,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
             pObject -> PushProperties();
          }
 
-         SetWindowLong(hwnd,DWL_MSGRESULT,PSNRET_NOERROR);
+         SetWindowLongPtr(hwnd,DWLP_MSGRESULT,PSNRET_NOERROR);
 
          return (LRESULT)TRUE;
          }
@@ -309,7 +309,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
 
    BOOL CALLBACK adjustTop(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLong(hwndTest,GWL_ID);
+   long id = GetWindowLongPtr(hwndTest,GWL_ID);
    if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) || ( 3000 < id && id < 3100 ) ) {
       RECT rcNow,rcParent;
       GetWindowRect(GetParent(hwndTest),&rcParent);
@@ -323,7 +323,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
 
    BOOL CALLBACK page1(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLong(hwndTest,GWL_ID);
+   long id = GetWindowLongPtr(hwndTest,GWL_ID);
    if ( 1000 < id && id < 1100 )
       ShowWindow(hwndTest,SW_SHOW);
    else
@@ -333,7 +333,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
    }
 
    BOOL CALLBACK page2(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLong(hwndTest,GWL_ID);
+   long id = GetWindowLongPtr(hwndTest,GWL_ID);
    if ( 2000 < id && id < 2100 )
       ShowWindow(hwndTest,SW_SHOW);
    else 
@@ -343,7 +343,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
    }
 
    BOOL CALLBACK page3(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLong(hwndTest,GWL_ID);
+   long id = GetWindowLongPtr(hwndTest,GWL_ID);
    if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) )
       ShowWindow(hwndTest,SW_HIDE);
    else  

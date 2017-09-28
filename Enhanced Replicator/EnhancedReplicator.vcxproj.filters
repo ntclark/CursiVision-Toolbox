@@ -69,9 +69,6 @@
     <ClCompile Include="..\..\Common\source\templateDocument_UI.cpp">
       <Filter>Source Files\Template Document</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\source\utilities.cpp">
-      <Filter>Source Files\Template Document</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Common\source\tdIOleClientSite.cpp">
       <Filter>Source Files\Template Document\Control Hosting</Filter>
     </ClCompile>
@@ -86,6 +83,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Common\source\tdIUnknown.cpp">
       <Filter>Source Files\Template Document\Control Hosting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\source\utilities.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
