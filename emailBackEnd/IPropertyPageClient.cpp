@@ -118,7 +118,7 @@
    pPropSheetPages[0].pszTemplate = MAKEINTRESOURCE(IDD_DISPOSITION_EMAIL);
    pPropSheetPages[0].pfnDlgProc = (DLGPROC)EmailBackEnd::propertiesHandler;
    pPropSheetPages[0].pszTitle = "E-Mail Server Settings";
-   pPropSheetPages[0].lParam = (long)pParent;
+   pPropSheetPages[0].lParam = (LONG_PTR)pParent;
    pPropSheetPages[0].pfnCallback = NULL;
 
    return S_OK;

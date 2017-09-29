@@ -116,9 +116,9 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
    FILE *fEncodingOutput = fopen("temp2","wt");
    char szChar[] = {'\0'};
    fwrite(szChar,1,1,fEncodingInput);
-   fwrite(userName,1,strlen(userName),fEncodingInput);
+   fwrite(userName,1,(DWORD)strlen(userName),fEncodingInput);
    fwrite(szChar,1,1,fEncodingInput);
-   fwrite(password,1,strlen(password),fEncodingInput);
+   fwrite(password,1,(DWORD)strlen(password),fEncodingInput);
    fclose(fEncodingInput);
    fEncodingInput = fopen("temp1","rt");
    to64(fEncodingInput,fEncodingOutput,0);
@@ -229,9 +229,9 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
    }
     
 #if 0
-   long theSocket = socket(PF_INET,SOCK_STREAM,0);
+   SOCKET theSocket = socket(PF_INET,SOCK_STREAM,0);
 #else
-   long theSocket = socket(pCommandAddress -> ai_family,pCommandAddress -> ai_socktype,pCommandAddress -> ai_protocol);
+   SOCKET theSocket = socket(pCommandAddress -> ai_family,pCommandAddress -> ai_socktype,pCommandAddress -> ai_protocol);
 #endif
 
    if ( -1L == theSocket ) {
@@ -252,7 +252,7 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
 
    if ( -1L == connect(theSocket, (sockaddr *)&socketDetails, sizeof(struct sockaddr_in)) ) {
 #else
-   if ( -1L == connect(theSocket,pCommandAddress -> ai_addr,pCommandAddress -> ai_addrlen) ) {
+   if ( -1L == connect(theSocket,pCommandAddress -> ai_addr,(int)pCommandAddress -> ai_addrlen) ) {
 #endif
       sprintf(szMessage,"\n\nERROR: Was not able to connect the socket for sending email, rc = %ld: %s.\n\n"
                            "\nPress Retry to specify the properties or Cancel to exit.",errno,strerror(errno));
@@ -289,7 +289,7 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
          sprintf(szCommand,outputCommands[k],authenticationString);
 #endif                    
 
-      send(theSocket,szCommand,strlen(szCommand),0L);
+      send(theSocket,szCommand,(DWORD)strlen(szCommand),0L);
       memset(szInput,0,sizeof(szInput));
       recv(theSocket,szInput,1024,0L);
 
@@ -322,7 +322,7 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
    read(theSocket,szInput,1024);
    
    sprintf(szCommand,"MAIL FROM:<%s>\r\n",configValues[CFG_ADMINEMAIL]);
-   write(theSocket,szCommand,strlen(szCommand));
+   write(theSocket,szCommand,(DWORD)strlen(szCommand));
    memset(szInput,0,sizeof(szInput));
    read(theSocket,szInput,1024);
 
@@ -363,7 +363,7 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
        while ( p ) {
            while ( ' ' == *p ) p++;
            sprintf(szCommand,"RCPT TO:<%s>\r\n",p);
-           send(theSocket,szCommand,strlen(szCommand),0L);
+           send(theSocket,szCommand,(DWORD)strlen(szCommand),0L);
            memset(szInput,0,sizeof(szInput));
            recv(theSocket,szInput,1024,0L);
 #if 0
@@ -381,7 +381,7 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
    }
    
    sprintf(szCommand,"DATA\r\n");
-   send(theSocket,szCommand,strlen(szCommand),0L);
+   send(theSocket,szCommand,(DWORD)strlen(szCommand),0L);
    memset(szInput,0,sizeof(szInput));
    recv(theSocket,szInput,1024,0L);
 
@@ -415,7 +415,7 @@ fInput = fopen("D:\\TEMP\\FMS1.TXT","rb");
    delete [] pszEmail;
    
    sprintf(szCommand,"QUIT\r\n");
-   send(theSocket,szCommand,strlen(szCommand),0L);
+   send(theSocket,szCommand,(DWORD)strlen(szCommand),0L);
 
    closesocket(theSocket);
 

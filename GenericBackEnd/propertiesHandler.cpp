@@ -54,7 +54,7 @@
          strcpy(szFile,p -> szBatchFileName);
 
          sprintf(szFilter,"Batch or script files");
-         long k = strlen(szFilter) + sprintf(szFilter + strlen(szFilter) + 1,"*.cmd");
+         long k = (long)strlen(szFilter) + sprintf(szFilter + (long)strlen(szFilter) + 1,"*.cmd");
          k = k + sprintf(szFilter + k + 2,"All Files");
          sprintf(szFilter + k + 3,"*.*");
 

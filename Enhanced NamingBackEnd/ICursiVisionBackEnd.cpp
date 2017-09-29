@@ -79,8 +79,8 @@ SetProperties:
 
       strcpy(szNewDocument,pValue);
 
-   BSTR bstrActiveDocument = SysAllocStringLen(NULL,strlen(szSignedDocument));
-   MultiByteToWideChar(CP_ACP,0,szSignedDocument,-1,bstrActiveDocument,strlen(szSignedDocument));
+   BSTR bstrActiveDocument = SysAllocStringLen(NULL,(DWORD)strlen(szSignedDocument));
+   MultiByteToWideChar(CP_ACP,0,szSignedDocument,-1,bstrActiveDocument,(DWORD)strlen(szSignedDocument));
 
 //
 //NTC: 03-12-2012: Attempting to copy the file to check if the file name is valid. This approach doesn't work
@@ -114,7 +114,7 @@ SetProperties:
       sprintf(szTemp,"Save %s.",pValue);
 
       sprintf(szFilter,"Signed Documents");
-      long k = strlen(szFilter) + sprintf(szFilter + strlen(szFilter) + 1,"*.pdf");
+      long k = (DWORD)strlen(szFilter) + sprintf(szFilter + (DWORD)strlen(szFilter) + 1,"*.pdf");
       k = k + sprintf(szFilter + k + 2,"All Files");
       sprintf(szFilter + k + 3,"*.*");
 

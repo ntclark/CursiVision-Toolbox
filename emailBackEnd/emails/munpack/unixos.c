@@ -90,7 +90,7 @@ char *os_genid()
     }
 
     result = malloc(25+strlen(hostname));
-    sprintf(result, "%d.%d@%s", pid, curtime++, hostname);
+    sprintf(result, "%d.%d@%s", pid, (int)curtime++, hostname);
     return result;
 }
 
@@ -224,17 +224,17 @@ params contentParams;
 
     strcpy(createdFileNames + createdFileNamesBufferLen,fname);
     createdFileNamesBufferLen = 
-      createdFileNamesBufferLen + strlen(fname) + 1;
+      createdFileNamesBufferLen + (int)strlen(fname) + 1;
     createdFileNamesCount++;
 
     strcpy(createdFileTypes + createdFileTypesBufferLen,contentType);
     createdFileTypesBufferLen =
-      createdFileTypesBufferLen + strlen(contentType) + 1;
+      createdFileTypesBufferLen + (int)strlen(contentType) + 1;
     createdFileTypesCount++;
 
     strcpy(createdHeaders + createdHeadersBufferLen,currentHeader);
     createdHeadersBufferLen = 
-      createdHeadersBufferLen + strlen(currentHeader) + 1;
+      createdHeadersBufferLen + (int)strlen(currentHeader) + 1;
     createdHeadersCount++;
 
     if (output_fname) free(output_fname);

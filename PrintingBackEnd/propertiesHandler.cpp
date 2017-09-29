@@ -26,7 +26,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
    PRINTER_INFO_4 *pPrinterInfo = (PRINTER_INFO_4 *)new BYTE[countBytes];                                                        \
    EnumPrinters(PRINTER_ENUM_LOCAL | PRINTER_ENUM_CONNECTIONS,NULL,4,(BYTE *)pPrinterInfo,countBytes,&countBytes,&countPrinters);\
    SendMessage(GetDlgItem(hwnd,IDDI_PRINTER),CB_RESETCONTENT,0L,0L);                                                             \
-   for ( long k = 0; k < countPrinters; k++ ) {                                                                                  \
+   for ( DWORD k = 0; k < countPrinters; k++ ) {                                                                                 \
       SendMessage(GetDlgItem(hwnd,IDDI_PRINTER),CB_ADDSTRING,0L,(LPARAM)pPrinterInfo[k].pPrinterName);                           \
       if ( 0 == strcmp(pPrinterInfo[k].pPrinterName,pObject -> szChosenPrinter) )                                                \
          SendMessage(GetDlgItem(hwnd,IDDI_PRINTER),CB_SETCURSEL,k,0L);                                                           \

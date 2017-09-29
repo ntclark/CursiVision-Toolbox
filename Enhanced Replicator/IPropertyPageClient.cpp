@@ -136,7 +136,7 @@
    pPropSheetPages[0].hInstance = hModule;
    pPropSheetPages[0].pfnDlgProc = (DLGPROC)theReplicator::propertiesHandler;
    pPropSheetPages[0].pszTitle = "Replicator Settings";
-   pPropSheetPages[0].lParam = (long)pParent;
+   pPropSheetPages[0].lParam = (LONG_PTR)pParent;
    pPropSheetPages[0].pfnCallback = NULL;
 
 #if 0

@@ -346,7 +346,7 @@ SetProperties:
 
    BYTE *pBits = new BYTE[pBitmapInfo -> bmiHeader.biSizeImage];
 
-   long rc = fread(pBits,1,pBitmapInfo -> bmiHeader.biSizeImage,fBitmap);
+   long rc = (long)fread(pBits,1,pBitmapInfo -> bmiHeader.biSizeImage,fBitmap);
 
    fclose(fBitmap);
 

@@ -62,7 +62,7 @@
    if ( ! printDialog.hDevMode )
       return E_FAIL;
 
-   long devModeSize = GlobalSize(printDialog.hDevMode);
+   long devModeSize = (long)GlobalSize(printDialog.hDevMode);
    BYTE *pDevMode = (BYTE *)GlobalLock(printDialog.hDevMode);
 
    long rc = pParent -> printDocument(pszDocument,(char *)pDevMode,pDevMode,devModeSize,1);

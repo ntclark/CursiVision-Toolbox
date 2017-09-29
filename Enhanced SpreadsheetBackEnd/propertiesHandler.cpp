@@ -31,7 +31,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
    for ( long k = 0; k < FIELD_DISPLAY_COUNT; k++ ) PUT_STRING(pObject -> szColumnId[k],IDDI_COLUMN_ID + k)  \
    char *pNames = pObject -> szAllSheetNames;                                                   \
    while ( *pNames ) {                                                                          \
-      long index = SendMessage(GetDlgItem(hwnd,IDDI_CHOOSE_SPREADSHEET),CB_ADDSTRING,0L,(LPARAM)pNames); \
+      long index = (long)SendMessage(GetDlgItem(hwnd,IDDI_CHOOSE_SPREADSHEET),CB_ADDSTRING,0L,(LPARAM)pNames); \
       if ( 0 == strcmp(pNames,pObject -> szSpreadsheetName) )                                   \
          SendMessage(GetDlgItem(hwnd,IDDI_CHOOSE_SPREADSHEET),CB_SETCURSEL,(WPARAM)index,0L);   \
       pNames += strlen(pNames) + 1;                                                             \
@@ -122,7 +122,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
       for ( long k = 0; k < FIELD_DISPLAY_COUNT - 1; k++ ) {
 
-         HWND hwndx = CreateWindowEx(0L,"ComboBox","",WS_CHILD | WS_VSCROLL | WS_VISIBLE | ES_AUTOVSCROLL | WS_TABSTOP | CBS_DROPDOWNLIST,rcPrefix.left,y,cxPrefix,6 * cyPrefix,hwnd,(HMENU)(IDDI_NAME_PREFIX + k),NULL,NULL);
+         HWND hwndx = CreateWindowEx(0L,"ComboBox","",WS_CHILD | WS_VSCROLL | WS_VISIBLE | ES_AUTOVSCROLL | WS_TABSTOP | CBS_DROPDOWNLIST,rcPrefix.left,y,cxPrefix,6 * cyPrefix,hwnd,(HMENU)(UINT_PTR)(IDDI_NAME_PREFIX + k),NULL,NULL);
          SendMessage(hwndx,WM_SETFONT,(WPARAM)hGUIFont,(LPARAM)TRUE);
 
          char *pStart = pFieldNames;
@@ -141,9 +141,9 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
          SendMessage(hwndx,CB_INSERTSTRING,(WPARAM)-1L,(LPARAM)"<none>");
 
-         hwndx = CreateWindowEx(WS_EX_CLIENTEDGE,"Edit","",WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_TABSTOP,rcColumnName.left,y,cxColumnName,cyColumnName,hwnd,(HMENU)(IDDI_COLUMN_NAME + k),NULL,NULL);
+         hwndx = CreateWindowEx(WS_EX_CLIENTEDGE,"Edit","",WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_TABSTOP,rcColumnName.left,y,cxColumnName,cyColumnName,hwnd,(HMENU)(UINT_PTR)(IDDI_COLUMN_NAME + k),NULL,NULL);
          SendMessage(hwndx,WM_SETFONT,(WPARAM)hGUIFont,(LPARAM)TRUE);
-         hwndx = CreateWindowEx(WS_EX_CLIENTEDGE,"Edit","",WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_CENTER | WS_TABSTOP,rcColumnId.left,y,cxColumnId,cyColumnId,hwnd,(HMENU)(IDDI_COLUMN_ID + k),NULL,NULL);
+         hwndx = CreateWindowEx(WS_EX_CLIENTEDGE,"Edit","",WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_CENTER | WS_TABSTOP,rcColumnId.left,y,cxColumnId,cyColumnId,hwnd,(HMENU)(UINT_PTR)(IDDI_COLUMN_ID + k),NULL,NULL);
          SendMessage(hwndx,WM_SETFONT,(WPARAM)hGUIFont,(LPARAM)TRUE);
 
          y += cyPrefix + 4;
@@ -208,7 +208,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
          memset(szFile,0,sizeof(szFile));
 
          sprintf(szFilter,"Excel Workbooks (*.xls;*.xlsx)");
-         long k = strlen(szFilter) + sprintf(szFilter + strlen(szFilter) + 1,"*.xl*");
+         long k = (long)strlen(szFilter) + sprintf(szFilter + (long)strlen(szFilter) + 1,"*.xl*");
          k = k + sprintf(szFilter + k + 2,"All Files");
          sprintf(szFilter + k + 3,"*.*");
  
@@ -239,7 +239,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
          bool wasFound = false;
          for ( long k = 0; k < countSheets; k++ ) {
-            long index = SendMessage(GetDlgItem(hwnd,IDDI_CHOOSE_SPREADSHEET),CB_ADDSTRING,0L,(LPARAM)pNames);
+            long index = (long)SendMessage(GetDlgItem(hwnd,IDDI_CHOOSE_SPREADSHEET),CB_ADDSTRING,0L,(LPARAM)pNames);
             if ( 0 == strcmp(pNames,pObject -> szSpreadsheetName) ) {
                SendMessage(GetDlgItem(hwnd,IDDI_CHOOSE_SPREADSHEET),CB_SETCURSEL,(WPARAM)index,0L);
                wasFound = true;
@@ -269,7 +269,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
       switch ( pNotifyHeader -> code ) {
 
       case PSN_QUERYINITIALFOCUS:
-         SetWindowLongPtr(hwnd,DWLP_MSGRESULT,(long)GetDlgItem(hwnd,IDDI_SHOW_PROPERTIES));
+         SetWindowLongPtr(hwnd,DWLP_MSGRESULT,(LONG_PTR)GetDlgItem(hwnd,IDDI_SHOW_PROPERTIES));
          return (LRESULT)TRUE;
 
       case PSN_SETACTIVE: {

@@ -164,7 +164,7 @@
 
    GetObject(hBitmap,sizeof(BITMAP),&bitMap);
 
-   long colorTableSize = sizeof(RGBQUAD) * ( 1 << (bitMap.bmPlanes * bitMap.bmBitsPixel) );
+   _int32 colorTableSize = (_int32)sizeof(RGBQUAD) * ( 1 << (bitMap.bmPlanes * bitMap.bmBitsPixel) );
 
    long entireSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + colorTableSize;
 

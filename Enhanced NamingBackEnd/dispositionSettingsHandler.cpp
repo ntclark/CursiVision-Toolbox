@@ -105,7 +105,7 @@
 
    BOOL CALLBACK doDisable(HWND hwndTest,LPARAM lParam) {
    long *pExceptions = (long *)lParam;
-   long id = GetWindowLongPtr(hwndTest,GWL_ID);
+   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
    for ( long k = 0; 1; k++ ) {
       if ( ! pExceptions[k] )
          break;
@@ -121,7 +121,7 @@
 
    BOOL CALLBACK doEnable(HWND hwndTest,LPARAM lParam) {
    long *pExceptions = (long *)lParam;
-   long id = GetWindowLongPtr(hwndTest,GWL_ID);
+   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
    for ( long k = 0; 1; k++ ) {
       if ( ! pExceptions[k] )
          break;
@@ -137,7 +137,7 @@
 
    BOOL CALLBACK doMoveUp(HWND hwndTest,LPARAM lParam) {
    long *pExceptions = (long *)lParam;
-   long id = GetWindowLongPtr(hwndTest,GWL_ID);
+   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
    for ( long k = 0; 1; k++ ) {
       if ( ! pExceptions[k] )
          break;
@@ -154,7 +154,7 @@
 
    BOOL CALLBACK doHide(HWND hwndTest,LPARAM lParam) {
    long *pExceptions = (long *)lParam;
-   long id = GetWindowLongPtr(hwndTest,GWL_ID);
+   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
    for ( long k = 0; 1; k++ ) {
       if ( ! pExceptions[k] )
          break;
@@ -168,7 +168,7 @@
 
    BOOL CALLBACK doShow(HWND hwndTest,LPARAM lParam) {
    long *pExceptions = (long *)lParam;
-   long id = GetWindowLongPtr(hwndTest,GWL_ID);
+   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
    for ( long k = 0; 1; k++ ) {
       if ( ! pExceptions[k] )
          break;

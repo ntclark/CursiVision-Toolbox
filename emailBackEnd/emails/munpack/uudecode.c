@@ -770,7 +770,7 @@ int nparts;
       state = st_decode;
       /* FALL THROUGH */
        case st_decode:   /* Decoding data */
-      if (line_length == 0) line_length = strlen(buf);
+      if (line_length == 0) line_length = (int)strlen(buf);
       if (*buf == 'M' && strlen(buf) == line_length) {
           uudecodeline(buf, outfile);
           break;

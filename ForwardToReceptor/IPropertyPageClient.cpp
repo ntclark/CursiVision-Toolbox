@@ -122,7 +122,7 @@
    pPropSheetPages[0].pszTemplate = MAKEINTRESOURCE(IDD_RECEPTOR);
    pPropSheetPages[0].pfnDlgProc = (DLGPROC)forwardToReceptor::propertiesHandler;
    pPropSheetPages[0].pszTitle = "Forward to Receptor";
-   pPropSheetPages[0].lParam = (long)pParent;
+   pPropSheetPages[0].lParam = (LONG_PTR)pParent;
    pPropSheetPages[0].pfnCallback = NULL;
 
    return S_OK;

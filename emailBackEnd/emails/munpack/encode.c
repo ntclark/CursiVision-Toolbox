@@ -196,7 +196,7 @@ char *typeoverride, *outfname;
             }
 
             fputs(p, outfile);
-            written += strlen(p);
+            written += (int)strlen(p);
         }
         fprintf(outfile, "\n");
         }

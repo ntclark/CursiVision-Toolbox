@@ -131,7 +131,7 @@
       pPropSheetPages[0].pszTitle = "Click Ok";
    else
       pPropSheetPages[0].pszTitle = "Video Settings";
-   pPropSheetPages[0].lParam = (long)&pParent -> processingDisposition;
+   pPropSheetPages[0].lParam = (LONG_PTR)&pParent -> processingDisposition;
    pPropSheetPages[0].pfnCallback = NULL;
 
    return S_OK;

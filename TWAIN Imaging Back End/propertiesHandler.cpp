@@ -164,7 +164,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
       while ( TWRC_SUCCESS == rc ) {
          if ( 1 == 1 || strncmp("WIA-",pSource -> ProductName,4) ) {
-            long index = SendDlgItemMessage(hwnd,IDDI_IMAGER,CB_INSERTSTRING,0L,(WPARAM)pSource -> ProductName);
+            long index = (long)SendDlgItemMessage(hwnd,IDDI_IMAGER,CB_INSERTSTRING,0L,(WPARAM)pSource -> ProductName);
             if ( 0 == strcmp(pObject -> szChosenDevice,pSource -> ProductName) )
                SendDlgItemMessage(hwnd,IDDI_IMAGER,CB_SETCURSEL,index,0L);
             pObject -> twainSources.insert(pObject -> twainSources.end(),pSource);
@@ -309,13 +309,13 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
 
    BOOL CALLBACK adjustTop(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLongPtr(hwndTest,GWL_ID);
+   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
    if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) || ( 3000 < id && id < 3100 ) ) {
       RECT rcNow,rcParent;
       GetWindowRect(GetParent(hwndTest),&rcParent);
       GetWindowRect(hwndTest,&rcNow);
-      rcNow.top += lParam;
-      rcNow.bottom += lParam;
+      rcNow.top += (long)lParam;
+      rcNow.bottom += (long)lParam;
       SetWindowPos(hwndTest,HWND_TOP,rcNow.left - rcParent.left,rcNow.top - rcParent.top,0,0,SWP_NOSIZE | SWP_NOZORDER);
    }
    return TRUE;
@@ -323,7 +323,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
 
    BOOL CALLBACK page1(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLongPtr(hwndTest,GWL_ID);
+   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
    if ( 1000 < id && id < 1100 )
       ShowWindow(hwndTest,SW_SHOW);
    else
@@ -333,7 +333,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
    }
 
    BOOL CALLBACK page2(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLongPtr(hwndTest,GWL_ID);
+   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
    if ( 2000 < id && id < 2100 )
       ShowWindow(hwndTest,SW_SHOW);
    else 
@@ -343,7 +343,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
    }
 
    BOOL CALLBACK page3(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLongPtr(hwndTest,GWL_ID);
+   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
    if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) )
       ShowWindow(hwndTest,SW_HIDE);
    else  

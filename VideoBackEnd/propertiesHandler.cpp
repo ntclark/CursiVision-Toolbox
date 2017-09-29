@@ -156,7 +156,7 @@ static HWND hwndCameras = NULL;
       rcVideo.right += (rcVideo.right - rcVideo.left) % 8;
       rcVideo.bottom += (rcVideo.bottom - rcVideo.top) % 8;
 
-      AdjustWindowRectEx(&rcVideo,GetWindowLongPtr(GetDlgItem(hwnd,IDDI_VIDEO),GWL_STYLE),FALSE,GetWindowLongPtr(GetDlgItem(hwnd,IDDI_VIDEO),GWL_EXSTYLE));
+      AdjustWindowRectEx(&rcVideo,(DWORD)GetWindowLongPtr(GetDlgItem(hwnd,IDDI_VIDEO),GWL_STYLE),FALSE,(DWORD)GetWindowLongPtr(GetDlgItem(hwnd,IDDI_VIDEO),GWL_EXSTYLE));
 
       SetWindowPos(GetDlgItem(hwnd,IDDI_VIDEO),HWND_TOP,0,0,rcVideo.right - rcVideo.left,rcVideo.bottom - rcVideo.top,SWP_NOMOVE);
 
@@ -435,7 +435,7 @@ static HWND hwndCameras = NULL;
       case IDDI_IMAGER: {
          if ( ! (HIWORD(wParam) == CBN_SELCHANGE) )
             break;
-         long index = SendMessage(hwndCameras,CB_GETCURSEL,0L,0L);
+         long index = (long)SendMessage(hwndCameras,CB_GETCURSEL,0L,0L);
          if ( CB_ERR == index )
             break;
          SendMessageW(hwndCameras,CB_GETLBTEXT,(WPARAM)index,(LPARAM)pObject -> szChosenDevice);
@@ -571,13 +571,13 @@ static HWND hwndCameras = NULL;
    }
 
    BOOL CALLBACK adjustTop(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLongPtr(hwndTest,GWL_ID);
+   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
    if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) || ( 3000 < id && id < 3100 ) ) {
       RECT rcNow,rcParent;
       GetWindowRect(GetParent(hwndTest),&rcParent);
       GetWindowRect(hwndTest,&rcNow);
-      rcNow.top += lParam;
-      rcNow.bottom += lParam;
+      rcNow.top += (long)lParam;
+      rcNow.bottom += (long)lParam;
       SetWindowPos(hwndTest,HWND_TOP,rcNow.left - rcParent.left,rcNow.top - rcParent.top,0,0,SWP_NOSIZE | SWP_NOZORDER);
    }
    return TRUE;
@@ -585,7 +585,7 @@ static HWND hwndCameras = NULL;
 
 
    BOOL CALLBACK page1(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLongPtr(hwndTest,GWL_ID);
+   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
    if ( 1000 < id && id < 1100 )
       ShowWindow(hwndTest,SW_SHOW);
    else
@@ -595,7 +595,7 @@ static HWND hwndCameras = NULL;
    }
 
    BOOL CALLBACK page2(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLongPtr(hwndTest,GWL_ID);
+   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
    if ( 2000 < id && id < 2100 )
       ShowWindow(hwndTest,SW_SHOW);
    else 
@@ -605,7 +605,7 @@ static HWND hwndCameras = NULL;
    }
 
    BOOL CALLBACK page3(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLongPtr(hwndTest,GWL_ID);
+   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
    if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) )
       ShowWindow(hwndTest,SW_HIDE);
    else  

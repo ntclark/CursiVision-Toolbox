@@ -121,7 +121,7 @@
    pPropSheetPages[0].pszTemplate = MAKEINTRESOURCE(IDD_DISPOSITION_PROPERTIES);
    pPropSheetPages[0].pfnDlgProc = (DLGPROC)ImagingBackEnd::propertiesHandler;
    pPropSheetPages[0].pszTitle = "TWAIN Imaging Settings";
-   pPropSheetPages[0].lParam = (long)&pParent -> processingDisposition;
+   pPropSheetPages[0].lParam = (LONG_PTR)&pParent -> processingDisposition;
    pPropSheetPages[0].pfnCallback = NULL;
 
    return S_OK;

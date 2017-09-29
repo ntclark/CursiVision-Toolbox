@@ -58,12 +58,12 @@ FILE *infile;
 
     if (max_magiclen == 0) {
     for (i=0; i<num_magic; i++) {
-        if (magic[i].len == 0) magic[i].len = strlen(magic[i].num);
+        if (magic[i].len == 0) magic[i].len = (int)strlen(magic[i].num);
         if (magic[i].len > max_magiclen) max_magiclen = magic[i].len;
     }
     }
 
-    numread = fread(buf, 1, max_magiclen, infile);
+    numread = (int)fread(buf, 1, max_magiclen, infile);
     rewind(infile);
 
     for (i=0; i<num_magic; i++) {

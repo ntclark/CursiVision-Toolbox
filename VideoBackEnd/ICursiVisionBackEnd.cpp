@@ -51,7 +51,7 @@ SetProperties:
    if ( useAnyCamera )
       wcscpy(szChosenDevice,pCameraNames[0]);
       
-   for ( long k = 0; k < cameraCount; k++ ) {
+   for ( DWORD k = 0; k < cameraCount; k++ ) {
       if ( wcscmp(szChosenDevice,pCameraNames[k]) ) 
          continue;
       deviceIndex = k;

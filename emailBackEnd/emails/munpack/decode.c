@@ -286,7 +286,7 @@ char **contentDispositionp, **contentMD5p;
     left = alloced - 2;      /* Allow room for terminating null */
 
     while (part_gets(next, left, inpart) && (*next != '\n' || next[-1] != '\n')) {
-   len = strlen(next);
+   len = (int)strlen(next);
 
    if (next[-1] == '\n') {
        /* Check for valid header-ness of "next" */
@@ -311,7 +311,7 @@ char **contentDispositionp, **contentMD5p;
    next += len;
 
    if (left < 100) {
-       len = next - headers;
+       len = (int)(next - headers);
        alloced += HEADGROWSIZE;
        left += HEADGROWSIZE;
        headers = realloc(headers, alloced);
@@ -436,7 +436,7 @@ char **headerp;
 
     /* If necessary, allocate/grow cbuf to hold header. */
     if (p - header >= calloced) {
-   calloced = p - header + 1;
+   calloced = (int)(p - header + 1);
    if (calloced < 200) calloced = 200;
    cbuf = realloc(cbuf, calloced);
     }
@@ -517,7 +517,7 @@ char *key;
     static char *value;
     static int alloced = 0;
     int left;
-    int keylen = strlen(key);
+    int keylen = (int)strlen(key);
     char *from, *to;
 
     if (!cParams) return 0;

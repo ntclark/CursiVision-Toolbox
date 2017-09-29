@@ -50,7 +50,7 @@ SetProperties:
 
    long rc = 0L;
 
-   long connectionSocket = INVALID_SOCKET;
+   SOCKET connectionSocket = INVALID_SOCKET;
 
    for ( addrinfo *p = pResolvedAddressInfo; p; p = p -> ai_next ) {
 
@@ -60,7 +60,7 @@ SetProperties:
       connectionSocket = socket(p -> ai_family,p -> ai_socktype,p -> ai_protocol);
 
       if ( ! ( INVALID_SOCKET == connectionSocket ) ) {
-         if ( SOCKET_ERROR != connect(connectionSocket,p -> ai_addr,p -> ai_addrlen) )
+         if ( SOCKET_ERROR != connect(connectionSocket,p -> ai_addr,(int)p -> ai_addrlen) )
             break;
       }
 
@@ -78,7 +78,7 @@ SetProperties:
             freeaddrinfo(pResolvedAddressInfo);
             return E_FAIL;
          }
-         rc = connect(connectionSocket,p -> ai_addr,p -> ai_addrlen);
+         rc = connect(connectionSocket,p -> ai_addr,(int)p -> ai_addrlen);
          if ( SOCKET_ERROR != rc )
             break;
       }
@@ -142,7 +142,7 @@ SetProperties:
       fclose(fPDF);   
 
       sprintf(szCommand,"%s:%ld",fileCommand[k],fileSize);
-      send(connectionSocket,szCommand,strlen(szCommand),0);
+      send(connectionSocket,szCommand,(DWORD)strlen(szCommand),0);
 
       memset(szCommand,0,sizeof(szCommand));
       rc = recv(connectionSocket,szCommand,1024,0);
@@ -184,7 +184,7 @@ SetProperties:
    else
       sprintf(szCommand,"name %s",szFileName);
 
-   send(connectionSocket,szCommand,strlen(szCommand),0);
+   send(connectionSocket,szCommand,(DWORD)strlen(szCommand),0);
 
    memset(szCommand,0,sizeof(szCommand));
    rc = recv(connectionSocket,szCommand,1024,0);

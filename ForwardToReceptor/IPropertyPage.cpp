@@ -44,7 +44,7 @@
 
    if ( ! pParent -> hwndProperties ) {
       DLGTEMPLATE *dt = (DLGTEMPLATE *)LoadResource(hModule,FindResource(hModule,MAKEINTRESOURCE(IDD_DISPOSITION_EMAIL),RT_DIALOG));
-      pParent -> hwndProperties = CreateDialogIndirectParam(hModule,dt,(HWND)hwndParent,(DLGPROC)forwardToReceptor::propertiesHandler,(long)pParent);
+      pParent -> hwndProperties = CreateDialogIndirectParam(hModule,dt,(HWND)hwndParent,(DLGPROC)forwardToReceptor::propertiesHandler,(LONG_PTR)pParent);
    } else {
       SetParent(pParent -> hwndProperties,(HWND)hwndParent);
    }

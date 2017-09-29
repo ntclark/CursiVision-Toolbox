@@ -99,8 +99,7 @@ char *boundary;
     strncpy(part->boundary[part->boundary_num], boundary,
 	    PART_MAX_BOUNDARY_LEN);
     part->boundary[part->boundary_num][PART_MAX_BOUNDARY_LEN] = '\0';
-    part->boundary_length[part->boundary_num] =
-	strlen(part->boundary[part->boundary_num]);
+    part->boundary_length[part->boundary_num] = (int)strlen(part->boundary[part->boundary_num]);
     part->boundary_num++;
     if (part->boundary_seen+1 == part->boundary_num) {
 	part->boundary_seen++;
@@ -126,7 +125,7 @@ struct part *part;
     /* Fill buffer if it is empty */
     if (part->cnt == 0) {
 	part->ptr = part->buf;
-	part->cnt = fread(part->buf, 1, part->buf_alloc, part->infile);
+	part->cnt = (int)fread(part->buf, 1, part->buf_alloc, part->infile);
 	if (part->cnt == 0) {
 	    part->boundary_seen = 0;
 	    return EOF;
@@ -179,13 +178,13 @@ part_ungets(s, part)
 char *s;
 struct part *part;
 {
-    int len = strlen(s);
+    int len = (int)strlen(s);
     int i;
 
     /* Grow buffer if necessary */
     if (part->cnt + len + 1 > part->buf_alloc) {
-	i = part->ptr - part->buf;
-	part->buf_alloc = part->cnt + len + 1;
+	i = (int)(part->ptr - part->buf);
+	part->buf_alloc = (int)(part->cnt + len + 1);
 	part->buf = (unsigned char *)
 	    realloc((char *)part->buf, part->buf_alloc);
 	part->ptr = part->buf + i;
@@ -270,7 +269,7 @@ struct part *part;
 	(part->cnt < PART_MAX_BOUNDARY_LEN+3 && part->ptr[1] == '-' &&
 	 part->ptr[2] == '-')) {
     	
-	bufleft = part->buf_alloc - part->cnt - (part->ptr - part->buf);
+	bufleft = part->buf_alloc - part->cnt - (int)(part->ptr - part->buf);
 
 	/* If not enough room, move everything to beginning of buffer */
 	if (part->ptr!=part->buf && bufleft + part->cnt < PART_MAX_BOUNDARY_LEN+3) {
@@ -282,7 +281,7 @@ struct part *part;
 	}
 
 	/* Read in more data */
-	part->cnt += fread(part->ptr+part->cnt, 1, bufleft, part->infile);
+	part->cnt += (int)fread(part->ptr+part->cnt, 1, bufleft, part->infile);
     }
 
     /* If no "--", it's not a boundary */

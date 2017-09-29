@@ -119,7 +119,7 @@
    pPropSheetPages[0].pszTemplate = MAKEINTRESOURCE(IDDIALOG_PROPERTIES);
    pPropSheetPages[0].pfnDlgProc = (DLGPROC)GenericBackEnd::propertiesHandler;
    pPropSheetPages[0].pszTitle = "Generic Tool Settings";
-   pPropSheetPages[0].lParam = (long)pParent;
+   pPropSheetPages[0].lParam = (LONG_PTR)pParent;
    pPropSheetPages[0].pfnCallback = NULL;
 
    return S_OK;
