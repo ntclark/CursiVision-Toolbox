@@ -7,7 +7,7 @@
 #define PUT_LONG(v,id)  { char szX[32]; sprintf(szX,"%ld",v); SetDlgItemText(hwnd,id,szX); }
 #define PUT_STRING(v,id) SetDlgItemText(hwnd,id,v);
 
-#define GET_BOOL(v,id)  v = (BST_CHECKED == SendDlgItemMessage(hwnd,id,BM_GETCHECK,0L,0L));
+#define GET_BOOL(v,id)  v = (BST_CHECKED == (long)SendDlgItemMessage(hwnd,id,BM_GETCHECK,0L,0L));
 #define GET_LONG(v,id) {char szX[32]; GetDlgItemText(hwnd,id,szX,32); v = atol(szX); }
 #define GET_STRING(v,id) GetDlgItemText(hwnd,id,v,MAX_PATH);
 

@@ -251,7 +251,7 @@
 
       pIWorksheet -> Release();
 
-      WideCharToMultiByte(CP_ACP,0,theName.GetBSTR(),-1,pNames,pEnd - pNames,0,0);
+      WideCharToMultiByte(CP_ACP,0,theName.GetBSTR(),-1,pNames,(int)(pEnd - pNames),0,0);
 
       pNames += strlen(pNames) + 1;
 

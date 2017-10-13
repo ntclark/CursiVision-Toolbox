@@ -71,7 +71,7 @@ END
 
 STRINGTABLE {
 
-#include "..\commonStrings.rc"
+#include "commonStrings.rc"
 
 IDDI_NAME_PREFIX "Create a field in your print profile (Tools - Setup - Print) that defines a location containing text for the file name."
 

@@ -119,7 +119,7 @@
    pPropSheetPages[0].pfnDlgProc = (DLGPROC)EmailBackEnd::propertiesHandler;
    pPropSheetPages[0].pszTitle = "E-Mail Server Settings";
    pPropSheetPages[0].lParam = (LONG_PTR)pParent;
-   pPropSheetPages[0].pfnCallback = NULL;
+   pPropSheetPages[0].pfnCallback = (LONG_PTR)NULL;
 
    return S_OK;
    }

@@ -22,6 +22,7 @@ char szCommand[1024];
 char szMessage[1024];
 
 extern "C" int to64(FILE *infile, FILE *outfile, long limit);
+
 extern "C" int mpack(char *,char *,char *);
 
 extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *password,
@@ -225,6 +226,8 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
       long rc = MessageBox(NULL,szMessage,"Error!",MB_ICONEXCLAMATION | MB_RETRYCANCEL | MB_DEFBUTTON1);
       delete [] pszLowerHeader;
       delete [] pszHeader;
+      fclose(fInput);
+      DeleteFile(szEmailFileName);
       return rc == IDCANCEL;
    }
     
@@ -240,6 +243,8 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
       long rc = MessageBox(NULL,szMessage,"Error!",MB_ICONEXCLAMATION | MB_RETRYCANCEL | MB_DEFBUTTON1);
       delete [] pszLowerHeader;
       delete [] pszHeader;
+      fclose(fInput);
+      DeleteFile(szEmailFileName);
       return rc == IDCANCEL;
    }  
 
@@ -259,6 +264,8 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
       long rc = MessageBox(NULL,szMessage,"Error!",MB_ICONEXCLAMATION | MB_RETRYCANCEL | MB_DEFBUTTON1);
       delete [] pszLowerHeader;
       delete [] pszHeader;
+      fclose(fInput);
+      DeleteFile(szEmailFileName);
       return rc == IDCANCEL;
    }
 
@@ -270,6 +277,7 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
 #if 1
    char outputCommands[][32] = {"EHLO %s\r\n","MAIL From:%s\r\n","\0"};
    char responses[][16] = {"250","250","\0"};
+
    for ( long k = 0; k < 2; k++ ) { 
 #else
    char outputCommands[][32] = {"EHLO %s\r\n","AUTH PLAIN\r\n","%s\r\n","\0"};
@@ -306,6 +314,10 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
 
          delete [] pszLowerHeader;
          delete [] pszHeader;
+
+         fclose(fInput);
+   
+         DeleteFile(szEmailFileName);
 
          return rc == IDCANCEL;
       }
@@ -366,13 +378,35 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
            send(theSocket,szCommand,(DWORD)strlen(szCommand),0L);
            memset(szInput,0,sizeof(szInput));
            recv(theSocket,szInput,1024,0L);
-#if 0
+
            if ( szInput[0] ) {
-               if ( strncmp(szInput,"250",3) )
-                   fprintf(fLog, "\nERROR: The SMTP Server sent an unexpected response to this command\n");
-               fprintf(fLog,"Sent to server:%sResponse:%s",szCommand,szInput); 
+               if ( strncmp(szInput,"250",3) ) {
+
+                   //fprintf(fLog, "\nERROR: The SMTP Server sent an unexpected response to this command\n");
+
+                  sprintf(szMessage,"\nThe SMTP Server sent an unexpected response to this input\n"
+                                             "Sent to server:%sRecieved from server:%s\n"
+                                             "\nPress Retry to change the settings or Cancel to exit.",
+                                                szCommand,szInput);
+
+                  long rc = MessageBox(NULL,szMessage,"Error!",MB_ICONEXCLAMATION | MB_RETRYCANCEL | MB_DEFBUTTON1);
+
+                  closesocket(theSocket);
+
+                  delete [] pszTokens;
+                  delete [] pszLowerHeader;
+                  delete [] pszHeader;
+
+                  fclose(fInput);
+   
+                  DeleteFile(szEmailFileName);
+
+                  return rc == IDCANCEL;
+
+               }
+               //fprintf(fLog,"Sent to server:%sResponse:%s",szCommand,szInput); 
            }
-#endif
+
            p = strtok(NULL,",");
        }
        
@@ -389,11 +423,6 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
    if ( strncmp(szInput,"354",3) )
        fprintf(fLog, "\nERROR: The SMTP Server sent an unexpected response to this command\n");
    fprintf(fLog,"Sent to server:%sResponse:%s",szCommand,szInput);
-#endif
-
-#if 0
-fclose(fInput);
-fInput = fopen("D:\\TEMP\\FMS1.TXT","rb");
 #endif
 
    fseek(fInput,0,SEEK_END);
