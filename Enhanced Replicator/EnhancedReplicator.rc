@@ -98,7 +98,7 @@ END
 STRINGTABLE {
 
 IDS_EDIT_INSTRUCTIONS "To replicate a signature, right click in the Native signature, and choose Replicate from the menu. \
-Move the mouse to the desired location (you can also navigate to the desired page), and click the left mouse button.\r\
+Left Click and hold then move the mouse to the desired location (you can also navigate to a different page), and release the mouse button.\r\
 To move a signature, left click within it and move the mouse while holding the button down.\r\
 You can only move replicated signatures, native signatures will not move."
 

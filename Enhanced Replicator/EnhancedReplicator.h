@@ -23,7 +23,7 @@
 #include "utilities.h"
 
 #define WRITING_LOCATION_COUNT 32
-#define CORNER_PROXIMITY 8
+#define CORNER_PROXIMITY 10
 
    class theReplicator : public ICursiVisionBackEnd {
    public:
@@ -129,10 +129,12 @@
       void reset();
 
       long addReplicant(templateDocument::tdUI *pDocument,long replicationIndex,long moveX,long moveY);
-      bool duplicateReplicant(long sourceIndex,long moveX,long moveY,long pageNumber);
+      bool duplicateReplicant(long sourceIndex,long pageNumber);
       void deleteReplicant(long activeIndex);
       void moveReplicant(long activeIndex,long moveToX,long moveToY,long toPageNumber);
       void scaleReplicant(long activeIndex,double scaleX,double scaleY);
+
+      void clearPage(templateDocument::tdUI *pDocument);
 
       long refCount;   
 
@@ -164,15 +166,21 @@
       writingLocation writingLocations[WRITING_LOCATION_COUNT];
       writingLocation *pWritingLocations[WRITING_LOCATION_COUNT];
 
+      HBITMAP hbmDrawRestore[WRITING_LOCATION_COUNT];
+      RECT restoreRect[WRITING_LOCATION_COUNT];
+
       bool isReplicant[WRITING_LOCATION_COUNT];
       long replicantIndex[WRITING_LOCATION_COUNT];
 
       void drawSignature(HDC hdc,long index,long moveX,long moveY,RECT *pNewLocation,templateDocument::tdUI *pDocument);
+      void clearSignature(templateDocument::tdUI *pDocument,long index);
+      void reDrawSignature(HDC hdc,long index,long moveX,long moveY,RECT *pNewLocation,templateDocument::tdUI *pDocument);
 
       static theReplicator *pThis;
 
       static LRESULT CALLBACK propertiesHandler(HWND,UINT,WPARAM,LPARAM);
 
+      static void clearBitmapsAndDrawSignatures(HDC hdc,templateDocument::tdUI *pDocument);
       static void drawSignatures(HDC hdc,templateDocument::tdUI *pDocument);
 
    };

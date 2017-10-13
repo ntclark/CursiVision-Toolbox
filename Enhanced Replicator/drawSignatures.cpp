@@ -3,28 +3,16 @@
 
    void theReplicator::drawSignatures(HDC hdc,templateDocument::tdUI *pDocument) {
 
-   bool wasProvided = true;
-
-   if ( ! hdc ) {
-      hdc = GetDC(pDocument -> hwndVellum);
-      wasProvided = false;
-   }
-
-   long cxHTML = pDocument -> rcPageParentCoordinates.right - pDocument -> rcPageParentCoordinates.left;
-   long cyHTML = pDocument -> rcPageParentCoordinates.bottom - pDocument -> rcPageParentCoordinates.top;
-
-   BitBlt(hdc,0,0,cxHTML,cyHTML,pDocument -> pdfDC(),0,0,SRCCOPY);
+   if ( ! pDocument -> isDocumentRendered() )
+      return;
 
    for ( long k = 0; k < WRITING_LOCATION_COUNT; k++ ) {
       if ( ! pThis -> pWritingLocations[k] )
          break;
       if ( pThis -> pWritingLocations[k] -> zzpdfPageNumber != pDocument -> currentPageNumber ) 
          continue;
-      pThis -> drawSignature(hdc,k,0L,0L,NULL,pDocument);
+      pThis -> drawSignature(NULL,k,0L,0L,NULL,pDocument);
    }
-
-   if ( ! wasProvided )
-      ReleaseDC(pDocument -> hwndVellum,hdc);
 
    return;
    }
@@ -35,7 +23,7 @@
    bool wasProvided = true;
 
    if ( ! hdc ) {
-      hdc = GetDC(pDocument -> hwndVellum);
+      hdc = GetDC(pDocument -> hwndPane);
       wasProvided = false;
    }
 
@@ -57,17 +45,36 @@
 
    memcpy(&r,&pSG -> documentRect,sizeof(RECT));
 
-   pDocument -> convertToPixels(&r);
-
    r.left += shiftX;
    r.right += shiftX;
-   r.top += shiftY;
-   r.bottom += shiftY;
+   r.top -= shiftY;
+   r.bottom -= shiftY;
 
-//   r.left = min(pDocument -> rcPageParentCoordinates.right - 2,max(pDocument -> rcPageParentCoordinates.left + 2,r.left));
-//   r.right = min(pDocument -> rcPageParentCoordinates.right - 2,max(pDocument -> rcPageParentCoordinates.left + 2,r.right));
-//   r.top = min(pDocument -> rcPageParentCoordinates.bottom - 2,max(pDocument -> rcPageParentCoordinates.top + 2,r.top));
-//   r.bottom = min(pDocument -> rcPageParentCoordinates.bottom - 2,max(pDocument -> rcPageParentCoordinates.top + 2,r.bottom));
+   pDocument -> convertToPanePixels(pSG -> zzpdfPageNumber,&r);
+
+   if ( NULL == hbmDrawRestore[index] ) { // && isReplicant[index] ) {
+
+      long cx = r.right - r.left;
+      long cy = r.bottom - r.top;
+
+      HDC hdcSave = CreateCompatibleDC(NULL);
+
+      if ( hbmDrawRestore[index] )
+         DeleteObject(hbmDrawRestore[index]);
+
+      memcpy(&restoreRect[index],&r,sizeof(RECT));
+
+      hbmDrawRestore[index] = CreateBitmap(cx + 4,cy + 4,1,GetDeviceCaps(hdcSave,BITSPIXEL),NULL);
+
+      HGDIOBJ oldBitmap = SelectObject(hdcSave,hbmDrawRestore[index]);
+
+      BitBlt(hdcSave,0,0,cx + 4,cy + 4,hdc,r.left - 2,r.top - 2,SRCCOPY);
+
+      SelectObject(hdcSave,oldBitmap);
+
+      DeleteDC(hdcSave);
+
+   }
 
    MoveToEx(hdc,r.left,r.top,NULL);
    LineTo(hdc,r.right,r.top);
@@ -88,17 +95,89 @@
    DeleteObject(SelectObject(hdc,oldPen));         
 
    if ( pNewLocation ) {
-      pNewLocation -> left = pSG -> documentRect.left + (long)((double)shiftX / pDocument -> scaleToPixelsX);
+      pNewLocation -> left = pSG -> documentRect.left + shiftX;
       pNewLocation -> right = pNewLocation -> left + pSG -> documentRect.right - pSG -> documentRect.left;
-      pNewLocation -> bottom = pSG -> documentRect.bottom - (long)((double)shiftY / pDocument -> scaleToPixelsY);
+      pNewLocation -> bottom = pSG -> documentRect.bottom - shiftY;
       pNewLocation -> top = pNewLocation -> bottom + pSG -> documentRect.top - pSG -> documentRect.bottom;
    }
 
    SelectObject(hdc,oldFont);
 
    if ( ! wasProvided )
-      ReleaseDC(pDocument -> hwndVellum,hdc);
+      ReleaseDC(pDocument -> hwndPane,hdc);
 
    return;
    }
 
+   void theReplicator::reDrawSignature(HDC hdc,long index,long shiftX,long shiftY,RECT *pNewLocation,templateDocument::tdUI *pDocument) {
+
+   clearSignature(pDocument,index);
+
+   drawSignature(hdc,index,shiftX,shiftY,pNewLocation,pDocument);
+
+   return;
+   }
+
+   void theReplicator::clearBitmapsAndDrawSignatures(HDC hdc,templateDocument::tdUI *pDocument) {
+
+   for ( long k = 0; k < WRITING_LOCATION_COUNT; k++ ) {
+      if ( ! pThis -> pWritingLocations[k] )
+         break;
+      if ( NULL == pThis -> hbmDrawRestore[k] )
+         continue;
+      DeleteObject(pThis -> hbmDrawRestore[k]);
+      pThis -> hbmDrawRestore[k] = NULL;
+   }
+
+   drawSignatures(hdc,pDocument);
+
+   return;
+   }
+
+
+   void theReplicator::clearSignature(templateDocument::tdUI *pDocument,long index) {
+
+   if ( NULL == hbmDrawRestore[index] )
+      return;
+
+   writingLocation *pSG = pWritingLocations[index];
+
+   RECT r;
+
+   memcpy(&r,&restoreRect[index],sizeof(RECT));
+
+   HDC hdc = GetDC(pDocument -> hwndPane);
+
+   HDC hdcRestore = CreateCompatibleDC(NULL);
+
+   HGDIOBJ oldBitmap = SelectObject(hdcRestore,hbmDrawRestore[index]);
+
+   BOOL rc = BitBlt(hdc,r.left - 2,r.top - 2,r.right - r.left + 4,r.bottom - r.top + 4,hdcRestore,0,0,SRCCOPY);
+
+   SelectObject(hdcRestore,oldBitmap);
+
+   DeleteDC(hdcRestore);
+
+   ReleaseDC(pDocument -> hwndPane,hdc);
+
+   DeleteObject(hbmDrawRestore[index]);
+
+   hbmDrawRestore[index] = NULL;
+
+   return;
+   }
+
+
+   void theReplicator::clearPage(templateDocument::tdUI *pDocument) {
+
+   HDC hdc = GetDC(pDocument -> hwndPane);
+
+   long cxHTML = pDocument -> rcPageParentCoordinates.right - pDocument -> rcPageParentCoordinates.left;
+   long cyHTML = pDocument -> rcPageParentCoordinates.bottom - pDocument -> rcPageParentCoordinates.top;
+
+   BitBlt(hdc,0,0,cxHTML,cyHTML,pDocument -> pdfDC(),0,0,SRCCOPY);
+
+   ReleaseDC(pDocument -> hwndPane,hdc);
+   
+   return;
+   }

@@ -275,13 +275,13 @@
     <ClCompile Include="..\..\Common\source\tdIOleDocumentSite.cpp" />
     <ClCompile Include="..\..\Common\source\tdIOleInPlaceFrame.cpp" />
     <ClCompile Include="..\..\Common\source\tdIOleInPlaceSite.cpp" />
+    <ClCompile Include="..\..\Common\source\tdIPDFiumControlEvents.cpp" />
     <ClCompile Include="..\..\Common\source\tdIUnknown.cpp" />
     <ClCompile Include="..\..\Common\source\templateDocument.cpp" />
     <ClCompile Include="..\..\Common\source\templateDocument_UI.cpp" />
     <ClCompile Include="..\..\Common\source\utilities.cpp" />
     <ClCompile Include="dllMain.cpp" />
     <ClCompile Include="drawSignatures.cpp" />
-    <ClCompile Include="editHandler.cpp" />
     <ClCompile Include="EnhancedReplicator.cpp" />
     <ClCompile Include="ICursiVisionBackEnd.cpp" />
     <ClCompile Include="IPropertiesClient.cpp" />

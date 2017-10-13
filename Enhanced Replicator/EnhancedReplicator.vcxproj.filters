@@ -30,9 +30,6 @@
     <ClCompile Include="drawSignatures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="editHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="EnhancedReplicator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -86,6 +83,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Common\source\utilities.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\source\tdIPDFiumControlEvents.cpp">
+      <Filter>Source Files\Template Document</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

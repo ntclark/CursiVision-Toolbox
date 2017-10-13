@@ -44,18 +44,10 @@
       } else
          ShowWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),SW_HIDE);
 
-      pTemplateDocumentUI = p -> pTemplateDocument -> createView(hwnd,16,80,theReplicator::drawSignatures);
-
-      SetTimer(hwnd,1,300,NULL);
+      pTemplateDocumentUI = p -> pTemplateDocument -> createView(hwnd,16,80,theReplicator::clearBitmapsAndDrawSignatures);
 
       }
       return LRESULT(FALSE);
-
-   case WM_TIMER: {
-      KillTimer(hwnd,1);
-      p -> drawSignatures(NULL,pTemplateDocumentUI);
-      }
-      break;
 
    case WM_DESTROY: {
       if ( pTemplateDocumentUI )
@@ -72,43 +64,27 @@
 
       POINTL ptlMouse = {LOWORD(lParam),HIWORD(lParam)};
 
-      if ( ptlMouse.x == lastMouse.x && ptlMouse.y == lastMouse.y )
-         break;
-
       if ( ptlMouse.x < pTemplateDocumentUI -> rcPageParentCoordinates.left || ptlMouse.x > pTemplateDocumentUI -> rcPageParentCoordinates.right || 
                   ptlMouse.y < pTemplateDocumentUI -> rcPageParentCoordinates.top || ptlMouse.y > pTemplateDocumentUI -> rcPageParentCoordinates.bottom ) 
          break;
 
+      ptlMouse.x -= pTemplateDocumentUI -> rcPageParentCoordinates.left;
+      ptlMouse.y -= pTemplateDocumentUI -> rcPageParentCoordinates.top;
+
       lastMouse.x = ptlMouse.x;
       lastMouse.y = ptlMouse.y;
 
+      pTemplateDocumentUI -> resolveCurrentPageNumber(&ptlMouse);
+
       if ( 0 == (wParam & MK_LBUTTON) ) {
-
-         if ( ! ( -1L == p -> replicationIndex ) ) {
-
-            long cx = ptlMouse.x - p -> rightClickMousePoint.x;
-            long cy = ptlMouse.y - p -> rightClickMousePoint.y;
-
-            p -> rightClickMousePoint.x = ptlMouse.x;
-            p -> rightClickMousePoint.y = ptlMouse.y;
-
-            p -> replicationOrigin.x += cx;
-            p -> replicationOrigin.y += cy;
-
-            p -> drawSignatures(NULL,pTemplateDocumentUI);
-
-            p -> drawSignature(NULL,p -> replicationIndex,p -> replicationOrigin.x,p -> replicationOrigin.y,NULL,pTemplateDocumentUI);
-
-            break;
-
-         }
 
          long oldActiveIndex = p -> activeIndex;
 
          p -> activeIndex = -1L;
 
-         ptlMouse.x -= pTemplateDocumentUI -> rcPageParentCoordinates.left;
-         ptlMouse.y -= pTemplateDocumentUI -> rcPageParentCoordinates.top;
+         if ( ptlMouse.x < pTemplateDocumentUI -> rcPDFPagePixelsInView.left || ptlMouse.x > pTemplateDocumentUI -> rcPDFPagePixelsInView.right || 
+                     ptlMouse.y < pTemplateDocumentUI -> rcPDFPagePixelsInView.top || ptlMouse.y > pTemplateDocumentUI -> rcPDFPagePixelsInView.bottom ) 
+            break;
 
          pTemplateDocumentUI -> convertToPoints(&ptlMouse);
 
@@ -119,14 +95,11 @@
 
             writingLocation *pSG = p -> pWritingLocations[k];
 
-            if ( pSG -> zzpdfPageNumber != pTemplateDocumentUI -> currentPageNumber )
+            if ( ! ( pSG -> zzpdfPageNumber == pTemplateDocumentUI -> currentPageNumber ) )
                continue;
 
-            RECT r;
-
-            memcpy(&r,&pSG -> documentRect,sizeof(RECT));
-
-            if ( ptlMouse.x < r.left || ptlMouse.x > r.right || ptlMouse.y < r.bottom || ptlMouse.y > r.top )
+            if ( ptlMouse.x < pSG -> documentRect.left - CORNER_PROXIMITY || ptlMouse.x > pSG -> documentRect.right + CORNER_PROXIMITY || 
+                              ptlMouse.y < pSG -> documentRect.bottom - CORNER_PROXIMITY || ptlMouse.y > pSG -> documentRect.top + CORNER_PROXIMITY )
                continue;
 
             p -> activeIndex = k;
@@ -139,25 +112,29 @@
             }
 
             if ( p -> isReplicant[k] ) {
-               if ( abs(ptlMouse.x - r.left) < CORNER_PROXIMITY && abs(ptlMouse.y - r.top) < CORNER_PROXIMITY ) {
+
+               if ( abs(ptlMouse.x - pSG -> documentRect.left) < CORNER_PROXIMITY && abs(ptlMouse.y - pSG -> documentRect.top) < CORNER_PROXIMITY ) {
                   SetCursor(LoadCursor(NULL,IDC_SIZENWSE));
                   cornerGrabIndex = 0;
-               } else if ( abs(ptlMouse.x - r.left) < CORNER_PROXIMITY && abs(ptlMouse.y - r.bottom) < CORNER_PROXIMITY ) {
+               } else if ( abs(ptlMouse.x - pSG -> documentRect.left) < CORNER_PROXIMITY && abs(ptlMouse.y - pSG -> documentRect.bottom) < CORNER_PROXIMITY ) {
                   SetCursor(LoadCursor(NULL,IDC_SIZENESW));
                   cornerGrabIndex = 3;
-               } else if ( abs(ptlMouse.x - r.right) < CORNER_PROXIMITY && abs(ptlMouse.y - r.top) < CORNER_PROXIMITY ) {
+               } else if ( abs(ptlMouse.x - pSG -> documentRect.right) < CORNER_PROXIMITY && abs(ptlMouse.y - pSG -> documentRect.top) < CORNER_PROXIMITY ) {
                   SetCursor(LoadCursor(NULL,IDC_SIZENESW));
                   cornerGrabIndex = 1;
-               } else if ( abs(ptlMouse.x - r.right) < CORNER_PROXIMITY && abs(ptlMouse.y - r.bottom) < CORNER_PROXIMITY ) {
+               } else if ( abs(ptlMouse.x - pSG -> documentRect.right) < CORNER_PROXIMITY && abs(ptlMouse.y - pSG -> documentRect.bottom) < CORNER_PROXIMITY ) {
                   SetCursor(LoadCursor(NULL,IDC_SIZENWSE));
                   cornerGrabIndex = 2;
                } else {
                   SetCursor(LoadCursor(NULL,IDC_HAND));
                   cornerGrabIndex = -1L;
                }
+
             } else {
+
                SetCursor(LoadCursor(NULL,IDC_ARROW));
                cornerGrabIndex = -1L;
+
             }
 
             if ( p -> isReplicant[k] )
@@ -190,15 +167,15 @@
       long deltaX = ptlMouse.x - p -> leftClickMousePoint.x;
       long deltaY = ptlMouse.y - p -> leftClickMousePoint.y;
 
+      deltaX = (long)((double)deltaX / pTemplateDocumentUI -> scaleToPixels);
+      deltaY = (long)((double)deltaY / pTemplateDocumentUI -> scaleToPixels);
+
+      if ( 0 == deltaX || 0 == deltaY )
+         break;
+
       if ( ! ( -1L == cornerGrabIndex ) ) {
 
-         if ( 0 == deltaX || 0 == deltaY )
-            break;
-
          long nativeIndex = p -> replicantIndex[p -> activeIndex];
-
-         deltaX = (long)((double)deltaX / pTemplateDocumentUI -> scaleToPixelsX);
-         deltaY = (long)((double)deltaY / pTemplateDocumentUI -> scaleToPixelsY);
 
          double aspectRatio = (double)(p -> pWritingLocations[nativeIndex] -> documentRect.right - p -> pWritingLocations[nativeIndex] -> documentRect.left) / 
                                        (double)(p -> pWritingLocations[nativeIndex] -> documentRect.top - p -> pWritingLocations[nativeIndex] -> documentRect.bottom);
@@ -217,17 +194,20 @@
             moveX = rSizeBase.left + deltaX;
             padWidthPDFUnits = rSizeBase.right - rSizeBase.left - deltaX;
             padHeightPDFUnits = rSizeBase.top - rSizeBase.bottom - deltaY;
+            SetCursor(LoadCursor(NULL,IDC_SIZENWSE));
             break;
 
          case 1:
             padWidthPDFUnits = rSizeBase.right - rSizeBase.left + deltaX;
             padHeightPDFUnits = rSizeBase.top - rSizeBase.bottom + deltaY;
+            SetCursor(LoadCursor(NULL,IDC_SIZENESW));
             break;
 
          case 2:
             padWidthPDFUnits = rSizeBase.right - rSizeBase.left + deltaX;
             moveY = rSizeBase.bottom - deltaY;
             padHeightPDFUnits = rSizeBase.top - rSizeBase.bottom + deltaY;
+            SetCursor(LoadCursor(NULL,IDC_SIZENWSE));
             break;
 
          case 3:
@@ -235,6 +215,7 @@
             padWidthPDFUnits = rSizeBase.right - rSizeBase.left - deltaX;
             moveY = rSizeBase.bottom + deltaY;
             padHeightPDFUnits = rSizeBase.top - rSizeBase.bottom - deltaY;
+            SetCursor(LoadCursor(NULL,IDC_SIZENESW));
             break;
 
          }
@@ -255,25 +236,21 @@
          p -> leftClickMousePoint.x = ptlMouse.x;
          p -> leftClickMousePoint.y = ptlMouse.y;
 
+         SetCursor(LoadCursor(NULL,IDC_HAND));
+
       }
 
-      HDC hdc = GetDC(pTemplateDocumentUI -> hwndVellum);
-
-      long cxHTML = pTemplateDocumentUI -> rcPageParentCoordinates.right - pTemplateDocumentUI -> rcPageParentCoordinates.left;
-      long cyHTML = pTemplateDocumentUI -> rcPageParentCoordinates.bottom - pTemplateDocumentUI -> rcPageParentCoordinates.top;
-
-      BitBlt(hdc,0,0,cxHTML,cyHTML,pTemplateDocumentUI -> pdfDC(),0,0,SRCCOPY);
+      HDC hdc = GetDC(pTemplateDocumentUI -> hwndPane);
 
       for ( long k = 0; k < WRITING_LOCATION_COUNT; k++ ) {
 
          if ( ! p -> pWritingLocations[k] )
             break;
 
-         if ( k == p -> activeIndex )
+         if ( k == p -> activeIndex ) {
+            p -> clearSignature(pTemplateDocumentUI,k);
             continue;
-
-         if ( p -> pWritingLocations[k] -> zzpdfPageNumber != pTemplateDocumentUI -> currentPageNumber ) 
-            continue;
+         }
 
          p -> drawSignature(hdc,k,0L,0L,NULL,pTemplateDocumentUI);
          
@@ -281,7 +258,7 @@
 
       p -> drawSignature(hdc,p -> activeIndex,p -> replicantDragOrigin.x,p -> replicantDragOrigin.y,NULL,pTemplateDocumentUI);
 
-      ReleaseDC(pTemplateDocumentUI -> hwndVellum,hdc);
+      ReleaseDC(pTemplateDocumentUI -> hwndPane,hdc);
 
       }
       break;
@@ -291,14 +268,43 @@
       if ( -1L == p -> activeIndex )
          break;
 
+      POINTL ptlMouse = {LOWORD(lParam),HIWORD(lParam)};
+
+      if ( ptlMouse.x < pTemplateDocumentUI -> rcPageParentCoordinates.left || ptlMouse.x > pTemplateDocumentUI -> rcPageParentCoordinates.right || 
+                  ptlMouse.y < pTemplateDocumentUI -> rcPageParentCoordinates.top || ptlMouse.y > pTemplateDocumentUI -> rcPageParentCoordinates.bottom ) 
+         break;
+
+      ptlMouse.x -= pTemplateDocumentUI -> rcPageParentCoordinates.left;
+      ptlMouse.y -= pTemplateDocumentUI -> rcPageParentCoordinates.top;
+
+      pTemplateDocumentUI -> resolveCurrentPageNumber(&ptlMouse);
+
       if ( ! p -> isReplicant[p -> activeIndex] )
          break;
 
       RECT rcNew;
 
-      p -> drawSignature(NULL,p -> activeIndex,p -> replicantDragOrigin.x,p -> replicantDragOrigin.y,&rcNew,pTemplateDocumentUI);
+      p -> clearSignature(pTemplateDocumentUI,p -> activeIndex);
+
+      writingLocation *pSG = p -> pWritingLocations[p -> activeIndex];
+
+      memcpy(&rcNew,&pSG -> documentRect,sizeof(RECT));
+
+      if ( ! ( pSG -> zzpdfPageNumber == pTemplateDocumentUI -> currentPageNumber ) ) {
+         pTemplateDocumentUI -> convertToPanePixels(pSG -> zzpdfPageNumber,&rcNew);
+         pTemplateDocumentUI -> convertToPoints(&rcNew);
+         memcpy(&pSG -> documentRect,&rcNew,sizeof(RECT));
+         pSG -> zzpdfPageNumber = pTemplateDocumentUI -> currentPageNumber;
+      }
+
+      rcNew.left = pSG -> documentRect.left + p -> replicantDragOrigin.x;
+      rcNew.right = rcNew.left + pSG -> documentRect.right - pSG -> documentRect.left;
+      rcNew.bottom = pSG -> documentRect.bottom - p -> replicantDragOrigin.y;
+      rcNew.top = rcNew.bottom + pSG -> documentRect.top - pSG -> documentRect.bottom;
 
       p -> moveReplicant(p -> activeIndex,rcNew.left,rcNew.bottom,pTemplateDocumentUI -> currentPageNumber);
+
+      p -> drawSignature(NULL,p -> activeIndex,0,0,NULL,pTemplateDocumentUI);
 
       SetWindowText(GetDlgItem(hwnd,IDDI_REPLICATOR_ACTION_INSTRUCTIONS),"");
 
@@ -311,9 +317,20 @@
 
 
    case WM_LBUTTONDOWN: {
+
+      POINTL ptlMouse = {LOWORD(lParam),HIWORD(lParam)};
+
+      if ( ptlMouse.x < pTemplateDocumentUI -> rcPageParentCoordinates.left || ptlMouse.x > pTemplateDocumentUI -> rcPageParentCoordinates.right || 
+                  ptlMouse.y < pTemplateDocumentUI -> rcPageParentCoordinates.top || ptlMouse.y > pTemplateDocumentUI -> rcPageParentCoordinates.bottom ) 
+         break;
+
+      ptlMouse.x -= pTemplateDocumentUI -> rcPageParentCoordinates.left;
+      ptlMouse.y -= pTemplateDocumentUI -> rcPageParentCoordinates.top;
+
+      pTemplateDocumentUI -> resolveCurrentPageNumber(&ptlMouse);
    
-      p -> leftClickMousePoint.x = LOWORD(lParam);
-      p -> leftClickMousePoint.y = HIWORD(lParam);
+      p -> leftClickMousePoint.x = ptlMouse.x;
+      p -> leftClickMousePoint.y = ptlMouse.y;
 
       if ( ! ( -1L == p -> activeIndex ) ) {
 
@@ -328,25 +345,6 @@
          break;
 
       }
-
-      if ( -1L == p -> replicationIndex )
-         break;
-
-      RECT rcNew;
-
-      p -> drawSignature(NULL,p -> replicationIndex,p -> replicationOrigin.x,p -> replicationOrigin.y,&rcNew,pTemplateDocumentUI);
-
-      p -> activeIndex = p -> addReplicant(pTemplateDocumentUI,p -> replicationIndex,rcNew.left,rcNew.bottom);
-
-      p -> replicationIndex = -1L;
-
-      SetWindowText(GetDlgItem(hwnd,IDDI_REPLICATOR_ACTION_INSTRUCTIONS),"");
-
-      p -> replicationOrigin.x = 0;
-
-      p -> replicationOrigin.y = 0;
-
-      p -> drawSignatures(NULL,pTemplateDocumentUI);
 
       }
       break;
@@ -382,6 +380,10 @@
       menuItem.dwTypeData = "Every Page";
       InsertMenuItem(hActionMenu,0,MF_BYPOSITION,&menuItem);
 
+      menuItem.wID = IDDI_SIGNATURE_REGION_EVERY_PAGE;
+      menuItem.dwTypeData = "Every Subsequent Page";
+      InsertMenuItem(hActionMenu,0,MF_BYPOSITION,&menuItem);
+
       if ( p -> isReplicant[p -> activeIndex] ) {
          menuItem.wID = IDDI_SIGNATURE_REGION_DELETE;
          menuItem.dwTypeData = "Delete";
@@ -393,7 +395,7 @@
       InsertMenuItem(hActionMenu,0,MF_BYPOSITION,&menuItem);
 
       RECT rcView;
-      GetWindowRect(pTemplateDocumentUI -> hwndVellum,&rcView);
+      GetWindowRect(pTemplateDocumentUI -> hwndPane,&rcView);
 
       TrackPopupMenu(hActionMenu,TPM_LEFTALIGN,rcView.left + x,rcView.top + y,0,hwnd,NULL);
 
@@ -406,6 +408,7 @@
 
       case IDDI_REPLICATOR_RESET: {
          p -> reset();
+         p -> clearPage(pTemplateDocumentUI);
          p -> drawSignatures(NULL,pTemplateDocumentUI);
          }
          break;
@@ -415,6 +418,7 @@
             break;
          p -> deleteReplicant(p -> activeIndex);
          p -> activeIndex = -1L;
+         p -> clearPage(pTemplateDocumentUI);
          p -> drawSignatures(NULL,pTemplateDocumentUI);
          }
          break;
@@ -422,11 +426,15 @@
       case IDDI_SIGNATURE_REGION_REPLICATE: {
          if ( -1L == p -> activeIndex )
             break;
-         p -> replicationIndex = p -> activeIndex;
-         p -> replicationOrigin.x = 32;
-         p -> replicationOrigin.y = 32;
+         RECT rcNew;
+         long keepIndex = p -> activeIndex;
          p -> activeIndex = -1L;
-         SetCursor(LoadCursor(NULL,IDC_HAND));
+         p -> drawSignature(NULL,keepIndex,0,0,NULL,pTemplateDocumentUI);
+         p -> activeIndex = keepIndex;
+         p -> drawSignature(NULL,p -> activeIndex,32,32,&rcNew,pTemplateDocumentUI);
+         p -> addReplicant(pTemplateDocumentUI,p -> activeIndex,rcNew.left,rcNew.bottom);
+         p -> activeIndex = -1L;
+         SetWindowText(GetDlgItem(hwnd,IDDI_REPLICATOR_ACTION_INSTRUCTIONS),"");
          }
          break;
 
@@ -438,15 +446,25 @@
          for ( long k = 1; k <= p -> pTemplateDocument -> PDFPageCount(); k++ ) {
             if ( k == pTemplateDocumentUI -> currentPageNumber )
                continue;
-            if ( ! p -> duplicateReplicant(p -> activeIndex,
-                                             p -> pWritingLocations[p -> activeIndex] -> documentRect.left,
-                                               p -> pWritingLocations[p -> activeIndex] -> documentRect.top,k) )
+            if ( ! p -> duplicateReplicant(p -> activeIndex,k) )
                break;
          }
 
          }
          break;
 
+      case IDDI_SIGNATURE_REGION_EVERY_SUBSEQUENT_PAGE: {
+
+         if ( -1L == p -> activeIndex )
+            break;
+
+         for ( long k = pTemplateDocumentUI -> currentPageNumber + 1; k <= p -> pTemplateDocument -> PDFPageCount(); k++ ) {
+            if ( ! p -> duplicateReplicant(p -> activeIndex,k) )
+               break;
+         }
+
+         }
+         break;
       default:
          break;
 
@@ -465,7 +483,7 @@
       RECT rcView,rcParent,rcReset;
 
       GetWindowRect(hwnd,&rcParent);
-      GetWindowRect(pTemplateDocumentUI -> hwndVellum,&rcView);
+      GetWindowRect(pTemplateDocumentUI -> hwndPane,&rcView);
       GetWindowRect(GetDlgItem(hwnd,IDDI_REPLICATOR_RESET),&rcReset);
 
       SetWindowPos(GetDlgItem(hwnd,IDDI_REPLICATOR_INSTRUCTIONS),HWND_TOP,0,0,

@@ -47,6 +47,9 @@
    memset(replicantSignatureIndex,0,sizeof(replicantSignatureIndex));
    memset(replicantSignaturePage,0,sizeof(replicantSignaturePage));
 
+   memset(hbmDrawRestore,0,sizeof(hbmDrawRestore));
+   memset(restoreRect,0,sizeof(restoreRect));
+
    for ( long k = 0; k < WRITING_LOCATION_COUNT; k++ ) {
       internalScaleX[k] = 1.0;
       internalScaleY[k] = 1.0;
@@ -61,10 +64,6 @@
    showProperties = false;
 
    HRESULT rc = CoCreateInstance(CLSID_InnoVisioNateProperties,NULL,CLSCTX_ALL,IID_IGProperties,reinterpret_cast<void **>(&pIGProperties));
-
-#ifdef DEBUG
-   pIGProperties -> put_DebuggingEnabled(true);
-#endif
 
    pIGPropertiesClient = new _IGPropertiesClient(this);
 
@@ -201,7 +200,7 @@
       deleteReplicant(k);
 
    }
-   
+
    return;
    }
 
@@ -250,7 +249,7 @@
 
    void theReplicator::deleteReplicant(long theIndex) {
 
-   long maxIndex = -1L;
+   long maxIndex = WRITING_LOCATION_COUNT - 1;
 
    for ( long k = 0; k < WRITING_LOCATION_COUNT; k++ ) {
       if ( ! pWritingLocations[k] ) {
@@ -350,7 +349,7 @@
    return targetIndex;
    }
 
-   bool theReplicator::duplicateReplicant(long sourceIndex,long moveX,long moveY,long pageNumber) {
+   bool theReplicator::duplicateReplicant(long sourceIndex,long pageNumber) {
 
    long targetIndex = -1L;
 
@@ -381,13 +380,7 @@
 
    pSG -> zzpdfPageNumber = pageNumber;
 
-   long cx = pSG -> documentRect.right - pSG -> documentRect.left;
-   long cy = pSG -> documentRect.top - pSG -> documentRect.bottom;
-
-   pSG -> documentRect.left = moveX;
-   pSG -> documentRect.bottom = moveY;
-   pSG -> documentRect.right = moveX + cx;
-   pSG -> documentRect.top = moveY + cy;
+   memcpy(&pSG -> documentRect,&pWritingLocations[fromIndex] -> documentRect,sizeof(RECT));
 
    isReplicant[targetIndex] = true;
 
