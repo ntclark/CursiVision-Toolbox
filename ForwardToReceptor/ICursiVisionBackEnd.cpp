@@ -216,7 +216,7 @@ SetProperties:
    memset(szCommand,0,sizeof(szCommand));
    rc = recv(connectionSocket,szCommand,1024,0);
 
-   if ( 0 > rc || stricmp(szCommand,"ok") ) {
+   if ( 0 > rc || _stricmp(szCommand,"ok") ) {
       char szTemp[1024];
       sprintf(szTemp,"The CursiVisionReceptor on server %s did not accept the signed document for processing.\nThe server reported:\n\n\t%s",szServerName,szCommand);
       MessageBox(NULL,szTemp,"CursiVision Forward To Receptor Error!",MB_ICONEXCLAMATION);

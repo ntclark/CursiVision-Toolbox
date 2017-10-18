@@ -221,7 +221,7 @@
    Gdiplus::GetImageEncoders(countEncoders,arraySize,pEncoders);
 
    for ( UINT k = 0; k < countEncoders; k++ ) {
-      if ( wcsicmp(pEncoders[k].MimeType,L"image/jpeg") )
+      if ( _wcsicmp(pEncoders[k].MimeType,L"image/jpeg") )
          continue;
       pTheEncoder = &pEncoders[k];
       break;
@@ -281,7 +281,7 @@
    Gdiplus::GetImageEncoders(countEncoders,arraySize,pEncoders);
 
    for ( UINT k = 0; k < countEncoders; k++ ) {
-      if ( wcsicmp(pEncoders[k].MimeType,L"image/jpeg") )
+      if ( _wcsicmp(pEncoders[k].MimeType,L"image/jpeg") )
          continue;
       pTheEncoder = &pEncoders[k];
       break;
