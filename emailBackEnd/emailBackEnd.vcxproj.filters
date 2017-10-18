@@ -110,9 +110,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="fms.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Midl Include="emailBackEnd.odl">
       <Filter>Source Files\COM Implementation</Filter>
     </Midl>

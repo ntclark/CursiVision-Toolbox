@@ -1,3 +1,6 @@
+// Copyright 2017 InnoVisioNate Inc. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 #include "ImagingBackEnd.h"
 
@@ -119,7 +122,7 @@
    pPropSheetPages[0].pszTemplate = MAKEINTRESOURCE(IDD_DISPOSITION_PROPERTIES);
    pPropSheetPages[0].pfnDlgProc = (DLGPROC)ImagingBackEnd::propertiesHandler;
    pPropSheetPages[0].pszTitle = "WIA Imaging Settings";
-   pPropSheetPages[0].lParam = (long)&pParent -> processingDisposition;
+   pPropSheetPages[0].lParam = (LONG_PTR)&pParent -> processingDisposition;
    pPropSheetPages[0].pfnCallback = NULL;
 
    return S_OK;

@@ -1,6 +1,6 @@
-/*
-                       Copyright (c) 2009,2010 Nathan T. Clark
-*/
+// Copyright 2017 InnoVisioNate Inc. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 #include "ImagingBackEnd.h"
 #include <commctrl.h>
@@ -341,13 +341,13 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
    }
 
    BOOL CALLBACK adjustTop(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLongPtr(hwndTest,GWL_ID);
+   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
    if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) || ( 3000 < id && id < 3100 ) ) {
       RECT rcNow,rcParent;
       GetWindowRect(GetParent(hwndTest),&rcParent);
       GetWindowRect(hwndTest,&rcNow);
-      rcNow.top += lParam;
-      rcNow.bottom += lParam;
+      rcNow.top += (long)lParam;
+      rcNow.bottom += (long)lParam;
       SetWindowPos(hwndTest,HWND_TOP,rcNow.left - rcParent.left,rcNow.top - rcParent.top,0,0,SWP_NOSIZE | SWP_NOZORDER);
    }
    return TRUE;
@@ -355,7 +355,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
 
    BOOL CALLBACK page1(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLongPtr(hwndTest,GWL_ID);
+   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
    if ( 1000 < id && id < 1100 )
       ShowWindow(hwndTest,SW_SHOW);
    else
@@ -365,7 +365,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
    }
 
    BOOL CALLBACK page2(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLongPtr(hwndTest,GWL_ID);
+   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
    if ( 2000 < id && id < 2100 )
       ShowWindow(hwndTest,SW_SHOW);
    else 
@@ -375,7 +375,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
    }
 
    BOOL CALLBACK page3(HWND hwndTest,LPARAM lParam) {
-   long id = GetWindowLongPtr(hwndTest,GWL_ID);
+   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
    if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) )
       ShowWindow(hwndTest,SW_HIDE);
    else  

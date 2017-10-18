@@ -316,9 +316,6 @@ regsvr32 /s /c "$(TargetPath)"
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="fms.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Midl Include="emailBackEnd.odl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,3 +1,6 @@
+// Copyright 2017 InnoVisioNate Inc. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 #include "VideoBackEnd.h"
 
@@ -403,7 +406,7 @@
    Gdiplus::GetImageEncoders(countEncoders,arraySize,pEncoders);
 
    for ( UINT k = 0; k < countEncoders; k++ ) {
-      if ( wcsicmp(pEncoders[k].MimeType,L"image/bmp") )
+      if ( _wcsicmp(pEncoders[k].MimeType,L"image/bmp") )
          continue;
       pTheEncoder = &pEncoders[k];
       break;
@@ -461,7 +464,7 @@
    Gdiplus::GetImageEncoders(countEncoders,arraySize,pEncoders);
 
    for ( UINT k = 0; k < countEncoders; k++ ) {
-      if ( wcsicmp(pEncoders[k].MimeType,L"image/jpeg") )
+      if ( _wcsicmp(pEncoders[k].MimeType,L"image/jpeg") )
          continue;
       pTheEncoder = &pEncoders[k];
       break;

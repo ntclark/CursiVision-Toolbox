@@ -1,5 +1,8 @@
+// Copyright 2017 InnoVisioNate Inc. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
-#pragma warning( disable : 4995 )
+//#pragma warning( disable : 4995 )
 
 #include <windows.h>
 #include <stddef.h>

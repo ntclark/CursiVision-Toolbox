@@ -1,3 +1,6 @@
+// Copyright 2017 InnoVisioNate Inc. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 #include "PrintingBackEnd.h"
 #include <process.h>
@@ -185,6 +188,18 @@
 
    sprintf(szPrinter,"\"%s\"",pszChosenPrinter);
 
+#if 1
+
+   GetModuleFileName(hModule,szExecutable,MAX_PATH);
+
+   char *p = strrchr(szExecutable,'\\');
+   if ( ! p )
+      p = strrchr(szExecutable,'/');
+
+   if ( p )
+      *p = '\0';
+
+#else
    HKEY hKey = NULL;
 
    if ( ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\InnoVisioNate\\CursiVision",0,KEY_QUERY_VALUE,&hKey) ) {
@@ -194,10 +209,12 @@
    } else
       return E_FAIL;
 
+#endif
+
    char szCopies[8];
    sprintf(szCopies,"%ld",copies);
 
-   sprintf(szExecutable + strlen(szExecutable),"\\PrintDocument.exe");
+   sprintf(szExecutable + strlen(szExecutable),"\\Print Document.exe");
 
 #if 0
    _spawnl(_P_NOWAIT,szExecutable,"/File",szSignedDocument,"/PrintTo",szPrinter,"/Settings",szPrinterSettingsFile,"/Copies",szCopies,NULL);

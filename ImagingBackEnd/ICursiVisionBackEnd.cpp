@@ -1,3 +1,6 @@
+// Copyright 2017 InnoVisioNate Inc. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 #include "ImagingBackEnd.h"
 
@@ -105,7 +108,7 @@ SetProperties:
    } else {
 
       char szTemp[MAX_PATH];
-      strcpy(szTemp,tempnam(NULL,NULL));
+      strcpy(szTemp,_tempnam(NULL,NULL));
       sprintf(szTemp + strlen(szTemp),".bmp");
 
       destinationFile = SysAllocStringLen(NULL,MAX_PATH);
@@ -457,7 +460,7 @@ SetProperties:
 
    BYTE *pBits = new BYTE[pBitmapInfo -> bmiHeader.biSizeImage];
 
-   long rc = fread(pBits,1,pBitmapInfo -> bmiHeader.biSizeImage,fBitmap);
+   long rc = (long)fread(pBits,1,pBitmapInfo -> bmiHeader.biSizeImage,fBitmap);
 
    fclose(fBitmap);
 
