@@ -128,12 +128,12 @@
    GUID OBJECT_LIBID;
    char *OBJECT_DESCRIPTION;
 
-   OBJECT_NAME = "InnoVisioNate.CursiVisionEnhancedNamingBackEnd";
-   OBJECT_NAME_V = "InnoVisioNate.CursiVisionEnhancedNamingBackEnd.1";
+   OBJECT_NAME = "InnoVisioNate.CursiVisionEnhancedNamingBackEndV2";
+   OBJECT_NAME_V = "InnoVisioNate.CursiVisionEnhancedNamingBackEndV2.1";
    OBJECT_VERSION = "1.0";
    memcpy(&OBJECT_CLSID,&CLSID_CursiVisionNamingBackEnd,sizeof(GUID));
    memcpy(&OBJECT_LIBID,&LIBID_CursiVisionNamingBackEnd,sizeof(GUID));
-   OBJECT_DESCRIPTION = "CursiVision File Naming Tool";
+   OBJECT_DESCRIPTION = "CursiVision File Naming Tool V2";
 
    HRESULT rc = S_OK;
    ITypeLib *ptLib;

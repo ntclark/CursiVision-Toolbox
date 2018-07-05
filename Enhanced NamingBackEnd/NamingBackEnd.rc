@@ -25,14 +25,14 @@ BEGIN
         BEGIN
             VALUE "Comments", "\0"
             VALUE "CompanyName", "InnoVisioNate\0"
-            VALUE "FileDescription", "CursiVision File Naming backend\0"
+            VALUE "FileDescription", "CursiVision File Naming backend V2\0"
             VALUE "FileVersion", "5, 0, 1, 0\0"
             VALUE "InternalName", "EnhancedNamingBackEnd.ocx\0"
             VALUE "LegalCopyright", "Copyright © 2009,2010,2011,2012,2013,2014 InnoVisioNate Inc.\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "EnhancedNamingBackEnd.ocx\0"
             VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "CursiVision File Naming backend\0"
+            VALUE "ProductName", "CursiVision File Naming backend V2\0"
             VALUE "ProductVersion", "5.0.1\0"
             VALUE "SpecialBuild", "\0"
         END
@@ -51,10 +51,13 @@ END
 
    LTEXT "Please specify the storage options for the resulting document:",IDDI_HEADER_TEXT, 10, 5, 256, 12
 
-   LTEXT "Choose the field label from your print profile:",IDC_STATIC,10,102 + 14 + 10 + 20, 250, 14
-   COMBOBOX IDDI_NAME_PREFIX,16, 102 + 14 + 10 + 20 + 14, 128, 64,WS_VISIBLE | CBS_DROPDOWNLIST
+   LTEXT "Choose the field label from your print profile:",IDC_STATIC,10,146, 250, 14
+   COMBOBOX IDDI_NAME1_PREFIX,16, 160, 128, 64,WS_VISIBLE | CBS_DROPDOWNLIST
 
-   LTEXT "",IDC_STATIC,10,102 + 14 + 10 + 20 + 14 + 4 + 20 + 20 + 20, 256, 64
+   LTEXT "Optional: Choose another field from your print profile:",IDC_STATIC,10,160 + 24, 250, 14
+   COMBOBOX IDDI_NAME2_PREFIX,16, 160 + 24 + + 14, 128, 64,WS_VISIBLE | CBS_DROPDOWNLIST
+
+   LTEXT "",IDC_STATIC,10,160 + 4 + 20 + 20 + 20, 256, 64
 
    LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,
                            0,0,256, 24 
@@ -76,7 +79,7 @@ STRINGTABLE {
 
 #include "commonStrings.rc"
 
-IDDI_NAME_PREFIX "Create a field in your print profile (Tools - Setup - Print) that defines a location containing text for the file name."
+IDDI_NAME1_PREFIX "Create a field in your print profile (Tools - Setup - Print) that defines a location containing text for the file name."
 
 IDS_NO_PROFILE "This CursiVision back end tool is designed to be used with documents that have been printed through the CursiVision Print driver.\r\
 The CursiVision print driver captures text, and it's location, from every document printed.\r\r\

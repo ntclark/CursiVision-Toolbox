@@ -24,8 +24,6 @@
 
    {
 
-   memset(szNamePrefix,0,sizeof(szNamePrefix));
-
    pIGPropertyPageClient = new _IGPropertyPageClient(this);
 
    long sizeParameters = offsetof(NamingBackEnd,endParameters) - offsetof(NamingBackEnd,startParameters);

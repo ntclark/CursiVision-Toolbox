@@ -208,7 +208,7 @@
 
       resultDisposition processingDisposition;
 
-      char szNamePrefix[64];
+      char szNamePrefix[16][64];
 
       long endParameters;
 

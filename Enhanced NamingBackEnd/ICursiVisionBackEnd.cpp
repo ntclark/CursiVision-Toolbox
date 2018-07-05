@@ -31,31 +31,44 @@ SetProperties:
 
    memset(szResultFile,0,sizeof(szResultFile));
 
-   char *pValue = pICursiVisionServices -> FieldValueFromLabel(szNamePrefix);
+   char szCombinedName[MAX_PATH];
 
-   if ( ! pValue ) {
-      char szMessage[512];
-      sprintf(szMessage,"The system did not find the field labeled %s in the document's printing profile."
-                        "\n\nSelect Retry to respecify the properties, or Cancel to continue",szNamePrefix);
-      if ( IDRETRY == MessageBox(NULL,szMessage,"Error!",MB_ICONEXCLAMATION | MB_RETRYCANCEL | MB_TOPMOST) )
-         goto SetProperties;
-      return E_FAIL;
+   memset(szCombinedName,0,sizeof(szCombinedName));
+
+   for ( long index = 0; index < 2; index++ ) {
+
+      char *pValue = pICursiVisionServices -> FieldValueFromLabel(szNamePrefix[index]);
+
+      if ( ! pValue ) {
+         char szMessage[512];
+         sprintf(szMessage,"The system did not find the field labeled %s in the document's printing profile."
+                           "\n\nSelect Retry to respecify the properties, or Cancel to continue",szNamePrefix[index]);
+         if ( IDRETRY == MessageBox(NULL,szMessage,"Error!",MB_ICONEXCLAMATION | MB_RETRYCANCEL | MB_TOPMOST) )
+            goto SetProperties;
+         return E_FAIL;
+      }
+
+      char *p = pValue + strlen(pValue) - 1;
+      while ( p > pValue && *p == ' ' ) {
+         *p = '\0';
+         p--;
+      }
+
+      p = pValue;
+      while ( *p ) {
+         if ( 32 > *p )
+            *p = ' ';
+         if ( strchr("<>:/\\|?*",*p) )
+            *p = ' ';
+         p++;
+      }
+
+      sprintf(szCombinedName + strlen(szCombinedName),"%s ",pValue);
+
    }
 
-   char *p = pValue + strlen(pValue) - 1;
-   while ( p > pValue && *p == ' ' ) {
-      *p = '\0';
-      p--;
-   }
-
-   p = pValue;
-   while ( *p ) {
-      if ( 32 > *p )
-         *p = ' ';
-      if ( strchr("<>:/\\|?*",*p) )
-         *p = ' ';
-      p++;
-   }
+   if ( ' ' == szCombinedName[strlen(szCombinedName)] )
+      szCombinedName[strlen(szCombinedName)] = '\0';
 
    char szSignedDocument[MAX_PATH];
    char szNewDocument[MAX_PATH];
@@ -64,7 +77,7 @@ SetProperties:
 //
 // szSignedDocument is the document name on input, replace it's base name with the new name
 //
-   p = strrchr(szSignedDocument,'\\');
+   char *p = strrchr(szSignedDocument,'\\');
    if ( ! p )
       p = strrchr(szSignedDocument,'/');
 
@@ -73,14 +86,14 @@ SetProperties:
       char szTemp[MAX_PATH];
 
       *p = '\0';
-      sprintf(szTemp,"%s\\%s.pdf",szSignedDocument,pValue);
+      sprintf(szTemp,"%s\\%s.pdf",szSignedDocument,szCombinedName);
       *p = '\\';
 
       strcpy(szNewDocument,szTemp);
 
    } else
 
-      strcpy(szNewDocument,pValue);
+      strcpy(szNewDocument,szCombinedName);
 
    BSTR bstrActiveDocument = SysAllocStringLen(NULL,(DWORD)strlen(szSignedDocument));
    MultiByteToWideChar(CP_ACP,0,szSignedDocument,-1,bstrActiveDocument,(DWORD)strlen(szSignedDocument));
@@ -101,7 +114,7 @@ SetProperties:
       char szMessage[1024];
       sprintf(szMessage,"The system was not able to save the file with the base name: \n\n\t\"%s.pdf\""
                         "\n\nThere may be invalid characters in the name."
-                        "\n\nSelect File Save-As from the main menu to save this file.",pValue);
+                        "\n\nSelect File Save-As from the main menu to save this file.",szCombinedName);
 
       if ( IDCANCEL == MessageBox(NULL,szMessage,"Error!",MB_ICONEXCLAMATION | MB_OK | MB_TOPMOST ) )
          return E_FAIL;
@@ -114,7 +127,7 @@ SetProperties:
       memset(szFilter,0,sizeof(szFilter));
       memset(&openFileName,0,sizeof(OPENFILENAME));
 
-      sprintf(szTemp,"Save %s.",pValue);
+      sprintf(szTemp,"Save %s.",szCombinedName);
 
       sprintf(szFilter,"Signed Documents");
       long k = (DWORD)strlen(szFilter) + sprintf(szFilter + (DWORD)strlen(szFilter) + 1,"*.pdf");
@@ -131,7 +144,7 @@ SetProperties:
       openFileName.nMaxFile = MAX_PATH;
       openFileName.lpstrTitle = szTemp;
 
-      sprintf(openFileName.lpstrFile,"%s.pdf",pValue);
+      sprintf(openFileName.lpstrFile,"%s.pdf",szCombinedName);
 
       if ( ! GetSaveFileNameA(&openFileName) ) 
          return E_FAIL;
