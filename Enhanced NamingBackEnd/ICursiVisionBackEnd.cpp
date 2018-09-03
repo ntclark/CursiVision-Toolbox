@@ -37,6 +37,12 @@ SetProperties:
 
    for ( long index = 0; index < 2; index++ ) {
 
+      if ( ! szNamePrefix[index][0] )
+         continue;
+
+      if ( 0 == strcmp(szNamePrefix[index],"<none>") )
+         continue;
+
       char *pValue = pICursiVisionServices -> FieldValueFromLabel(szNamePrefix[index]);
 
       if ( ! pValue ) {

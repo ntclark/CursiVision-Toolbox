@@ -27,6 +27,7 @@
       ShowWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),SW_HIDE);                                       \
       loadComboBox(hwnd,pObject -> szNamePrefix[0],0,pObject -> pICursiVisionServices);                              \
       loadComboBox(hwnd,pObject -> szNamePrefix[1],1,pObject -> pICursiVisionServices);                              \
+      SendDlgItemMessage(hwnd,IDDI_NAME1_PREFIX + 1,CB_INSERTSTRING,(WPARAM)-1L,(LPARAM)"<none>");                   \
    }
 
 
