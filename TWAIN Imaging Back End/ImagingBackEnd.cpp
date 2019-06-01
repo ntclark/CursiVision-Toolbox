@@ -1,4 +1,4 @@
-// Copyright 2017 InnoVisioNate Inc. All rights reserved.
+// Copyright 2017, 2018, 2019 InnoVisioNate Inc. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -129,7 +129,18 @@
    strcpy(twainIdentity.ProductFamily,"CursiVision");
    strcpy(twainIdentity.ProductName,"CursiVision");
 
-   hModule_TWAIN = LoadLibrary("twain_32.dll");
+   p = strrchr(szModuleName,'/');
+   if ( ! p )
+      p = strrchr(szModuleName,'\\');
+   if ( p )
+      *p = '\0';
+
+   sprintf(szTemp,"%s\\twaindsm.dll",szModuleName);
+
+   hModule_TWAIN = LoadLibrary(szTemp);
+
+   if ( p )
+      *p = '\\';
 
    dsmEntryProcedure = (DSMENTRYPROC)GetProcAddress(hModule_TWAIN,"DSM_Entry");
 

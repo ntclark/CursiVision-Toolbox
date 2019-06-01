@@ -134,8 +134,14 @@
       <OutputFile>.\Debug/ImagingBackEnd.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>regsvr32 /s /c "$(TargetPath)"</Command>
+      <Command>
+regsvr32 /s /c "$(TargetPath)"</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+copy "$(ProjectDir)\Support Files\$(Platform)\twaindsm.dll" "\Common\Artifacts\$(Configuration)\$(Platform)"
+</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <CustomBuildStep>
@@ -183,8 +189,14 @@
       <OutputFile>.\Debug/ImagingBackEnd.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>regsvr32 /s /c "$(TargetPath)"</Command>
+      <Command>
+regsvr32 /s /c "$(TargetPath)"</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+copy "$(ProjectDir)\Support Files\$(Platform)\twaindsm.dll" "\Common\Artifacts\$(Configuration)\$(Platform)"
+</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -224,8 +236,14 @@
       <OutputFile>.\Release/ImagingBackEnd.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>regsvr32 /s /c "$(TargetPath)"</Command>
+      <Command>
+regsvr32 /s /c "$(TargetPath)"</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+copy "$(ProjectDir)\Support Files\$(Platform)\twaindsm.dll" "\Common\Artifacts\$(Configuration)\$(Platform)"
+</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
@@ -264,8 +282,14 @@
       <OutputFile>.\Release/ImagingBackEnd.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>regsvr32 /s /c "$(TargetPath)"</Command>
+      <Command>
+regsvr32 /s /c "$(TargetPath)"</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+copy "$(ProjectDir)\Support Files\$(Platform)\twaindsm.dll" "\Common\Artifacts\$(Configuration)\$(Platform)"
+</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Common\source\resultdisposition.cpp" />
