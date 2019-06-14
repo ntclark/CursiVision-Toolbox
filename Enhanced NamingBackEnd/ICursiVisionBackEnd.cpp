@@ -9,7 +9,7 @@
 
    extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
-   HRESULT __stdcall NamingBackEnd::Dispose(BSTR bstrOriginalFile,BSTR bstrResultFileName,BSTR topazSignatureData,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile) {
+   HRESULT __stdcall NamingBackEnd::Dispose(BSTR bstrOriginalFile,BSTR bstrResultFileName,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile) {
 
    if ( ! pICursiVisionServices || processingDisposition.doProperties ) {
 

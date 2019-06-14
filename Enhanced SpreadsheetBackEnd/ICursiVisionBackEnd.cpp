@@ -4,7 +4,7 @@
 
 #include "SpreadsheetBackEnd.h"
 
-   HRESULT __stdcall SpreadsheetBackEnd::Dispose(BSTR bstrOriginalFile,BSTR bstrResultFileName,BSTR topazSignatureData,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile) {
+   HRESULT __stdcall SpreadsheetBackEnd::Dispose(BSTR bstrOriginalFile,BSTR bstrResultFileName,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile) {
 
    if ( processingDisposition.doProperties ) {
 

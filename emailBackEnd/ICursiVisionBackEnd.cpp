@@ -4,7 +4,7 @@
 
 #include "emailBackEnd.h"
 
-   HRESULT __stdcall EmailBackEnd::Dispose(BSTR bstrOriginalFile,BSTR bstrResultFileName,BSTR topazSignatureData,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile) {
+   HRESULT __stdcall EmailBackEnd::Dispose(BSTR bstrOriginalFile,BSTR bstrResultFileName,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile) {
 
    isProcessing = true;
 

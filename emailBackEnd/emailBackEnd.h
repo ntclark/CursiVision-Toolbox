@@ -48,7 +48,7 @@
 
       HRESULT __stdcall get_Description(BSTR *p) { if ( ! p ) return E_POINTER; *p = SysAllocString(L"CursiVision E-Mailing Tool"); return S_OK; };
 
-      HRESULT __stdcall Dispose(BSTR originalFile,BSTR resultsFile,BSTR topazSignatureData,BSTR graphicFileName,BSTR dispositionSettingsFileName,BOOL isTempFile);
+      HRESULT __stdcall Dispose(BSTR originalFile,BSTR resultsFile,BSTR graphicFileName,BSTR dispositionSettingsFileName,BOOL isTempFile);
 
       HRESULT __stdcall CanRunFromTools() { return S_OK; };
 

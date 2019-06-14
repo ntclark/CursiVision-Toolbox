@@ -4,7 +4,7 @@
 
 #include "ftpBackEnd.h"
 
-   HRESULT __stdcall FTPBackEnd::Dispose(BSTR bstrOriginalFile,BSTR bstrResultFileName,BSTR topazSignatureData,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile) {
+   HRESULT __stdcall FTPBackEnd::Dispose(BSTR bstrOriginalFile,BSTR bstrResultFileName,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile) {
 
    isProcessing = true;
 

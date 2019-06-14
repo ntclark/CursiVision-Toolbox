@@ -7,7 +7,7 @@
 #include "forwardToReceptor.h"
 #include "resultDisposition.h"
 
-   HRESULT __stdcall forwardToReceptor::Dispose(BSTR bstrOriginalFile,BSTR bstrResultFileName,BSTR topazSignatureData,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile) {
+   HRESULT __stdcall forwardToReceptor::Dispose(BSTR bstrOriginalFile,BSTR bstrResultFileName,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile) {
 
    isProcessing = true;
 

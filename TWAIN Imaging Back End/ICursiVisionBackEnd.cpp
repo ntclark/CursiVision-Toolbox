@@ -11,7 +11,7 @@
 
    HBITMAP getBitmapHandle(HDC hdc,BSTR bstrFileName);
 
-   HRESULT __stdcall ImagingBackEnd::Dispose(BSTR bstrOriginalFile,BSTR bstrResultFileName,BSTR topazSignatureData,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile) {
+   HRESULT __stdcall ImagingBackEnd::Dispose(BSTR bstrOriginalFile,BSTR bstrResultFileName,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile) {
 
    isProcessing = true;
 

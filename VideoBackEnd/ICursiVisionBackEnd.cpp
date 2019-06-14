@@ -9,7 +9,7 @@
 
    extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
-   HRESULT __stdcall VideoBackEnd::Dispose(BSTR bstrOriginalFile,BSTR bstrResultFileName,BSTR topazSignatureData,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile) {
+   HRESULT __stdcall VideoBackEnd::Dispose(BSTR bstrOriginalFile,BSTR bstrResultFileName,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile) {
 
    strcpy(szTargetFile,_tempnam(NULL,NULL));
 
