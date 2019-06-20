@@ -18,10 +18,10 @@
 
 #include "Properties_i.c"
 
-#include "..\forwardToReceptor_i.c"
+#include "forwardToReceptor_i.c"
 #include "CursiVision_i.c"
 
-   OLECHAR wstrModuleName[256];
+   OLECHAR wstrModuleName[1024];
 
    extern "C" BOOL WINAPI DllMain(HINSTANCE hI, DWORD dwReason, LPVOID) {
 

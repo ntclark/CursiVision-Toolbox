@@ -23,6 +23,8 @@
 
 #include "resultDisposition.h"
 
+#define __missing_type__
+
 #import "C:\Program Files (x86)\Common Files\Microsoft Shared\Office12\MSO.dll" \
       rename("RGB","MSORGB") \
       rename("IAccessible","msoIAccessible") \

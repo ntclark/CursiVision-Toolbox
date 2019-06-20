@@ -217,10 +217,10 @@
 #ifdef DEFINE_DATA
 
    HMODULE hModule = NULL;
-   char szModuleName[MAX_PATH];
-   char szApplicationDataDirectory[MAX_PATH];
-   char szGlobalDataStore[MAX_PATH];
-   char szUserDirectory[MAX_PATH];
+   char szModuleName[1024];
+   char szApplicationDataDirectory[1024];
+   char szGlobalDataStore[1024];
+   char szUserDirectory[1024];
 
 #else
 

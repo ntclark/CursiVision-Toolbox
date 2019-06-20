@@ -22,30 +22,30 @@
     <ProjectName>Replicator</ProjectName>
     <ProjectGuid>{54CA1A0A-1CC7-44EC-B484-8D537A855894}</ProjectGuid>
     <RootNamespace>EnhancedReplicator</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -55,22 +55,22 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
-    <Import Project="..\..\Common\Compiler Options.props" />
+    <Import Project="$(GSYSTEM_HOME)\Common\Compiler Options.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
-    <Import Project="..\..\Common\Compiler Options.props" />
+    <Import Project="$(GSYSTEM_HOME)\Common\Compiler Options.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
-    <Import Project="..\..\Common\Compiler Options.props" />
+    <Import Project="$(GSYSTEM_HOME)\Common\Compiler Options.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
-    <Import Project="..\..\Common\Compiler Options.props" />
+    <Import Project="$(GSYSTEM_HOME)\Common\Compiler Options.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -255,18 +255,18 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Common\source\tdDWebBrowserEvents.cpp" />
-    <ClCompile Include="..\..\Common\source\tdIConnectionPointContainer.cpp" />
-    <ClCompile Include="..\..\Common\source\tdIEnumConnectionPoints.cpp" />
-    <ClCompile Include="..\..\Common\source\tdIOleClientSite.cpp" />
-    <ClCompile Include="..\..\Common\source\tdIOleDocumentSite.cpp" />
-    <ClCompile Include="..\..\Common\source\tdIOleInPlaceFrame.cpp" />
-    <ClCompile Include="..\..\Common\source\tdIOleInPlaceSite.cpp" />
-    <ClCompile Include="..\..\Common\source\tdIPDFiumControlEvents.cpp" />
-    <ClCompile Include="..\..\Common\source\tdIUnknown.cpp" />
-    <ClCompile Include="..\..\Common\source\templateDocument.cpp" />
-    <ClCompile Include="..\..\Common\source\templateDocument_UI.cpp" />
-    <ClCompile Include="..\..\Common\source\utilities.cpp" />
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\tdDWebBrowserEvents.cpp" />
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\tdIConnectionPointContainer.cpp" />
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\tdIEnumConnectionPoints.cpp" />
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\tdIOleClientSite.cpp" />
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\tdIOleDocumentSite.cpp" />
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\tdIOleInPlaceFrame.cpp" />
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\tdIOleInPlaceSite.cpp" />
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\tdIPDFiumControlEvents.cpp" />
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\tdIUnknown.cpp" />
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\templateDocument.cpp" />
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\templateDocument_UI.cpp" />
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\utilities.cpp" />
     <ClCompile Include="dllMain.cpp" />
     <ClCompile Include="drawSignatures.cpp" />
     <ClCompile Include="EnhancedReplicator.cpp" />
@@ -280,7 +280,7 @@
     <None Include="EnhancedReplicator.def" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Common\include\templateDocument.h" />
+    <ClInclude Include="$(GSYSTEM_HOME)\Common\include\templateDocument.h" />
     <ClInclude Include="EnhancedReplicator.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>

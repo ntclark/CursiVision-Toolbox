@@ -30,9 +30,6 @@
     <ClCompile Include="propertiesHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\source\resultdisposition.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="dllMain.cpp">
       <Filter>Source Files\COM Implementation</Filter>
     </ClCompile>
@@ -51,7 +48,10 @@
     <ClCompile Include="IWiaTransferCallback.cpp">
       <Filter>Source Files\COM Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\source\utilities.cpp">
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\resultdisposition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
