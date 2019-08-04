@@ -47,7 +47,7 @@ END
 #define DONT_TERMINATE_DIALOG_TEMPLATE
 #define ADDITIONAL_TOP_SPACE 24
 
-#include "..\resultDisposition.rc"
+#include "resultDisposition.rc"
 
    LTEXT "Please specify the storage options for the resulting document:",IDDI_HEADER_TEXT, 10, 5, 256, 12
 
