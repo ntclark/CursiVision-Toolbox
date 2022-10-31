@@ -92,7 +92,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;ImagingBackEnd_EXPORTS;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0501;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;ImagingBackEnd_EXPORTS;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0501;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Sync</ExceptionHandling>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -145,7 +145,7 @@ copy "$(ProjectDir)\Support Files\$(Platform)\twaindsm.dll" "$(GSYSTEM_HOME)\Com
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;ImagingBackEnd_EXPORTS;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0501;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;ImagingBackEnd_EXPORTS;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0501;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Sync</ExceptionHandling>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -196,7 +196,7 @@ copy "$(ProjectDir)\Support Files\$(Platform)\twaindsm.dll" "$(GSYSTEM_HOME)\Com
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;ImagingBackEnd_EXPORTS;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0501;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;ImagingBackEnd_EXPORTS;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0501;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -242,7 +242,7 @@ copy "$(ProjectDir)\Support Files\$(Platform)\twaindsm.dll" "$(GSYSTEM_HOME)\Com
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;ImagingBackEnd_EXPORTS;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0501;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;ImagingBackEnd_EXPORTS;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0501;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
