@@ -51,40 +51,43 @@
     <ClCompile Include="IUnknown.cpp">
       <Filter>Source Files\COM Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\source\tdDWebBrowserEvents.cpp">
-      <Filter>Source Files\Template Document</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Common\source\tdIConnectionPointContainer.cpp">
-      <Filter>Source Files\Template Document</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Common\source\tdIEnumConnectionPoints.cpp">
-      <Filter>Source Files\Template Document</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Common\source\templateDocument.cpp">
-      <Filter>Source Files\Template Document</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Common\source\templateDocument_UI.cpp">
-      <Filter>Source Files\Template Document</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Common\source\tdIOleClientSite.cpp">
-      <Filter>Source Files\Template Document\Control Hosting</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Common\source\tdIOleDocumentSite.cpp">
-      <Filter>Source Files\Template Document\Control Hosting</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Common\source\tdIOleInPlaceFrame.cpp">
-      <Filter>Source Files\Template Document\Control Hosting</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Common\source\tdIOleInPlaceSite.cpp">
-      <Filter>Source Files\Template Document\Control Hosting</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Common\source\tdIUnknown.cpp">
-      <Filter>Source Files\Template Document\Control Hosting</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Common\source\utilities.cpp">
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\source\tdIPDFiumControlEvents.cpp">
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\tdDWebBrowserEvents.cpp">
+      <Filter>Source Files\Template Document</Filter>
+    </ClCompile>
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\tdIConnectionPointContainer.cpp">
+      <Filter>Source Files\Template Document</Filter>
+    </ClCompile>
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\tdIEnumConnectionPoints.cpp">
+      <Filter>Source Files\Template Document</Filter>
+    </ClCompile>
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\tdIOleClientSite.cpp">
+      <Filter>Source Files\Template Document</Filter>
+    </ClCompile>
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\tdIOleDocumentSite.cpp">
+      <Filter>Source Files\Template Document</Filter>
+    </ClCompile>
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\tdIOleInPlaceFrame.cpp">
+      <Filter>Source Files\Template Document</Filter>
+    </ClCompile>
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\tdIOleInPlaceSite.cpp">
+      <Filter>Source Files\Template Document</Filter>
+    </ClCompile>
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\tdIPDFiumControlEvents.cpp">
+      <Filter>Source Files\Template Document</Filter>
+    </ClCompile>
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\tdIUnknown.cpp">
+      <Filter>Source Files\Template Document</Filter>
+    </ClCompile>
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\templateDocument.cpp">
+      <Filter>Source Files\Template Document</Filter>
+    </ClCompile>
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\templateDocument_UI.cpp">
+      <Filter>Source Files\Template Document</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\source\templateDocument_UI_hilitedArea.cpp">
       <Filter>Source Files\Template Document</Filter>
     </ClCompile>
   </ItemGroup>
@@ -100,7 +103,7 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Common\include\templateDocument.h">
+    <ClInclude Include="$(GSYSTEM_HOME)\Common\include\templateDocument.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

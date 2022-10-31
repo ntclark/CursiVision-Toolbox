@@ -71,7 +71,6 @@ BEGIN
    PUSHBUTTON "Properties", IDDI_PRINTER_PROPERTIES, 16 + 128 + 24 + 4, 8 + 14 + 14 - 1, 48, 14
 #endif
 
-   LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,
-                           0,0,256, 24 
+   LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,0,0,256, 24 
 
 END

@@ -133,7 +133,7 @@
    OBJECT_VERSION = "1.0";
    memcpy(&OBJECT_CLSID,&CLSID_CursiVisionTWAINImagingBackEnd,sizeof(GUID));
    memcpy(&OBJECT_LIBID,&LIBID_CursiVisionTWAINImagingBackEnd,sizeof(GUID));
-   OBJECT_DESCRIPTION = "CursiVision TWAIN Imaging Tool";
+   OBJECT_DESCRIPTION = "CursiVision TWAIN Scanner Tool";
 
    HRESULT rc = S_OK;
    ITypeLib *ptLib;

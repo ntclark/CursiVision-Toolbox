@@ -136,7 +136,7 @@
    OBJECT_VERSION = "1.0";
    memcpy(&OBJECT_CLSID,&CLSID_CursiVisionEmailBackEnd,sizeof(GUID));
    memcpy(&OBJECT_LIBID,&LIBID_CursiVisionEmailBackEnd,sizeof(GUID));
-   OBJECT_DESCRIPTION = "CursiVision E-mail back end";
+   OBJECT_DESCRIPTION = "CursiVision E-mailing tool";
 
    HRESULT rc = S_OK;
    ITypeLib *ptLib;

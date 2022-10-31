@@ -45,10 +45,10 @@
     <ClCompile Include="IUnknown.cpp">
       <Filter>Source Files\COM Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="emails\sendDocument.cpp">
-      <Filter>Source Files\FTP</Filter>
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\utilities.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\source\utilities.cpp">
+    <ClCompile Include="sendDocument.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

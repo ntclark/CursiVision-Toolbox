@@ -39,7 +39,7 @@
 
       p -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
 
-      if ( ! p -> pICursiVisionServices -> IsAdministrator() && px ) {
+      if ( px && ! px -> AllowSaveProperties() ) {
          RECT rc = {0};
          GetClientRect(hwnd,&rc);
          SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,rc.bottom - 32,0,0,SWP_NOSIZE);
@@ -98,7 +98,7 @@
 
             writingLocation *pSG = p -> pWritingLocations[k];
 
-            if ( ! ( pSG -> zzpdfPageNumber == pTemplateDocumentUI -> currentPageNumber ) )
+            if ( ! ( pSG -> pdfPageNumber == pTemplateDocumentUI -> currentPageNumber() ) )
                continue;
 
             if ( ptlMouse.x < pSG -> documentRect.left - CORNER_PROXIMITY || ptlMouse.x > pSG -> documentRect.right + CORNER_PROXIMITY || 
@@ -226,7 +226,7 @@
          pSG -> documentRect.right = pSG -> documentRect.left + padWidthPDFUnits;
          pSG -> documentRect.top = pSG -> documentRect.bottom + padHeightPDFUnits;
 
-         p -> moveReplicant(p -> activeIndex,moveX,moveY,pTemplateDocumentUI -> currentPageNumber);
+         p -> moveReplicant(p -> activeIndex,moveX,moveY,pTemplateDocumentUI -> currentPageNumber());
 
          p -> replicantDragOrigin.x = 0;
          p -> replicantDragOrigin.y = 0;
@@ -293,11 +293,11 @@
 
       memcpy(&rcNew,&pSG -> documentRect,sizeof(RECT));
 
-      if ( ! ( pSG -> zzpdfPageNumber == pTemplateDocumentUI -> currentPageNumber ) ) {
-         pTemplateDocumentUI -> convertToPanePixels(pSG -> zzpdfPageNumber,&rcNew);
+      if ( ! ( pSG -> pdfPageNumber == pTemplateDocumentUI -> currentPageNumber() ) ) {
+         pTemplateDocumentUI -> convertToClippedPanePixels(pSG -> pdfPageNumber,&rcNew);
          pTemplateDocumentUI -> convertToPoints(&rcNew);
          memcpy(&pSG -> documentRect,&rcNew,sizeof(RECT));
-         pSG -> zzpdfPageNumber = pTemplateDocumentUI -> currentPageNumber;
+         pSG -> pdfPageNumber = pTemplateDocumentUI -> currentPageNumber();
       }
 
       rcNew.left = pSG -> documentRect.left + p -> replicantDragOrigin.x;
@@ -305,7 +305,7 @@
       rcNew.bottom = pSG -> documentRect.bottom - p -> replicantDragOrigin.y;
       rcNew.top = rcNew.bottom + pSG -> documentRect.top - pSG -> documentRect.bottom;
 
-      p -> moveReplicant(p -> activeIndex,rcNew.left,rcNew.bottom,pTemplateDocumentUI -> currentPageNumber);
+      p -> moveReplicant(p -> activeIndex,rcNew.left,rcNew.bottom,pTemplateDocumentUI -> currentPageNumber());
 
       p -> drawSignature(NULL,p -> activeIndex,0,0,NULL,pTemplateDocumentUI);
 
@@ -447,7 +447,7 @@
             break;
 
          for ( long k = 1; k <= p -> pTemplateDocument -> PDFPageCount(); k++ ) {
-            if ( k == pTemplateDocumentUI -> currentPageNumber )
+            if ( k == pTemplateDocumentUI -> currentPageNumber() )
                continue;
             if ( ! p -> duplicateReplicant(p -> activeIndex,k) )
                break;
@@ -461,7 +461,7 @@
          if ( -1L == p -> activeIndex )
             break;
 
-         for ( long k = pTemplateDocumentUI -> currentPageNumber + 1; k <= p -> pTemplateDocument -> PDFPageCount(); k++ ) {
+         for ( long k = pTemplateDocumentUI -> currentPageNumber() + 1; k <= p -> pTemplateDocument -> PDFPageCount(); k++ ) {
             if ( ! p -> duplicateReplicant(p -> activeIndex,k) )
                break;
          }

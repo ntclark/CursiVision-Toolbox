@@ -55,7 +55,7 @@
 
       HRESULT __stdcall put_PrintingSupportProfile(IPrintingSupportProfile *) { return E_NOTIMPL; };
 
-      HRESULT __stdcall get_Description(BSTR *p) { if ( ! p ) return E_POINTER; *p = SysAllocString(L"CursiVision WIA Imaging Tool"); return S_OK; };
+      HRESULT __stdcall get_Description(BSTR *p) { if ( ! p ) return E_POINTER; *p = SysAllocString(L"CursiVision Scanner Tool"); return S_OK; };
 
       HRESULT __stdcall Dispose(BSTR inputFile,BSTR resultsFile,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile);
 

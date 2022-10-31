@@ -92,7 +92,7 @@
 
    pHeader -> hInstance = hModule;
    pHeader -> pszIcon = NULL;
-   pHeader -> pszCaption = "TWAIN Imaging Settings";
+   pHeader -> pszCaption = "TWAIN Scanner Settings";
    pHeader -> pfnCallback = NULL;
 
    return S_OK;
@@ -118,7 +118,7 @@
    pPropSheetPages[0].hInstance = hModule;
    pPropSheetPages[0].pszTemplate = MAKEINTRESOURCE(IDD_DISPOSITION_PROPERTIES);
    pPropSheetPages[0].pfnDlgProc = (DLGPROC)ImagingBackEnd::propertiesHandler;
-   pPropSheetPages[0].pszTitle = "TWAIN Imaging Settings";
+   pPropSheetPages[0].pszTitle = "TWAIN Scanner Settings";
    pPropSheetPages[0].lParam = (LONG_PTR)&pParent -> processingDisposition;
    pPropSheetPages[0].pfnCallback = NULL;
 

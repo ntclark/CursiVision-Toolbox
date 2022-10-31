@@ -87,7 +87,10 @@
     <ClCompile Include="emails\munpack\xmalloc.c">
       <Filter>Source Files\emails\munpack</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\source\utilities.cpp">
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TLSEncryption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -101,6 +104,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TLSEncryption.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

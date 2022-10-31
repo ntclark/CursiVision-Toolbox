@@ -1,6 +1,4 @@
-// Copyright 2017 InnoVisioNate Inc. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+
 
 #include <windows.h>
 #include <stddef.h>
@@ -23,24 +21,46 @@
 
 #include "resultDisposition.h"
 
-#define __missing_type__
-
-#import "C:\Program Files (x86)\Common Files\Microsoft Shared\Office12\MSO.dll" \
+//
+//NTC: 08-04-2019: Edit the following '.tlh files, that are in the include folder of the
+// Common repository, and edit the lines of the following form:
+//
+//   excel.tlh:
+//       #pragma start_map_region("d:\development\common\include\excel.tli")
+//
+//   vbe6ext.tlh:
+//       #include "c:\development\Common\include\vbe6ext.tli"
+//
+// to point to the correct location of your git clone.
+//
+#if 1
+#include "mso.tlh"
+#else
+#import "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Packages\vwd\MSO.dll" \
       rename("RGB","MSORGB") \
       rename("IAccessible","msoIAccessible") \
       rename("DocumentProperties","msoDocumentProperties")
+#endif
 
 using namespace Office;
 
+#if 1
+#include "vbe6ext.tlh"
+#else
 #import "C:\Program Files (x86)\Common Files\Microsoft Shared\VBA\VBA6\VBE6EXT.OLB" 
+#endif
 
 using namespace VBIDE;
 
+#if 1
+#include "excel.tlh"
+#else
 #import "C:\Program Files (x86)\Microsoft Office\Office12\excel.exe" \
       rename( "RGB", "excelRGB") \
       rename( "ReplaceText","excelReplaceText") \
       rename( "CopyFile", "excelCopyFile" ) \
       rename( "DialogBox","excelDialogBox") 
+#endif
 
 #define FIELD_COUNT 16
 #define FIELD_DISPLAY_COUNT   8

@@ -4,6 +4,8 @@
 
 #include "VideoBackEnd.h"
 
+#include "resource.h"
+
 #define OBJECT_WITH_PROPERTIES VideoBackEnd
 
 #include "additionalSaveOptionsBody.cpp"

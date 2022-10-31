@@ -91,17 +91,16 @@ BEGIN
    RTEXT "Column:",IDDI_DOCUMENT_LINK_LABEL,10,10, 32, 14
    EDITTEXT IDDI_DOCUMENT_LINK_COLUMN,10,10,32,12,ES_CENTER
 
-   LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,
-                           0,0,256, 24 
+   LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,0,0,256, 24 
 END
 
 STRINGTABLE 
 {
-   IDS_NO_PROFILE "This CursiVision back end tool is designed to be used with documents that have been printed through the CursiVision Print driver.\r\
+   IDS_NO_PROFILE "This CursiVision tool is designed to be used with documents that have been printed through the CursiVision Print driver.\r\
 The CursiVision print driver captures text, and it's location, from every document printed.\r\r\
 By editing the printing profile (Tools - Setup - Printing) for the current document, you can specify locations on your documents from which to \
 find this text for each copy of the document printed.\r\r\
-With these definitions, this back end tool can then take the text from those locations off of the printed document and populate your spreadsheet with \
+With these definitions, this tool can then take the text from those locations off of the printed document and populate your spreadsheet with \
 that text.\r\r\
 When you edit the profile, create fields by going to the Text Fields Tab, press Edit, and use the mouse to select each field. Be sure to right click on each field and create a label for it.\r\r\r\
 There is no print profile defined for this document. To create a print profile, print your source document from your application to the CursiVision print driver."

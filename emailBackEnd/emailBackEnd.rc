@@ -50,48 +50,51 @@ EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
 
-   GROUPBOX "Server settings",IDC_STATIC,8,4, 220, 64 - 8
+   GROUPBOX "Server settings",IDC_STATIC,   8,4, 220, 70
 
-   LTEXT "SMTP Server:",-1,16,16,48,12
-   EDITTEXT IDDI_BACKENDS_EMAIL_SERVER,16 + 48,16 - 2,64 + 16,12,ES_AUTOHSCROLL | WS_TABSTOP
+       LTEXT "SMTP Server:",-1,             16,16,48,12
+       EDITTEXT IDDI_BACKENDS_EMAIL_SERVER, 64,14,80,12,ES_AUTOHSCROLL | WS_TABSTOP
 
-   LTEXT "Port:",-1,16 + 48 + 64 + 16 + 4,16,20,12
-   EDITTEXT IDDI_BACKENDS_EMAIL_PORT,16 + 48 + 64 + 16 + 16 + 4,16 - 2,24,12,ES_CENTER | ES_NUMBER | WS_TABSTOP
+       LTEXT "Port:",-1,                    148,16,20,12
+       EDITTEXT IDDI_BACKENDS_EMAIL_PORT,   164,14,24,12,ES_CENTER | ES_NUMBER | WS_TABSTOP
 
-   LTEXT "User name:",-1,16,16 + 12 + 2,48,12
-   EDITTEXT IDDI_BACKENDS_EMAIL_USERNAME,16 + 32 + 8,16 + 12 + 2 - 2,64,12,ES_AUTOHSCROLL | WS_TABSTOP
+       LTEXT "User name:",-1,                   16,30,48,12
+       EDITTEXT IDDI_BACKENDS_EMAIL_USERNAME,   56,28,64,12,ES_AUTOHSCROLL | WS_TABSTOP
 
-   LTEXT "Password:",-1,16,16 + 12 + 2 + 12 + 2,48,12
-   EDITTEXT IDDI_BACKENDS_EMAIL_PASSWORD,16 + 32 + 8,16 + 12 + 2 + 12 + 2 - 2,64,12,ES_AUTOHSCROLL | ES_PASSWORD | WS_TABSTOP
+       LTEXT "Password:",-1,                        16,44,48,12
+       EDITTEXT IDDI_BACKENDS_EMAIL_PASSWORD,       56,42,64,12,ES_AUTOHSCROLL | ES_PASSWORD | WS_TABSTOP
 
-   GROUPBOX "Address settings",IDC_STATIC,8,4 + 64 - 2, 220, 64 + 16 - 8
+       AUTOCHECKBOX "Use TLS to authenticate?", IDDI_BACKENDS_EMAIL_USE_TLS,16,56,128, 12
 
-   RTEXT "From:", IDC_STATIC,16,64 + 12 + 2,32 + 8,12
-   EDITTEXT IDDI_BACKENDS_EMAIL_FROM, 16 + 32 + 8 + 2,64 + 12,128,12,ES_AUTOHSCROLL | WS_TABSTOP
+   GROUPBOX "Address settings",IDC_STATIC,       8,78, 220, 64 + 16 - 8
 
-   RTEXT "Recipient:", IDC_STATIC,16,64 + 12 + 2 + 12 + 2,32 + 8,12
-   EDITTEXT IDDI_BACKENDS_EMAIL_TO, 16 + 32 + 8 + 2,64 + 12 + 12 + 2,128,12,ES_AUTOHSCROLL | WS_TABSTOP
+       RTEXT "From:", IDC_STATIC,               16,90,40,12
+       EDITTEXT IDDI_BACKENDS_EMAIL_FROM,       58,88,128,12,ES_AUTOHSCROLL | WS_TABSTOP
 
-   RTEXT "CC:", IDC_STATIC,16,64 + 12 + 2 + 12 + 2 + 12 + 2,32 + 8,12
-   EDITTEXT IDDI_BACKENDS_EMAIL_CC, 16 + 32 + 8 + 2,64 + 12 + 12 + 2 + 12 + 2,128,12,ES_AUTOHSCROLL | WS_TABSTOP
+       RTEXT "Recipient:", IDC_STATIC,          16,104,40,12
+       EDITTEXT IDDI_BACKENDS_EMAIL_TO,         58,102,128,12,ES_AUTOHSCROLL | WS_TABSTOP
 
-   RTEXT "BCC:", IDC_STATIC,16,64 + 12 + 2 + 12 + 2 + 12 + 2 + 12 + 2,32 + 8,12
-   EDITTEXT IDDI_BACKENDS_EMAIL_BCC, 16 + 32 + 8 + 2,64 + 12 + 12 + 2 + 12 + 2 + 12 + 2,128,12,ES_AUTOHSCROLL | WS_TABSTOP
+       RTEXT "CC:", IDC_STATIC,                 16,118,40,12
+       EDITTEXT IDDI_BACKENDS_EMAIL_CC,         58,116,128,12,ES_AUTOHSCROLL | WS_TABSTOP
 
-   GROUPBOX "Content settings",IDC_STATIC,8,128 + 16, 220, 48 + 12
+       RTEXT "BCC:", IDC_STATIC,                16,132,40,12
+       EDITTEXT IDDI_BACKENDS_EMAIL_BCC,        58,130,128,12,ES_AUTOHSCROLL | WS_TABSTOP
 
-   RTEXT "Subject:", IDC_STATIC,8 + 2,128 + 16 + 8 + 4,32,12
-   EDITTEXT IDDI_BACKENDS_EMAIL_SUBJECT, 8 + 2 + 32 + 2,128 + 16 + 8 + 2,128 + 32 + 8,12,ES_AUTOHSCROLL | WS_TABSTOP
-   LTEXT "Use %f as a placeholder for the file name, %F for the path and file name",IDC_STATIC,8 + 2 + 32 + 2,128 + 16 + 8 + 2 + 12 + 2,128 + 32,24
+   GROUPBOX "Content settings",IDC_STATIC,       8,152,220, 48 + 12
 
-   RTEXT "Body:", IDC_STATIC,8 + 2,128 + 16 + 8 + 2 + 12 + 4 + 24 + 2 - 8,32,12
-   EDITTEXT IDDI_BACKENDS_EMAIL_BODY, 8 + 2 + 32 + 2,128 + 16 + 8 + 2 + 12 + 2 + 24 + 2 - 8,128 + 32 + 8 - 16,12,ES_AUTOHSCROLL | WS_TABSTOP
-   PUSHBUTTON "Edit",IDDI_BACKENDS_EMAIL_BODY_EDIT, 8 + 2 + 32 + 2 + 128 + 32 + 8 - 16 + 4,128 + 16 + 8 + 2 + 12 + 2 + 24 + 2 - 8 - 2,24,15,WS_TABSTOP
+       RTEXT "Subject:", IDC_STATIC,            16,164,40,12
+       EDITTEXT IDDI_BACKENDS_EMAIL_SUBJECT,    58,162,168,12,ES_AUTOHSCROLL | WS_TABSTOP
+       LTEXT "Use %f as a placeholder for the file name, %F for the path and file name",IDC_STATIC,
+                                                58,176,140,24
 
-   AUTOCHECKBOX "Show this dialog before e-mailing",IDDI_BACKENDS_EMAIL_SHOWDIALOG,8 + 2,128 + 16 + 48 + 12 + 4,128,12,WS_TABSTOP | WS_VISIBLE
+       RTEXT "Body:", IDC_STATIC,               16,196,32,12
+       EDITTEXT IDDI_BACKENDS_EMAIL_BODY,       58,194,128,12,ES_AUTOHSCROLL | WS_TABSTOP
+       PUSHBUTTON "Edit",IDDI_BACKENDS_EMAIL_BODY_EDIT, 
+                                                190,192,24,15,WS_TABSTOP
 
-   LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,
-                           0,0,256, 24 
+   AUTOCHECKBOX "Show this dialog before e-mailing",IDDI_BACKENDS_EMAIL_SHOWDIALOG,10,192 + 32,128,12,WS_TABSTOP | WS_VISIBLE
+
+   LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,0,0,256, 24 
 
 END
 

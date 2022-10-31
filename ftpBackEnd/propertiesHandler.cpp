@@ -58,7 +58,7 @@
       IPrintingSupportProfile *px = NULL;
 
       p -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
-      if ( ! p -> pICursiVisionServices -> IsAdministrator() && px ) {
+      if ( px && ! px -> AllowSaveProperties() ) {
          RECT rc = {0};
          GetClientRect(hwnd,&rc);
          SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,rc.bottom - 32,0,0,SWP_NOSIZE);

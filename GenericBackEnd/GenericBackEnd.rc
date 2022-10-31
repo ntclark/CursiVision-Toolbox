@@ -70,7 +70,6 @@ Otherwise, the batch file may not work as expected.", -1,8,8 + 32 + 14 + 8 + 32 
 
    LTEXT "Note also that under certain cirumstances, the document name passed in MAY represent a temporary file without the '.PDF extension.",-1,8,8 + 32 + 14 + 8 + 32 + 32 + 8 + 24 + 40,128 + 64,32
 
-   LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,
-                           0,0,256, 24 
+   LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,0,0,256, 24 
 
 END

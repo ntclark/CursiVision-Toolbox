@@ -20,6 +20,7 @@
    PUT_STRING(p -> szEmailServer,IDDI_BACKENDS_EMAIL_SERVER)    \
    PUT_STRING(p -> szEmailUserName,IDDI_BACKENDS_EMAIL_USERNAME)\
    PUT_STRING(p -> szEmailPassword,IDDI_BACKENDS_EMAIL_PASSWORD)\
+   PUT_BOOL(p -> useTLS,IDDI_BACKENDS_EMAIL_USE_TLS)            \
    PUT_STRING(p -> szEmailTo,IDDI_BACKENDS_EMAIL_TO)            \
    PUT_STRING(p -> szEmailCC,IDDI_BACKENDS_EMAIL_CC)            \
    PUT_STRING(p -> szEmailBCC,IDDI_BACKENDS_EMAIL_BCC)          \
@@ -35,6 +36,7 @@
    GET_STRING(p -> szEmailServer,IDDI_BACKENDS_EMAIL_SERVER)    \
    GET_STRING(p -> szEmailUserName,IDDI_BACKENDS_EMAIL_USERNAME)\
    GET_STRING(p -> szEmailPassword,IDDI_BACKENDS_EMAIL_PASSWORD)\
+   GET_BOOL(p -> useTLS,IDDI_BACKENDS_EMAIL_USE_TLS)            \
    GET_STRING(p -> szEmailTo,IDDI_BACKENDS_EMAIL_TO)            \
    GET_STRING(p -> szEmailCC,IDDI_BACKENDS_EMAIL_CC)            \
    GET_STRING(p -> szEmailBCC,IDDI_BACKENDS_EMAIL_BCC)          \
@@ -53,6 +55,7 @@
    switch ( msg ) {
 
    case WM_INITDIALOG: {
+
       PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
       p = (EmailBackEnd *)pPage -> lParam;
       SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
@@ -63,7 +66,8 @@
       IPrintingSupportProfile *px = NULL;
 
       p -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
-      if ( ! p -> pICursiVisionServices -> IsAdministrator() && px ) {
+
+      if ( px && ! px -> AllowSaveProperties() ) {
          RECT rc = {0};
          GetClientRect(hwnd,&rc);
          SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,rc.bottom - 32,0,0,SWP_NOSIZE);

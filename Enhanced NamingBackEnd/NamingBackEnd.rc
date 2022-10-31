@@ -59,9 +59,6 @@ END
 
    LTEXT "",IDC_STATIC,10,160 + 4 + 20 + 20 + 20, 256, 64
 
-   LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,
-                           0,0,256, 24 
-
 END
 
 

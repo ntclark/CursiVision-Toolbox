@@ -70,8 +70,7 @@ The path specified is in terms of the server's disks",IDC_STATIC,8, 8 + 24 + 20 
    EDITTEXT IDDI_BACKENDS_RECEPTOR_PORT,8 + 48 + 2, 8 + 20 + 20, 32, 14,ES_AUTOHSCROLL | WS_TABSTOP
 #endif
 
-   LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,
-                           0,0,256, 24 
+   LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,0,0,256, 24 
 
 END
 

@@ -19,15 +19,27 @@
       <UniqueIdentifier>{769f1d10-fdc4-4fdf-865e-70967b2ffbfb}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
+    <Filter Include="Source Files\COM Interfaces\VisioLogger">
+      <UniqueIdentifier>{3d9aec24-092c-4da9-b1b3-52e2fc234982}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VisioLogger">
+      <UniqueIdentifier>{34d3019e-825b-45c2-9c63-271e29a057f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\VisioLogger">
+      <UniqueIdentifier>{e8fc1469-7ded-4472-b3fb-a675428e0c0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\VisioLogger">
+      <UniqueIdentifier>{800bbf2f-76d5-49de-b5cc-089224651359}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\COM Implementation\VisioLogger">
+      <UniqueIdentifier>{0ba9c119-8864-416b-953b-8535a8b1e174}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="additionalSaveOptionsHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="propertiesHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Common\source\resultdisposition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VideoBackEnd.cpp">
@@ -48,8 +60,29 @@
     <ClCompile Include="IUnknown.cpp">
       <Filter>Source Files\COM Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\source\utilities.cpp">
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\resultdisposition.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VisioLogger\IVisioLoggerAction.cpp">
+      <Filter>Source Files\COM Interfaces\VisioLogger</Filter>
+    </ClCompile>
+    <ClCompile Include="VisioLogger\IVisioLoggerNewRow.cpp">
+      <Filter>Source Files\COM Interfaces\VisioLogger</Filter>
+    </ClCompile>
+    <ClCompile Include="VisioLogger\VisioLoggerVideoBackEnd.cpp">
+      <Filter>Source Files\VisioLogger</Filter>
+    </ClCompile>
+    <ClCompile Include="VisioLogger\VisioLoggerIUnknown.cpp">
+      <Filter>Source Files\COM Interfaces\VisioLogger</Filter>
+    </ClCompile>
+    <ClCompile Include="VisioLogger\VisioLoggerPropertiesHandler.cpp">
+      <Filter>Source Files\VisioLogger</Filter>
+    </ClCompile>
+    <ClCompile Include="VisioLogger\VisioLoggerIPropertyPageClient.cpp">
+      <Filter>Source Files\COM Interfaces\VisioLogger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +94,9 @@
     <Midl Include="VideoBackEnd.odl">
       <Filter>Source Files\COM Implementation</Filter>
     </Midl>
+    <Midl Include="VisioLogger\VisioLoggerVideo.odl">
+      <Filter>Source Files\COM Implementation\VisioLogger</Filter>
+    </Midl>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -69,10 +105,16 @@
     <ClInclude Include="VideoBackEnd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="VisioLogger\visioLoggerResource.h">
+      <Filter>Header Files\VisioLogger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="VideoBackEnd.rc">
       <Filter>Resource Files</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="VisioLogger\VisioLOggerVideoBackEnd.rc">
+      <Filter>Resource Files\VisioLogger</Filter>
     </ResourceCompile>
   </ItemGroup>
 </Project>

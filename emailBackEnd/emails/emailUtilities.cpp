@@ -11,16 +11,31 @@
 
 #include "..\emailUtilities.h"
 
+#include "TLSEncryption.h"
+
 #define IDX_FROM            0
 #define IDX_REPLY_TO        1
 #define IDX_SUBJECT         2
 #define IDX_CONTENT_TYPE    3
 #define IDX_CC              4
 #define IDX_MIME_VERSION    5
+
+#define COMMAND_SIZE  1024
+
+#define WINSOCK_ERROR                           \
+    DWORD errorVal = WSAGetLastError();         \
+    VOID *lpBuffer;                             \
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,NULL,errorVal,0L,(LPTSTR)&lpBuffer,1024,NULL);  \
+    strcpy_s<1024>(szError,(char *)lpBuffer);   \
+    LocalFree(lpBuffer); 
+
+#define DO_SEND(s,r) { if ( useTLS ) pTLS -> send(s,r); else send(s,r); }
+
     
 char szSubject[1024];
 char szException[16384];
-char szCommand[1024];
+
+static char szCommand[1024];
 
 char szMessage[1024];
 
@@ -30,25 +45,34 @@ extern "C" int mpack(char *,char *,char *);
 
 extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *password,
                            char *pszAttachment,char *pszOriginalName,
-                           char *fromAddress,char *pszTo,char *pszCC,char *pszBCC,char *pszSubject,char *pszBody) {
+                           char *fromAddress,char *pszTo,char *pszCC,char *pszBCC,char *pszSubject,char *pszBody,boolean useTLS) {
 
    char szEmailFileName[MAX_PATH];
-   char szAttachmentFileName[MAX_PATH];
+   char szPackedAttachmentFileName[MAX_PATH];
 
    strcpy(szEmailFileName,_tempnam(NULL,NULL));
-   strcpy(szAttachmentFileName,_tempnam(NULL,NULL));
 
-   mpack(pszAttachment,"application/pdf",szAttachmentFileName);
+   strcpy(szPackedAttachmentFileName,_tempnam(NULL,NULL));
 
-   FILE *fTemp = fopen(szAttachmentFileName,"rb");
+   mpack(pszAttachment,"application/pdf",szPackedAttachmentFileName);
+
+   FILE *fTemp = fopen(szPackedAttachmentFileName,"rb");
+
    fseek(fTemp,0,SEEK_END);
+
    long attachmentSize = ftell(fTemp);
+
    BYTE *bAttachment = new BYTE[attachmentSize + 1];
+
    bAttachment[attachmentSize] = '\0';
+
    fseek(fTemp,0,SEEK_SET);
+
    fread(bAttachment,attachmentSize,1,fTemp);
+
    fclose(fTemp);
-   DeleteFile(szAttachmentFileName);
+
+   DeleteFile(szPackedAttachmentFileName);
 
    FILE *fInput = fopen(szEmailFileName,"wb+");
 
@@ -61,17 +85,22 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
    fprintf(fInput,"Subject: %s\x0D\x0A",pszSubject);
 
    fprintf(fInput,"Content-Type: multipart/mixed;\x0D\x0A");
-   fprintf(fInput," boundary=\"------------030609080107030205080300\"\x0D\x0A\x0D\x0A");
+   fprintf(fInput," boundary=\"------------030609080107030205080300\"\x0D\x0A");
+   fprintf(fInput,"Content-Language: en-US\x0D\x0A\x0D\x0A");
 
    fprintf(fInput,"This is a multi-part message in MIME format.\x0D\x0A"
                   "--------------030609080107030205080300\x0D\x0A"
                   "Content-Type: text/plain; charset=ISO-8859-1; format=flowed\x0D\x0A"
                   "Content-Transfer-Encoding: 7bit\x0D\x0A\x0D\x0A");
 
-   fprintf(fInput,"%s\x0D\x0A",pszBody);
+   if ( ! ( NULL == pszBody ) ) 
+      fprintf(fInput,"%s\x0D\x0A",pszBody);
+
+   fprintf(fInput,"\x0D\x0A--------------030609080107030205080300\x0D\x0A");
 
    char *pBaseName = NULL;
    char *pOriginalName = pszOriginalName;
+
    if ( strrchr(pOriginalName,'\\') )
       pOriginalName = strrchr(pOriginalName,'\\') + 1;
 
@@ -82,61 +111,37 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
                   "Content-Disposition: attachment;\x0D\x0A"
                   " filename=\"%s\"\x0D\x0A\x0D\x0A",pOriginalName,pOriginalName);
 
-   long cntHeaderBytes = ftell(fInput);
+   size_t headerSize = ftell(fInput);
 
-   fwrite(bAttachment,attachmentSize,1,fInput);
+   fwrite(bAttachment,1,attachmentSize,fInput);
 
    delete [] bAttachment;
 
    fprintf(fInput,"--------------030609080107030205080300--\x0D\x0A\x0D\x0A\x0D\x0A\x0D\x0A");
 
-   char *pszHeader = new char[cntHeaderBytes + 1];
+   char *pszHeader = new char[headerSize + 1];
 
-   pszHeader[cntHeaderBytes] = '\0';
-
-   fseek(fInput,0,SEEK_SET);
-
-   fread(pszHeader,cntHeaderBytes,1,fInput);
+   pszHeader[headerSize] = '\0';
 
    fseek(fInput,0,SEEK_SET);
 
-   char *pszLowerHeader = new char[cntHeaderBytes + 1];
+   fread(pszHeader,headerSize,1,fInput);
 
-   pszLowerHeader[cntHeaderBytes] = '\0';
+   fclose(fInput);
 
-   memcpy(pszLowerHeader,pszHeader,cntHeaderBytes);
+   char *pszLowerHeader = new char[headerSize + 1];
+
+   pszLowerHeader[headerSize] = '\0';
+
+   memcpy(pszLowerHeader,pszHeader,headerSize);
 
    char *p = pszLowerHeader;
-   char *pEnd = pszLowerHeader + cntHeaderBytes;
+   char *pEnd = pszLowerHeader + headerSize;
    while ( p < pEnd && *p ) {
       *p = tolower(*p);
       p++;
    }
 
-#if 0
-   char authenticationString[512];
-   
-   FILE *fEncodingInput = fopen("temp1","wt");
-   FILE *fEncodingOutput = fopen("temp2","wt");
-   char szChar[] = {'\0'};
-   fwrite(szChar,1,1,fEncodingInput);
-   fwrite(userName,1,(DWORD)strlen(userName),fEncodingInput);
-   fwrite(szChar,1,1,fEncodingInput);
-   fwrite(password,1,(DWORD)strlen(password),fEncodingInput);
-   fclose(fEncodingInput);
-   fEncodingInput = fopen("temp1","rt");
-   to64(fEncodingInput,fEncodingOutput,0);
-   fclose(fEncodingInput);
-   fclose(fEncodingOutput);
-   fEncodingInput = fopen("temp2","rt");
-   fgets(authenticationString,512,fEncodingInput);
-   fclose(fEncodingInput);
-
-   DeleteFile("temp1");
-   DeleteFile("temp2");
-#endif
-
-#if 1
    char szHeaderNames[][16] = {"from:","reply-to:","subject:","content-type:","cc:","MIME-Version:","\0"};
    
    char *pHeaderComponents[] = {NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL};
@@ -184,121 +189,88 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
 
    }
 
-#endif
-
-#if 0
-   struct sockaddr_in socketDetails;
-   struct hostent *pMailHost;
-#endif
-
    char szPort[32];
    sprintf(szPort,"%ld",smtpPort);
 
    addrinfo validOptions = {0};
    addrinfo *pCommandAddress;
 
-   validOptions.ai_family = AF_INET;
-   validOptions.ai_socktype = SOCK_STREAM;
+    validOptions.ai_family = AF_INET;
+    validOptions.ai_socktype = SOCK_STREAM;
+    validOptions.ai_protocol = IPPROTO_TCP;
 
-   WSADATA wsaData = {0};
-   WORD wsaVersion = MAKEWORD( 1, 1 );
+    WSADATA wsaData = {0};
+    WORD wsaVersion = MAKEWORD( 2, 2 );
 
    WSAStartup(wsaVersion,&wsaData);
 
-   long foundHost = getaddrinfo(serverName,szPort,&validOptions,&pCommandAddress);
+   long notFoundHost = getaddrinfo(serverName,szPort,&validOptions,&pCommandAddress);
     
-#if 1
    memset(szSubject,0,sizeof(szSubject));
    strncpy(szSubject,pHeaderComponents[IDX_SUBJECT],min(strlen(pHeaderComponents[IDX_SUBJECT]),128));
-#else
-   strcpy(szSubject,pszSubject);
-#endif
 
    if ( strchr(szSubject,'\n') ) 
       *(strchr(szSubject,'\n')) = '\0';
                  
-#if 0
-   pMailHost = gethostbyname(serverName);
-    
-   if ( NULL == pMailHost ) {
-#else
-   if ( foundHost ) {
-#endif
+
+   if ( notFoundHost ) {
       sprintf(szMessage,"\n\nThe system was unable to resolve the address for host: %s\n\n"
                            "\nPress Retry to specify the properties or Cancel to exit.",serverName);
       long rc = MessageBox(NULL,szMessage,"Error!",MB_ICONEXCLAMATION | MB_RETRYCANCEL | MB_DEFBUTTON1);
       delete [] pszLowerHeader;
       delete [] pszHeader;
-      fclose(fInput);
       DeleteFile(szEmailFileName);
       return rc == IDCANCEL;
    }
     
-#if 0
-   SOCKET theSocket = socket(PF_INET,SOCK_STREAM,0);
-#else
-   SOCKET theSocket = socket(pCommandAddress -> ai_family,pCommandAddress -> ai_socktype,pCommandAddress -> ai_protocol);
-#endif
+    SOCKET theSocket = socket(pCommandAddress -> ai_family,pCommandAddress -> ai_socktype,pCommandAddress -> ai_protocol);
 
-   if ( -1L == theSocket ) {
-      sprintf(szMessage,"\nERROR: Was not able to create a socket for sending email.\n"
-                           "\nPress Retry to specify the properties or Cancel to exit.");
-      long rc = MessageBox(NULL,szMessage,"Error!",MB_ICONEXCLAMATION | MB_RETRYCANCEL | MB_DEFBUTTON1);
-      delete [] pszLowerHeader;
-      delete [] pszHeader;
-      fclose(fInput);
-      DeleteFile(szEmailFileName);
-      return rc == IDCANCEL;
-   }  
+    if ( -1L == theSocket ) {
+        sprintf(szMessage,"\nERROR: Was not able to create a socket for sending email.\n"
+                            "\nPress Retry to specify the properties or Cancel to exit.");
+        long rc = MessageBox(NULL,szMessage,"Error!",MB_ICONEXCLAMATION | MB_RETRYCANCEL | MB_DEFBUTTON1);
+        delete [] pszLowerHeader;
+        delete [] pszHeader;
+        DeleteFile(szEmailFileName);
+        return rc == IDCANCEL;
+    }  
 
-#if 0
-   memset(&socketDetails,0,sizeof(struct sockaddr_in));
-    
-   socketDetails.sin_family = AF_INET;
-   socketDetails.sin_port = htons((unsigned short)smtpPort);
-   socketDetails.sin_addr = *(struct in_addr *)pMailHost -> h_addr;
+    if ( -1L == connect(theSocket,pCommandAddress -> ai_addr,(int)pCommandAddress -> ai_addrlen) ) {
 
-   if ( -1L == connect(theSocket, (sockaddr *)&socketDetails, sizeof(struct sockaddr_in)) ) {
-#else
-   if ( -1L == connect(theSocket,pCommandAddress -> ai_addr,(int)pCommandAddress -> ai_addrlen) ) {
-#endif
-      sprintf(szMessage,"\n\nERROR: Was not able to connect the socket for sending email, rc = %ld: %s.\n\n"
-                           "\nPress Retry to specify the properties or Cancel to exit.",errno,strerror(errno));
-      long rc = MessageBox(NULL,szMessage,"Error!",MB_ICONEXCLAMATION | MB_RETRYCANCEL | MB_DEFBUTTON1);
-      delete [] pszLowerHeader;
-      delete [] pszHeader;
-      fclose(fInput);
-      DeleteFile(szEmailFileName);
-      return rc == IDCANCEL;
-   }
+        sprintf(szMessage,"\n\nERROR: Was not able to connect the socket for sending email, rc = %ld: %s.\n\n"
+                            "\nPress Retry to specify the properties or Cancel to exit.",errno,strerror(errno));
+        long rc = MessageBox(NULL,szMessage,"Error!",MB_ICONEXCLAMATION | MB_RETRYCANCEL | MB_DEFBUTTON1);
+        delete [] pszLowerHeader;
+        delete [] pszHeader;
+        DeleteFile(szEmailFileName);
+        return rc == IDCANCEL;
+    }
 
-   char szInput[1024];
+    char szInput[1024];
 
-   memset(szInput,0,sizeof(szInput));
-   recv(theSocket,szInput,1024,0L);
+    memset(szInput,0,sizeof(szInput));
+    recv(theSocket,szInput,1024,0L);
 
-#if 1
-   char outputCommands[][32] = {"EHLO %s\r\n","MAIL From:%s\r\n","\0"};
-   char responses[][16] = {"250","250","\0"};
+    char outputCommands[2][32];
+    char responses[2][16];
 
+    strcpy(outputCommands[0],"EHLO %s\r\n");
+    strcpy(responses[0],"250");
+
+    if ( useTLS ) {
+         strcpy(outputCommands[1],"STARTTLS\r\n");
+         strcpy(responses[1],"220");
+    } else {
+         strcpy(outputCommands[1],"MAIL From:%s\r\n");
+         strcpy(responses[1],"250");
+    }
+   
    for ( long k = 0; k < 2; k++ ) { 
-#else
-   char outputCommands[][32] = {"EHLO %s\r\n","AUTH PLAIN\r\n","%s\r\n","\0"};
-   char responses[][16] = {"250","334","235","\0"};
-   for ( long k = 0; k < 3; k++ ) { 
-#endif 
    
       if ( 0 == k ) 
          sprintf(szCommand,outputCommands[k],serverName);
-#if 1        
-      else if ( 1 == k )
-         sprintf(szCommand,outputCommands[k],fromAddress);
-#else
-      else if ( 1 == k )
-         sprintf(szCommand,outputCommands[k]);
       else 
-         sprintf(szCommand,outputCommands[k],authenticationString);
-#endif                    
+         sprintf(szCommand,outputCommands[k],fromAddress);
 
       send(theSocket,szCommand,(DWORD)strlen(szCommand),0L);
       memset(szInput,0,sizeof(szInput));
@@ -317,8 +289,6 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
 
          delete [] pszLowerHeader;
          delete [] pszHeader;
-
-         fclose(fInput);
    
          DeleteFile(szEmailFileName);
 
@@ -327,65 +297,82 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
 
    }
 
-#if 1
+    TLSEncryption *pTLS = NULL;
+
+    if ( useTLS ) {
+
+        pTLS = new TLSEncryption(theSocket,serverName);
+
+        sprintf_s<COMMAND_SIZE>(szCommand,"EHLO %s\r\n",serverName);
+        pTLS -> exchange(szCommand,strlen(szCommand),szInput);
+
+        sprintf_s<COMMAND_SIZE>(szCommand,"AUTH LOGIN\r\n");
+        pTLS -> exchange(szCommand,strlen(szCommand),szInput);	
+  
+        if ( strstr(szInput,"334") ) {
+        
+            sprintf_s<COMMAND_SIZE>(szCommand,"%s",userName);
+            pTLS -> Base64Encode(szCommand,strlen(szCommand));
+            pTLS -> exchange(szCommand,strlen(szCommand),szInput);
+
+            if ( strstr(szInput,"334") ) {
+                sprintf_s<COMMAND_SIZE>(szCommand,"%s",password);
+                pTLS -> Base64Encode(szCommand,strlen(szCommand));
+                pTLS -> exchange(szCommand,strlen(szCommand),szInput);
+            }
+
+            sprintf_s<COMMAND_SIZE>(szCommand,"MAIL FROM: <%s>\r\n",fromAddress);
+            pTLS -> exchange(szCommand,strlen(szCommand),szInput);
+
+        }
+
+    }
 
    memset(szInput,0,sizeof(szInput));
-    
-#else
+ 
+    char *recipientList[] = {pszTo,pHeaderComponents[IDX_CC],pszCC,pszBCC};
 
-   memset(szInput,0,sizeof(szInput));
-   read(theSocket,szInput,1024);
-   
-   sprintf(szCommand,"MAIL FROM:<%s>\r\n",configValues[CFG_ADMINEMAIL]);
-   write(theSocket,szCommand,(DWORD)strlen(szCommand));
-   memset(szInput,0,sizeof(szInput));
-   read(theSocket,szInput,1024);
+    for ( long k = 0; k < sizeof(recipientList) / sizeof(char *); k++ ) {
 
-#if 0
-   if ( strncmp(szInput,"250",3) )
-       fprintf(fLog, "\nERROR: The SMTP Server sent an unexpected response to this input\n"
-                                  "Sent to server:%sRecieved from server:%sExpected response:%s\n",szCommand,szInput,"250");
-   else
-       fprintf(fLog,"Sent to server:%sResponse:%s",szCommand,szInput);
-#endif
-
-#endif
-   
-   char *recipientList[] = {pszTo,pHeaderComponents[IDX_CC],pszCC,pszBCC};
-
-   for ( long k = 0; k < sizeof(recipientList) / sizeof(char *); k++ ) {
-
-       if ( ! recipientList[k] )
-           continue;
+        if ( ! recipientList[k] )
+            continue;
        
-       if ( ! recipientList[k][0] )
-           continue;
+        if ( ! recipientList[k][0] )
+            continue;
        
-       char *pszTokens = new char[strlen(recipientList[k]) + 1];
-       memset(pszTokens,0,(strlen(recipientList[k]) + 1) * sizeof(char));
-       strcpy(pszTokens,recipientList[k]);
+        char *pszTokens = new char[strlen(recipientList[k]) + 1];
+        memset(pszTokens,0,(strlen(recipientList[k]) + 1) * sizeof(char));
+        strcpy(pszTokens,recipientList[k]);
        
-       char *p = strchr(pszTokens,'\n');
-       if ( p )
-           *p = '\0';
-       p = strchr(pszTokens,':');
-       if ( p )
-           p = p + 1;
-       else
-           p = pszTokens;
+        char *p = strchr(pszTokens,'\n');
+        if ( p )
+            *p = '\0';
 
-       p = strtok(p,",");
-       while ( p ) {
-           while ( ' ' == *p ) p++;
-           sprintf(szCommand,"RCPT TO:<%s>\r\n",p);
-           send(theSocket,szCommand,(DWORD)strlen(szCommand),0L);
-           memset(szInput,0,sizeof(szInput));
-           recv(theSocket,szInput,1024,0L);
+        p = strchr(pszTokens,':');
+        if ( p )
+            p = p + 1;
+        else
+            p = pszTokens;
 
-           if ( szInput[0] ) {
+        p = strtok(p,",");
+
+        while ( p ) {
+
+            while ( ' ' == *p ) p++;
+
+            sprintf(szCommand,"RCPT TO:<%s>\r\n",p);
+
+            if ( useTLS ) {
+              pTLS -> exchange(szCommand,(DWORD)strlen(szCommand),szInput);
+            } else {
+                send(theSocket,szCommand,(DWORD)strlen(szCommand),0L);
+                memset(szInput,0,sizeof(szInput));
+                recv(theSocket,szInput,1024,0L);
+            }
+
+            if ( szInput[0] ) {
+
                if ( strncmp(szInput,"250",3) ) {
-
-                   //fprintf(fLog, "\nERROR: The SMTP Server sent an unexpected response to this command\n");
 
                   sprintf(szMessage,"\nThe SMTP Server sent an unexpected response to this input\n"
                                              "Sent to server:%sRecieved from server:%s\n"
@@ -399,15 +386,13 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
                   delete [] pszTokens;
                   delete [] pszLowerHeader;
                   delete [] pszHeader;
-
-                  fclose(fInput);
    
                   DeleteFile(szEmailFileName);
 
                   return rc == IDCANCEL;
 
                }
-               //fprintf(fLog,"Sent to server:%sResponse:%s",szCommand,szInput); 
+               
            }
 
            p = strtok(NULL,",");
@@ -417,44 +402,67 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
        
    }
    
-   sprintf(szCommand,"DATA\r\n");
-   send(theSocket,szCommand,(DWORD)strlen(szCommand),0L);
-   memset(szInput,0,sizeof(szInput));
-   recv(theSocket,szInput,1024,0L);
+    sprintf(szCommand,"DATA\r\n");
 
-#if 0
-   if ( strncmp(szInput,"354",3) )
-       fprintf(fLog, "\nERROR: The SMTP Server sent an unexpected response to this command\n");
-   fprintf(fLog,"Sent to server:%sResponse:%s",szCommand,szInput);
-#endif
+    if ( useTLS )
+        pTLS -> exchange(szCommand,(DWORD)strlen(szCommand),szInput);
+    else {
+        send(theSocket,szCommand,(DWORD)strlen(szCommand),0L);
+        memset(szInput,0,sizeof(szInput));
+        recv(theSocket,szInput,1024,0L);
+    }
 
-   fseek(fInput,0,SEEK_END);
-   long emailBytes = ftell(fInput);
-   fseek(fInput,0,SEEK_SET);
+    fInput = fopen(szEmailFileName,"rb");
 
-   char *pszEmail = new char[emailBytes + 8];
+    fseek(fInput,0,SEEK_END);
+
+    long emailBytes = ftell(fInput);
+
+    fseek(fInput,0,SEEK_SET);
+
+    char *pszEmail = new char[emailBytes + 16L];
    
-   fread(pszEmail,emailBytes,1,fInput);
+    fread(pszEmail,emailBytes,1,fInput);
 
-   fclose(fInput);
+    fclose(fInput);
 
-   sprintf(pszEmail + emailBytes,"\r\n.\r\n");
-   send(theSocket,pszEmail,emailBytes + 5,0L);
+    if ( useTLS ) {
 
-   memset(szInput,0,sizeof(szInput));
-   recv(theSocket,szInput,1024,0L);
+        char *pStart = (char *)pszEmail;
 
-   delete [] pszEmail;
+        char *pEnd = pStart + emailBytes;
+
+        while ( pStart < pEnd ) {
+            int n = min(1024,pEnd - pStart);
+            pTLS -> send(pStart,n);
+            pStart += n;
+        }
+
+        pTLS -> exchange((char *)"\r\n.\r\n",strlen("\r\n.\r\n"),szInput);
    
-   sprintf(szCommand,"QUIT\r\n");
-   send(theSocket,szCommand,(DWORD)strlen(szCommand),0L);
+        sprintf_s<COMMAND_SIZE>(szCommand,"QUIT\r\n");
 
-   closesocket(theSocket);
+        pTLS -> send(szCommand,(DWORD)strlen(szCommand));
 
-   DeleteFile(szEmailFileName);
+    } else {
+
+        sprintf(pszEmail + emailBytes,"\r\n.\r\n");
+        send(theSocket,pszEmail,emailBytes + 5,0L);
+        memset(szInput,0,sizeof(szInput));
+        recv(theSocket,szInput,1024,0L);
+        sprintf(szCommand,"QUIT\r\n");
+        send(theSocket,szCommand,(DWORD)strlen(szCommand),0L);
+
+    }
+
+    closesocket(theSocket);
+
+    DeleteFile(szEmailFileName);
    
-   delete [] pszLowerHeader;
-   delete [] pszHeader;
+    delete [] pszLowerHeader;
+    delete [] pszHeader;
+    delete [] pszEmail;
 
-   return 1;
-}
+    return 1;
+
+    }

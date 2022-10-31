@@ -1,0 +1,37 @@
+
+
+import "ocidl.idl";
+
+#include <olectl.h>
+
+[ 
+   uuid(D75D77EE-3370-4A39-AFB9-4202D9852F64),
+   helpstring("InnoVisioNate Video New Row plugin"), 
+   lcid(0x0), 
+   version(1.0)
+] 
+
+library VisioLoggerVideo { 
+
+    importlib(STDOLE_TLB); 
+    importlib(STDTYPE_TLB);
+
+   [uuid(D75D77EE-3370-4A39-AFB9-4202D9852F65),
+      helpstring("InnoVisioNate Video New Row Object")]
+      coclass VisioLoggerVideoNewRow {
+      [default] interface IUnknown;
+   };
+
+   [uuid(D75D77EE-3370-4A39-AFB9-4202D9852F66),
+      helpstring("InnoVisioNate Video Action Object")]
+      coclass VisioLoggerVideoAction {
+      [default] interface IUnknown;
+   };
+
+   [uuid(D75D77EE-3370-4A39-AFB9-4202D9852F67),
+      helpstring("InnoVisioNate Video Pre-Signature Object")]
+      coclass VisioLoggerVideoPreSignature {
+      [default] interface IUnknown;
+   };
+
+};

@@ -4,95 +4,96 @@
 
 #include "emailBackEnd.h"
 
-   EmailBackEnd::EmailBackEnd(IUnknown *pIUnknownOuter) :
+    EmailBackEnd::EmailBackEnd(IUnknown *pIUnknownOuter) :
 
-   pIGProperties(NULL),
-   pIGPropertiesClient(NULL),
-   pIGPropertyPageClient(NULL),
+       pIGProperties(NULL),
+       pIGPropertiesClient(NULL),
+       pIGPropertyPageClient(NULL),
 
-   hwndProperties(NULL),
-   hwndParent(NULL),
-   hwndBody(NULL),
+       hwndProperties(NULL),
+       hwndParent(NULL),
+       hwndBody(NULL),
 
-   startParameters(0),
-   endParameters(0),
+       startParameters(0),
+       endParameters(0),
 
-   isProcessing(false),
-   doExecute(true),
+       isProcessing(false),
+       doExecute(true),
 
-   pICursiVisionServices(NULL),
+       pICursiVisionServices(NULL),
 
-   refCount(0)
+       refCount(0)
 
-   {
+    {
 
-   pIGPropertyPageClient = new _IGPropertyPageClient(this);
+    pIGPropertyPageClient = new _IGPropertyPageClient(this);
 
-   long sizeParameters = offsetof(EmailBackEnd,endParameters) - offsetof(EmailBackEnd,startParameters);
+    long sizeParameters = offsetof(EmailBackEnd,endParameters) - offsetof(EmailBackEnd,startParameters);
 
-   memset(&startParameters,0,sizeParameters);
+    memset(&startParameters,0,sizeParameters);
 
-   smtpPort = 25;
+    smtpPort = 25;
 
-   HRESULT rc = CoCreateInstance(CLSID_InnoVisioNateProperties,NULL,CLSCTX_ALL,IID_IGProperties,reinterpret_cast<void **>(&pIGProperties));
+    HRESULT rc = CoCreateInstance(CLSID_InnoVisioNateProperties,NULL,CLSCTX_ALL,IID_IGProperties,reinterpret_cast<void **>(&pIGProperties));
 
 #ifdef DEBUG
-   pIGProperties -> put_DebuggingEnabled(true);
+    pIGProperties -> put_DebuggingEnabled(true);
 #endif
 
-   pIGPropertiesClient = new _IGPropertiesClient(this);
+    pIGPropertiesClient = new _IGPropertiesClient(this);
 
-   pIGProperties -> Advise(static_cast<IGPropertiesClient *>(pIGPropertiesClient));
+    pIGProperties -> Advise(static_cast<IGPropertiesClient *>(pIGPropertiesClient));
 
 //
 // 9-1-2011: IGProperties is adding a reference (as it should) which can be removed
 // It may be better to not load properties in the constructor.
 //
-   refCount = 0L;
+    refCount = 0L;
 
-   pIGProperties -> Add(L"email parameters",NULL);
-   pIGProperties -> DirectAccess(L"email parameters",TYPE_BINARY,&startParameters,sizeParameters);
+    pIGProperties -> Add(L"email parameters",NULL);
+    pIGProperties -> DirectAccess(L"email parameters",TYPE_BINARY,&startParameters,sizeParameters);
 
-   char szTemp[MAX_PATH];
-   char szRootName[MAX_PATH];      
+    char szTemp[MAX_PATH];
+    char szRootName[MAX_PATH];      
 
-   strcpy(szRootName,szModuleName);
+    strcpy(szRootName,szModuleName);
 
-   char *p = strrchr(szModuleName,'\\');
-   if ( ! p )
-      p = strrchr(szModuleName,'/');
-   if ( p ) {
-      strcpy(szRootName,p + 1);
-   }
+    char *p = strrchr(szModuleName,'\\');
+    if ( ! p )
+        p = strrchr(szModuleName,'/');
 
-   p = strrchr(szRootName,'.');
-   if ( p )
-      *p = '\0';
+    if ( p ) {
+        strcpy(szRootName,p + 1);
+    }
 
-   sprintf(szTemp,"%s\\Settings\\%s.settings",szApplicationDataDirectory,szRootName);
+    p = strrchr(szRootName,'.');
+    if ( p )
+        *p = '\0';
 
-   BSTR bstrFileName = SysAllocStringLen(NULL,MAX_PATH);
-   MultiByteToWideChar(CP_ACP,0,szTemp,-1,bstrFileName,MAX_PATH);
+    sprintf(szTemp,"%s\\Settings\\%s.settings",szApplicationDataDirectory,szRootName);
 
-   pIGProperties -> put_FileName(bstrFileName);
+    BSTR bstrFileName = SysAllocStringLen(NULL,MAX_PATH);
+    MultiByteToWideChar(CP_ACP,0,szTemp,-1,bstrFileName,MAX_PATH);
 
-   SysFreeString(bstrFileName);
+    pIGProperties -> put_FileName(bstrFileName);
 
-   short bSuccess;
-   pIGProperties -> LoadFile(&bSuccess);
-   if ( ! bSuccess )
-      pIGPropertiesClient -> InitNew();
+    SysFreeString(bstrFileName);
 
-   return;
-   }
+    short bSuccess;
+    pIGProperties -> LoadFile(&bSuccess);
+    if ( ! bSuccess )
+        pIGPropertiesClient -> InitNew();
+
+    return;
+    }
 
 
-   EmailBackEnd::~EmailBackEnd() {
-   IPrintingSupportProfile *px = NULL;
-   pICursiVisionServices -> get_PrintingSupportProfile(&px);
-   if ( pICursiVisionServices -> IsAdministrator() || ! px ) 
-      pIGProperties -> Save();
-   return;
-   }
+    EmailBackEnd::~EmailBackEnd() {
+    IPrintingSupportProfile *px = NULL;
+    pICursiVisionServices -> get_PrintingSupportProfile(&px);
+    if ( pICursiVisionServices -> IsAdministrator() || ! px ) 
+        pIGProperties -> Save();
+    return;
+    }
 
    

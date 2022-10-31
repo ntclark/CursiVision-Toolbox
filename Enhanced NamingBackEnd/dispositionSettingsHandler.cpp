@@ -18,13 +18,13 @@
    IPrintingSupportProfile *px = NULL;                                                                               \
    if ( pObject -> pICursiVisionServices )                                                                           \
       pObject -> pICursiVisionServices -> get_PrintingSupportProfile(&px);                                           \
-   if ( ! pObject -> pICursiVisionServices -> IsAdministrator() && px ) {                                            \
+   if ( px && ! px -> AllowSaveProperties() ) {                                                                      \
       RECT rc = {0};                                                                                                 \
       GetClientRect(hwnd,&rc);                                                                                       \
-      SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,rc.bottom - 32,0,0,SWP_NOSIZE);    \
+      SetWindowPos(GetDlgItem(hwnd,IDDI_DISPOSITION_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,rc.bottom - 32,0,0,SWP_NOSIZE);\
       EnableWindow(hwnd,FALSE);                                                                                      \
    } else {                                                                                                          \
-      ShowWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),SW_HIDE);                                       \
+      ShowWindow(GetDlgItem(hwnd,IDDI_DISPOSITION_NEED_ADMIN_PRIVILEGES),SW_HIDE);                                   \
       loadComboBox(hwnd,pObject -> szNamePrefix[0],0,pObject -> pICursiVisionServices);                              \
       loadComboBox(hwnd,pObject -> szNamePrefix[1],1,pObject -> pICursiVisionServices);                              \
       SendDlgItemMessage(hwnd,IDDI_NAME1_PREFIX + 1,CB_INSERTSTRING,(WPARAM)-1L,(LPARAM)"<none>");                   \

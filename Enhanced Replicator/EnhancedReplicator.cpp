@@ -227,7 +227,7 @@
       if ( ! isReplicant[k] )
          continue;
 
-      replicantSignaturePage[countReplicants] = pWritingLocations[k] -> zzpdfPageNumber;
+      replicantSignaturePage[countReplicants] = pWritingLocations[k] -> pdfPageNumber;
       replicantSignatureIndex[countReplicants] = replicantIndex[k];
 
       replicantSignatureOrigins[countReplicants].x = pWritingLocations[k] -> documentRect.left;
@@ -284,7 +284,7 @@
 
    writingLocation *pSG = pWritingLocations[theIndex];
 
-   pSG -> zzpdfPageNumber = toPageNumber;
+   pSG -> pdfPageNumber = toPageNumber;
 
    long cx = pSG -> documentRect.right - pSG -> documentRect.left;
    long cy = pSG -> documentRect.top - pSG -> documentRect.bottom;
@@ -336,7 +336,7 @@
 
    replicantIndex[targetIndex] = sourceIndex;
 
-   pSG -> zzpdfPageNumber = pDocument -> currentPageNumber;
+   pSG -> pdfPageNumber = pDocument -> currentPageNumber();
 
    long cx = pSG -> documentRect.right - pSG -> documentRect.left;
    long cy = pSG -> documentRect.top - pSG -> documentRect.bottom;
@@ -381,7 +381,7 @@
 
    pWritingLocations[targetIndex] = pSG;
 
-   pSG -> zzpdfPageNumber = pageNumber;
+   pSG -> pdfPageNumber = pageNumber;
 
    memcpy(&pSG -> documentRect,&pWritingLocations[fromIndex] -> documentRect,sizeof(RECT));
 

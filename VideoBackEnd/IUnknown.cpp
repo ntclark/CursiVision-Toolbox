@@ -6,6 +6,13 @@
 
    // IUnknown
 
+   long __stdcall VideoBackEnd::QueryInterfaceSpecial(bool isCursiVision,REFIID riid,void **ppv) {
+   if ( isCursiVision )
+      return QueryInterface(riid,ppv);
+   return pVisioLoggerVideoBackEnd -> QueryInterface(riid,ppv);
+   }
+
+
    long __stdcall VideoBackEnd::QueryInterface(REFIID riid,void **ppv) {
 
    *ppv = NULL;
@@ -15,6 +22,13 @@
 
    if ( riid == IID_ICursiVisionBackEnd )
       *ppv = static_cast<ICursiVisionBackEnd *>(this);
+
+#if 1
+
+   if ( riid == IID_IVisioLoggerNewRow  || riid == IID_IVisioLoggerAction || riid == IID_IVisioLoggerPreSignature ) 
+      return pVisioLoggerVideoBackEnd -> QueryInterface(riid,ppv);
+
+#endif
 
    if ( *ppv ) {
       AddRef();

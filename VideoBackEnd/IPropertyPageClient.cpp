@@ -4,6 +4,7 @@
 
 #include "VideoBackEnd.h"
 
+#include "resource.h"
 
    long __stdcall VideoBackEnd::_IGPropertyPageClient::QueryInterface(REFIID riid,void **ppv) {
    *ppv = NULL; 

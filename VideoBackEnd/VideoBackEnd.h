@@ -4,6 +4,8 @@
 
 //#pragma warning( disable : 4995 )
 
+#pragma once
+
 #include <windows.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -11,12 +13,12 @@
 #include <PrSht.h>
 
 #include <dshow.h>
+#include <d3d9.h>
+#include <vmr9.h>
 
 #include <list>
 
 #undef GetWindowID
-
-#include "resource.h"
 
 #include "pdfEnabler_i.h"
 #include "PrintingSupport_i.h"
@@ -25,9 +27,12 @@
 #include "pdfEnabler_i.h"
 #include "SignaturePad_i.h"
 #include "CursiVision_i.h"
+#include "VisioLoggerVideo_i.h"
+#include "VisioLoggerIntegration_i.h"
 
 #include "directories.h"
 #include "resultDisposition.h"
+#include "utilities.h"
 
    class VideoBackEnd : public ICursiVisionBackEnd {
 
@@ -35,6 +40,8 @@
 
       VideoBackEnd(IUnknown *pOuter);
       ~VideoBackEnd();
+
+      STDMETHOD(QueryInterfaceSpecial)(bool isCursiVision,REFIID riid,void **ppv);
 
       //   IUnknown
 
@@ -48,6 +55,9 @@
       STDMETHOD(SaveProperties)();
 
       bool IsProcessing() { return isProcessing; };
+
+      bool hostVideo(HWND hwnd);
+      void unHostVideo();
 
    private:
 
@@ -64,7 +74,7 @@
 
       HRESULT __stdcall put_PrintingSupportProfile(IPrintingSupportProfile *) { return E_NOTIMPL; };
 
-      HRESULT __stdcall get_Description(BSTR *p) { if ( ! p ) return E_POINTER; *p = SysAllocString(L"CursiVision Video Tool"); return S_OK; };
+      HRESULT __stdcall get_Description(BSTR *p) { if ( ! p ) return E_POINTER; *p = SysAllocString(L"CursiVision Camera Tool"); return S_OK; };
 
       HRESULT __stdcall Dispose(BSTR inputFile,BSTR resultsFile,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile);
 
@@ -175,6 +185,168 @@
 
       } * pIGPropertyPageClient;
 
+#if 1
+
+      class VisioLoggerVideoBackEnd : public IVisioLoggerNewRow {
+      public:
+
+         VisioLoggerVideoBackEnd(VideoBackEnd *ppParent);
+         ~VisioLoggerVideoBackEnd();
+
+         //   IUnknown
+
+         STDMETHOD (QueryInterface)(REFIID riid,void **ppv);
+         STDMETHOD_ (ULONG, AddRef)();
+         STDMETHOD_ (ULONG, Release)();
+
+         HRESULT __stdcall TakeFields(SAFEARRAY *fieldNames,SAFEARRAY *imageFieldNames,SAFEARRAY *documentFieldNames);
+         HRESULT __stdcall TakeDatabaseInfo(long pIDbConnectionUnknown,BSTR serverName,BSTR databaseName,VARIANT_BOOL useWindowsLogon,BSTR userName,BSTR password,BSTR dbProvider,BSTR odbcConnectionOptions,BSTR processName,long processId);
+         HRESULT __stdcall Handle(OLE_HANDLE hwndParent,SAFEARRAY *fieldNames,SAFEARRAY *imageFieldNames,SAFEARRAY *documentFIeldNames,SAFEARRAY *fieldValues,SAFEARRAY *imageHandles,SAFEARRAY *documentValues,SAFEARRAY *valuesChanged,SAFEARRAY *imagesChanged,SAFEARRAY *documentsChanged,BSTR *pBstrSwitchToProcessName,VARIANT_BOOL *pRetainValues);
+         HRESULT __stdcall get_StatusNotification(BSTR *);
+         HRESULT __stdcall Properties(OLE_HANDLE hwndParent);
+
+         void initialize();
+         void unInitialize();
+
+         void *settings() { return (void *)&startParameters; }
+         long settingsSize() { return offsetof(VisioLoggerVideoBackEnd,endParameters) - offsetof(VisioLoggerVideoBackEnd,startParameters);}
+
+      private:
+
+         // IVisioLoggerAction
+
+         class _IVisioLoggerAction : public IVisioLoggerAction {
+         public:
+
+            _IVisioLoggerAction(VisioLoggerVideoBackEnd *pp) : pParent(pp) {}
+
+            //   IUnknown
+
+            STDMETHOD (QueryInterface)(REFIID riid,void **ppv) { return pParent -> QueryInterface(riid,ppv); };
+            STDMETHOD_ (ULONG, AddRef)() { return pParent -> AddRef(); };
+            STDMETHOD_ (ULONG, Release)() { return pParent -> Release(); };
+
+         private:
+
+            HRESULT __stdcall TakeFields(SAFEARRAY *fieldNames,SAFEARRAY *imageFieldNames,SAFEARRAY *documentFieldNames) { return pParent -> TakeFields(fieldNames,imageFieldNames,documentFieldNames); };
+            HRESULT __stdcall TakeDatabaseInfo(long pIDbConnectionUnknown,BSTR serverName,BSTR databaseName,VARIANT_BOOL useWindowsLogon,BSTR userName,BSTR password,BSTR dbProvider,BSTR odbcConnectionOptions,BSTR processName,long processId) { return S_OK; };
+            HRESULT __stdcall ActionPerformed(OLE_HANDLE hwndParent,BSTR actionFieldName,SAFEARRAY *fieldNames,SAFEARRAY *imageFieldNames,SAFEARRAY *documentFieldNames,SAFEARRAY *fieldValues,SAFEARRAY *imageHandles,SAFEARRAY *documentValues,SAFEARRAY *valuesChanged,SAFEARRAY *imagesChanged,SAFEARRAY *documentsChanged);
+            HRESULT __stdcall get_StatusNotification(BSTR *bstr) { return pParent -> get_StatusNotification(bstr); };
+            HRESULT __stdcall get_ActionFieldName(BSTR *pResult);
+            HRESULT __stdcall Properties(OLE_HANDLE hwndParent) { return pParent -> Properties(hwndParent); };
+
+            VisioLoggerVideoBackEnd *pParent;
+
+         } *pIVisioLoggerAction;
+
+         // IVisioLoggerPreSignature
+
+         class _IVisioLoggerPreSignature : public IVisioLoggerPreSignature {
+         public:
+
+            _IVisioLoggerPreSignature(VisioLoggerVideoBackEnd *pp) : pParent(pp) {}
+
+            //   IUnknown
+
+            STDMETHOD (QueryInterface)(REFIID riid,void **ppv) { return pParent -> QueryInterface(riid,ppv); };
+            STDMETHOD_ (ULONG, AddRef)() { return pParent -> AddRef(); };
+            STDMETHOD_ (ULONG, Release)() { return pParent -> Release(); };
+
+         private:
+
+            HRESULT __stdcall TakeFields(SAFEARRAY *fieldNames,SAFEARRAY *imageFieldNames,SAFEARRAY *documentFieldNames) { return pParent -> TakeFields(fieldNames,imageFieldNames,documentFieldNames); };
+            HRESULT __stdcall TakeDatabaseInfo(long pIDbConnectionUnknown,BSTR serverName,BSTR databaseName,VARIANT_BOOL useWindowsLogon,BSTR userName,BSTR password,BSTR dbProvider,BSTR odbcConnectionOptions,BSTR processName,long processId) { return S_OK; };
+            HRESULT __stdcall Handle(OLE_HANDLE hwndParent,SAFEARRAY *fieldNames,SAFEARRAY *imageFieldNames,SAFEARRAY *documentFieldNames,SAFEARRAY *fieldValues,SAFEARRAY *imageHandles,SAFEARRAY *documentValues,SAFEARRAY *valuesChanged,SAFEARRAY *imagesChanged,SAFEARRAY *documentsChanged) { return pParent -> Handle(hwndParent,fieldNames,imageFieldNames,documentFieldNames,fieldValues,imageHandles,documentValues,valuesChanged,imagesChanged,documentsChanged,NULL,NULL); };
+            HRESULT __stdcall get_StatusNotification(BSTR *bstr) { return pParent -> get_StatusNotification(bstr); };
+            HRESULT __stdcall Properties(OLE_HANDLE hwndParent) { return pParent -> Properties(hwndParent); };
+
+            VisioLoggerVideoBackEnd *pParent;
+
+         } *pIVisioLoggerPreSignature;
+
+         class _IGPropertyPageClient : public IGPropertyPageClient {
+
+         public:
+         
+            _IGPropertyPageClient(VisioLoggerVideoBackEnd *pp) : pParent(pp) {};
+            ~_IGPropertyPageClient();
+
+   //      IPropertyPageClient
+ 
+            STDMETHOD (QueryInterface)(REFIID riid,void **ppv);
+            STDMETHOD_ (ULONG, AddRef)() { return 1; }
+            STDMETHOD_ (ULONG, Release)() { return 1; }
+
+            STDMETHOD(BeforeAllPropertyPages)() { return S_OK; }
+            STDMETHOD(GetPropertyPagesInfo)(long* countPages,SAFEARRAY** stringDescriptions,SAFEARRAY** pHelpDirs,SAFEARRAY** pSizes) { return S_OK; };
+            STDMETHOD(CreatePropertyPage)(long indexNumber,HWND,RECT*,BOOL,HWND *pHwndPropertyPage) { return S_OK; }
+            STDMETHOD(IsPageDirty)(long,BOOL*) { return S_OK; }
+            STDMETHOD(Help)(BSTR) { return S_OK; }
+            STDMETHOD(TranslateAccelerator)(long,long *pResult) { *pResult = S_FALSE;return S_OK; }
+            STDMETHOD(Apply)() { return S_OK; }
+            STDMETHOD(AfterAllPropertyPages)(BOOL) { return S_OK; }
+            STDMETHOD(DestroyPropertyPage)(long indexNumber) { return S_OK; }
+
+            STDMETHOD(GetPropertySheetHeader)(void *pHeader);
+            STDMETHOD(get_PropertyPageCount)(long *pCount);
+            STDMETHOD(GetPropertySheets)(void *pSheets);
+
+         private:
+   
+            VisioLoggerVideoBackEnd* pParent;
+
+         } * pIGPropertyPageClient;
+
+      private:
+
+         VideoBackEnd *pParent;
+
+         long findImageIndex(SAFEARRAY *imageFieldNames);
+         void findImageSize(SAFEARRAY *imageFieldNames,SAFEARRAY *imageHandles);
+
+         long refCount;   
+
+         HWND hwndProperties,hwndParent;
+
+         long startParameters;
+
+         char szImageField[64];
+         char szActionField[64];
+         bool doProperties,skipImaging,autoSnap;
+         char szKnownImageFields[1024];
+         char szKnownTextFields[1024];
+
+         char szTargetFile[MAX_PATH];
+
+         long autoFocusTime;
+         bool snapSecretly;
+
+         bool showNoPictureWarning;
+
+         long endParameters;
+
+         long cxImage,cyImage,bmPlanes,bmBitsPixel;
+
+         char szStatusInfo[MAX_PATH];
+
+         bool isProcessing;
+         bool isMainMenuAction;
+
+         std::list<char *> knownImageFields;
+         std::list<char *> knownTextFields;
+
+         HSEMAPHORE processingSemaphore;
+
+         DLGTEMPLATEEX2 *pPropertiesTemplate;
+
+         static LRESULT CALLBACK propertiesHandler(HWND,UINT,WPARAM,LPARAM);
+         
+         friend class VideoBackEnd;
+
+      } *pVisioLoggerVideoBackEnd;
+
+#endif
+
       bool findSolitaryCamera(char *pszDeviceName);
 
       long refCount;   
@@ -189,7 +361,7 @@
 
       resultDisposition processingDisposition;
 
-      OLECHAR szChosenDevice[64];
+      OLECHAR szwChosenDevice[64];
 
       bool skipImaging,autoSnap,keepImage,useAnyCamera,ignoreNoCamera,saveDocumentAnyway;
 
@@ -212,10 +384,6 @@
       char szTargetFile[MAX_PATH];
       HSEMAPHORE processingSemaphore;
 
-      IBaseFilter *pIBaseFilter;
-      IGraphBuilder *pIGraphBuilder;
-      IVMRWindowlessControl *pIVMRWindowlessControl;
-
       IPdfEnabler *pIPdfEnabler;
       IPdfDocument *pIPdfDocument;
 
@@ -234,6 +402,7 @@
 void TimeStampBitmap(BYTE *pImageData,char *pszBitmapFileName,bool doTimeStamp,bool doComputerName);
 void SaveBitmapFile(BYTE *pImageData,char *pszBitmapFileName);
 void SaveJPEG(BYTE *pImageData,char *pszBitmapFileName);
+void SaveImage(BYTE *pBitmap,char *pszBitmapFileName);
 
 #ifdef DEFINE_DATA
 

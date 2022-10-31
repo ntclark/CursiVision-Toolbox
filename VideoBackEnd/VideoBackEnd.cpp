@@ -7,6 +7,13 @@
 #include <gdiplus.h>
 #include <time.h>
 
+   IBaseFilter *pIBaseFilter = NULL;
+   ICaptureGraphBuilder2 *pICaptureGraphBuilder = NULL;
+   IGraphBuilder *pIGraphBuilder = NULL;
+   IBaseFilter *pIVideoMixingRenderer = NULL;
+   IVMRWindowlessControl9 *pIVMRWindowlessControl;
+   IMediaControl *pIMediaControl = NULL;
+
    WNDPROC VideoBackEnd::defaultImageHandler = NULL;
 
    VideoBackEnd::VideoBackEnd(IUnknown *pIUnknownOuter) :
@@ -16,6 +23,8 @@
    pIGPropertyPageClient(NULL),
 
    pICursiVisionServices(NULL),
+
+   pVisioLoggerVideoBackEnd(NULL),
 
    hwndProperties(NULL),
    hwndParent(NULL),
@@ -41,10 +50,6 @@
 
    processingSemaphore(NULL),
 
-   pIBaseFilter(NULL),
-   pIGraphBuilder(NULL),
-   pIVMRWindowlessControl(NULL),
-
    pIPdfEnabler(NULL),
    pIPdfDocument(NULL),
 
@@ -68,7 +73,7 @@
 
    {
 
-   memset(szChosenDevice,0,sizeof(szChosenDevice));
+   memset(szwChosenDevice,0,sizeof(szwChosenDevice));
    memset(szTargetFile,0,sizeof(szTargetFile));
 
    pIGPropertyPageClient = new _IGPropertyPageClient(this);
@@ -100,6 +105,12 @@
    pIGProperties -> Add(L"video parameters",NULL);
 
    pIGProperties -> DirectAccess(L"video parameters",TYPE_BINARY,&startParameters,sizeParameters);
+
+   pVisioLoggerVideoBackEnd = new VisioLoggerVideoBackEnd(this);
+
+   pIGProperties -> Add(L"visiologger video parameters",NULL);
+
+   pIGProperties -> DirectAccess(L"visiologger video parameters",TYPE_BINARY,pVisioLoggerVideoBackEnd -> settings(),pVisioLoggerVideoBackEnd -> settingsSize());
 
    char szTemp[MAX_PATH];
    char szRootName[MAX_PATH];      
@@ -185,43 +196,29 @@
 
    VideoBackEnd::~VideoBackEnd() {
 
-   IPrintingSupportProfile *px = NULL;
-   pICursiVisionServices -> get_PrintingSupportProfile(&px);
-   if ( pICursiVisionServices -> IsAdministrator() || ! px )
-      pIGProperties -> Save();
+   pIGProperties -> Save();
 
-#if 0
-//
-// I have had pretty much nothing but trouble from all of the MS WIA and other
-// imaging/multimedia interfaces
-//
+   unHostVideo();
+
+   IPrintingSupportProfile *px = NULL;
+
+   if ( pICursiVisionServices ) {
+      pICursiVisionServices -> get_PrintingSupportProfile(&px);
+      if ( pICursiVisionServices -> IsAdministrator() || ! px )
+         pIGProperties -> Save();
+   }
+
    if ( pCameraNames ) {
       for ( long k = 0; k < (long)cameraCount; k++ )
-         CoTaskMemFree(pCameraNames[k]);
+         SysFreeString(pCameraNames[k]);
       delete [] pCameraNames;
    }
-#endif
 
-#if 0
-   if ( pIPortableDeviceManager )
-      pIPortableDeviceManager -> Release();
-#endif
 
    if ( bstrResultsFile )
       SysFreeString(bstrResultsFile);
 
-   if ( pIVMRWindowlessControl )
-      pIVMRWindowlessControl -> Release();
-
-   pIVMRWindowlessControl = NULL;
-
-   if ( pIGraphBuilder )
-      pIGraphBuilder -> Release();
-   pIGraphBuilder = NULL;
-
-   if ( pIBaseFilter )
-      pIBaseFilter -> Release();
-   pIBaseFilter = NULL;
+   delete pVisioLoggerVideoBackEnd;
 
    return;
    }
@@ -485,6 +482,126 @@
    delete pImage;
 
    Gdiplus::GdiplusShutdown(gdiplusToken);
+
+   return;
+   }
+
+
+   bool VideoBackEnd::hostVideo(HWND hwndHost) {
+
+   ICreateDevEnum *pICreateDevEnum = NULL;
+   IEnumMoniker *pIEnumMoniker = NULL;
+   IMoniker *pIMoniker = NULL;
+
+   HRESULT hr;
+
+   CoCreateInstance(CLSID_SystemDeviceEnum,NULL,CLSCTX_INPROC_SERVER,IID_ICreateDevEnum,reinterpret_cast<void**>(&pICreateDevEnum));
+
+   pICreateDevEnum -> CreateClassEnumerator(CLSID_VideoInputDeviceCategory,&pIEnumMoniker,0);
+
+   if ( ! pIEnumMoniker ) {
+      OLECHAR szwTemp[1024];
+      swprintf(szwTemp,L"The video device: %ls is not found or is disconnected",szwChosenDevice);
+      MessageBoxW(NULL,szwTemp,L"Error",MB_ICONEXCLAMATION | MB_TOPMOST);
+      return false;
+   }
+
+
+   while ( S_OK == pIEnumMoniker -> Next(1, &pIMoniker, NULL) ) {
+
+      IPropertyBag *pIPropertyBag;
+
+      hr = pIMoniker -> BindToStorage(0,0,IID_IPropertyBag,reinterpret_cast<void **>(&pIPropertyBag));
+
+      VARIANT varName;
+      VariantInit(&varName);
+      hr = pIPropertyBag -> Read(L"FriendlyName", &varName, 0);
+
+      pIPropertyBag -> Release();
+
+      if ( 0 == wcscmp(varName.bstrVal,szwChosenDevice) ) {
+         hr = pIMoniker -> BindToObject(0,0,IID_IBaseFilter,reinterpret_cast<void **>(&pIBaseFilter));
+         pIMoniker -> Release();
+         break;
+      }
+
+      pIMoniker -> Release();
+
+   }
+
+   pIEnumMoniker -> Release();
+   pICreateDevEnum -> Release();
+
+   if ( ! pIBaseFilter ) {
+      OLECHAR szwTemp[1024];
+      swprintf(szwTemp,L"The video device: %ls is not found or is disconnected",szwChosenDevice);
+      MessageBoxW(NULL,szwTemp,L"Error",MB_ICONEXCLAMATION | MB_TOPMOST);
+      return false;
+   }
+
+   hr = CoCreateInstance(CLSID_CaptureGraphBuilder2,NULL,CLSCTX_INPROC_SERVER,IID_ICaptureGraphBuilder2,reinterpret_cast<void **>(&pICaptureGraphBuilder));
+
+   hr = CoCreateInstance(CLSID_FilterGraph,0,CLSCTX_INPROC_SERVER,IID_IGraphBuilder,reinterpret_cast<void **>(&pIGraphBuilder));
+
+   hr = pICaptureGraphBuilder -> SetFiltergraph(pIGraphBuilder);
+
+   hr = pIGraphBuilder -> AddFilter(pIBaseFilter, L"Preview Renderer");
+
+   hr = CoCreateInstance(CLSID_VideoMixingRenderer9,NULL,CLSCTX_INPROC,IID_IBaseFilter,(void**)&pIVideoMixingRenderer);
+
+   hr = pIGraphBuilder -> AddFilter(pIVideoMixingRenderer, L"Video Mixing Renderer");
+
+   {
+   IVMRFilterConfig *pConfig = NULL;
+   hr = pIVideoMixingRenderer -> QueryInterface(IID_IVMRFilterConfig9,(void **)&pConfig);
+   pConfig -> SetRenderingMode(VMRMode_Windowless);
+   pConfig -> Release();
+   }
+
+   pIVideoMixingRenderer -> QueryInterface(IID_IVMRWindowlessControl9,(void **)&pIVMRWindowlessControl);
+
+   pIVMRWindowlessControl -> SetVideoClippingWindow(hwndHost);
+
+   RECT rcClient;
+
+   GetClientRect(hwndHost,&rcClient);
+
+   pIVMRWindowlessControl -> SetVideoPosition(NULL,&rcClient);
+
+   pICaptureGraphBuilder -> RenderStream(&PIN_CATEGORY_PREVIEW,&MEDIATYPE_Video,pIBaseFilter,NULL,pIVideoMixingRenderer);
+
+   pIGraphBuilder -> QueryInterface(IID_IMediaControl,reinterpret_cast<void **>(&pIMediaControl));
+
+   pIMediaControl -> Run();
+
+   return true;
+   }
+
+
+   void VideoBackEnd::unHostVideo() {
+
+   if ( ! pIMediaControl )
+      return;
+
+   HRESULT hr = pIMediaControl -> Stop();
+
+   pIMediaControl -> Release();
+   pIMediaControl = NULL;
+
+   pIVMRWindowlessControl -> Release();
+   pIVMRWindowlessControl = NULL;
+
+   pIVideoMixingRenderer -> Release();
+   pIVideoMixingRenderer = NULL;
+
+   pIGraphBuilder -> Release();
+   pIGraphBuilder = NULL;
+
+   pICaptureGraphBuilder -> Release();
+   pICaptureGraphBuilder = NULL;
+   
+   pIBaseFilter -> Release();
+   pIBaseFilter = NULL;
 
    return;
    }

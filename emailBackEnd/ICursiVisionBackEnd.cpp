@@ -91,7 +91,7 @@ SetProperties:
 
    if ( 0 == sendMail(szEmailServer,smtpPort,szEmailUserName,szEmailPassword,
                        szResultFile,szOriginalFile,
-                        szEmailFrom,szEmailTo,szEmailCC,szEmailBCC,szSubject,szEmailBody) )
+                        szEmailFrom,szEmailTo,szEmailCC,szEmailBCC,szSubject,szEmailBody,useTLS) )
       goto SetProperties;
 
    return S_OK;

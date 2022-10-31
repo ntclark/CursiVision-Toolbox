@@ -135,6 +135,7 @@
       char szEmailServer[64];
       char szEmailUserName[64];
       char szEmailPassword[64];
+      boolean useTLS{false};
 
       char szEmailFrom[64];
       char szEmailTo[128];

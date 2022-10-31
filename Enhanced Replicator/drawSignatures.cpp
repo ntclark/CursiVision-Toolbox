@@ -12,7 +12,7 @@
    for ( long k = 0; k < WRITING_LOCATION_COUNT; k++ ) {
       if ( ! pThis -> pWritingLocations[k] )
          break;
-      if ( pThis -> pWritingLocations[k] -> zzpdfPageNumber != pDocument -> currentPageNumber ) 
+      if ( pThis -> pWritingLocations[k] -> pdfPageNumber != pDocument -> currentPageNumber() ) 
          continue;
       pThis -> drawSignature(NULL,k,0L,0L,NULL,pDocument);
    }
@@ -53,7 +53,7 @@
    r.top -= shiftY;
    r.bottom -= shiftY;
 
-   pDocument -> convertToPanePixels(pSG -> zzpdfPageNumber,&r);
+   pDocument -> convertToClippedPanePixels(pSG -> pdfPageNumber,&r);
 
    if ( NULL == hbmDrawRestore[index] ) { // && isReplicant[index] ) {
 

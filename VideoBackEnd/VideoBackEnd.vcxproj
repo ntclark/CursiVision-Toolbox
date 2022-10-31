@@ -26,25 +26,25 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -103,10 +103,12 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>$(ProjectDir)VisioLogger;$(ProjectDir);$(ProjectDir)include;%GSYSTEM_HOME%\Common\include;%GSYSTEM_HOME%\Common\source;$(SolutionDir);$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>VisioLogger;$(ProjectDir);$(ProjectDir)\include;%GSYSTEM_HOME%\Common\include;%GSYSTEM_HOME%\Common\resources;$(SolutionDir);$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>gdiplus.lib;Ws2_32.lib;shlwapi.lib;comctl32.lib;Strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -150,10 +152,12 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>$(ProjectDir)VisioLogger;$(ProjectDir);$(ProjectDir)include;%GSYSTEM_HOME%\Common\include;%GSYSTEM_HOME%\Common\source;$(SolutionDir);$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>VisioLogger;$(ProjectDir);$(ProjectDir)\include;%GSYSTEM_HOME%\Common\include;%GSYSTEM_HOME%\Common\resources;$(SolutionDir);$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>gdiplus.lib;Ws2_32.lib;shlwapi.lib;comctl32.lib;Strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -193,6 +197,7 @@
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalIncludeDirectories>$(ProjectDir)VisioLogger;$(ProjectDir);$(ProjectDir)include;%GSYSTEM_HOME%\Common\include;%GSYSTEM_HOME%\Common\source;$(SolutionDir);$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -233,6 +238,7 @@
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalIncludeDirectories>$(ProjectDir)VisioLogger;$(ProjectDir);$(ProjectDir)include;%GSYSTEM_HOME%\Common\include;%GSYSTEM_HOME%\Common\source;$(SolutionDir);$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -264,6 +270,12 @@
     <ClCompile Include="IUnknown.cpp" />
     <ClCompile Include="propertiesHandler.cpp" />
     <ClCompile Include="VideoBackEnd.cpp" />
+    <ClCompile Include="VisioLogger\IVisioLoggerAction.cpp" />
+    <ClCompile Include="VisioLogger\IVisioLoggerNewRow.cpp" />
+    <ClCompile Include="VisioLogger\VisioLoggerIPropertyPageClient.cpp" />
+    <ClCompile Include="VisioLogger\VisioLoggerIUnknown.cpp" />
+    <ClCompile Include="VisioLogger\VisioLoggerPropertiesHandler.cpp" />
+    <ClCompile Include="VisioLogger\VisioLoggerVideoBackEnd.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="VideoBackEnd.def" />
@@ -279,10 +291,12 @@
       <InterfaceIdentifierFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VideoBackEnd_i.c</InterfaceIdentifierFileName>
       <TargetEnvironment Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Win32</TargetEnvironment>
     </Midl>
+    <Midl Include="VisioLogger\VisioLoggerVideo.odl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="VideoBackEnd.h" />
+    <ClInclude Include="VisioLogger\visioLoggerResource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="VideoBackEnd.rc">
@@ -291,6 +305,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OUTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OUTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <ResourceCompile Include="VisioLogger\VisioLOggerVideoBackEnd.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

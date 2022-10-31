@@ -27,25 +27,25 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -162,7 +162,7 @@ regsvr32 /s /c "$(TargetPath)"
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>Ws2_32.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;Crypt32.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>.\emailBackEnd.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -250,7 +250,7 @@ regsvr32 /s /c "$(TargetPath)"
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>Ws2_32.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;Crypt32.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>.\emailBackEnd.def</ModuleDefinitionFile>
       <ImportLibrary>$(OutDir)emailBackEnd.lib</ImportLibrary>
@@ -288,6 +288,7 @@ regsvr32 /s /c "$(TargetPath)"
     <ClCompile Include="IPropertyPageClient.cpp" />
     <ClCompile Include="IUnknown.cpp" />
     <ClCompile Include="propertiesHandler.cpp" />
+    <ClCompile Include="TLSEncryption.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="emailBackEnd.def" />
@@ -295,6 +296,7 @@ regsvr32 /s /c "$(TargetPath)"
   <ItemGroup>
     <ClInclude Include="emailBackEnd.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="TLSEncryption.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="emailBackEnd.rc">

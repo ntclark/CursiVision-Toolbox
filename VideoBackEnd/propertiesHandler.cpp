@@ -9,6 +9,10 @@
 
 #include "dispositionSettingsDefines.h"
 
+#include "resource.h"
+
+extern IVMRWindowlessControl9 *pIVMRWindowlessControl;
+
 static bool waitingForImage = false;
 static bool skipToDraw = false;
 static HWND hwndCameras = NULL;
@@ -22,7 +26,7 @@ static HWND hwndCameras = NULL;
    SendMessage(hwndCameras,CB_RESETCONTENT,0L,0L);                                     \
    for ( long k = 0; k < (long)pObject -> cameraCount; k++ ) {                         \
       SendMessageW(hwndCameras,CB_ADDSTRING,0L,(LPARAM)pObject -> pCameraNames[k]);    \
-      if ( 0 == wcscmp(pObject -> pCameraNames[k],pObject -> szChosenDevice) )         \
+      if ( 0 == wcscmp(pObject -> pCameraNames[k],pObject -> szwChosenDevice) )        \
          SendMessage(hwndCameras,CB_SETCURSEL,k,0L);                                   \
    }                                                                                   \
    PUT_BOOL(p -> doProperties,IDDI_SHOW_PROPERTIES);        \
@@ -49,7 +53,7 @@ static HWND hwndCameras = NULL;
 
 #define UNLOAD_ADDITIONAL \
 {  \
-   SendMessageW(hwndCameras,CB_GETLBTEXT,SendMessageW(hwndCameras,CB_GETCURSEL,0L,0L),(LPARAM)pObject -> szChosenDevice); \
+   SendMessageW(hwndCameras,CB_GETLBTEXT,SendMessageW(hwndCameras,CB_GETCURSEL,0L,0L),(LPARAM)pObject -> szwChosenDevice); \
    GET_BOOL(p -> doProperties,IDDI_SHOW_PROPERTIES);        \
    GET_BOOL(pObject -> skipImaging,IDDI_SKIP);              \
    GET_BOOL(pObject -> autoSnap,IDDI_AUTO_SNAP);            \
@@ -145,7 +149,7 @@ static HWND hwndCameras = NULL;
 
       EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),! pObject -> keepAspectRatio);
 
-      if ( pObject -> isProcessing || pObject -> szChosenDevice[0] )
+      if ( pObject -> isProcessing || pObject -> szwChosenDevice[0] )
          PostMessage(hwnd,WM_START_VIDEO,0L,0L);
 
       RECT rcTabs,rcVideo;
@@ -217,7 +221,7 @@ static HWND hwndCameras = NULL;
 
       pObject -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
 
-      if ( ! pObject -> pICursiVisionServices -> IsAdministrator() && px ) {
+      if ( px && ! px -> AllowSaveProperties() ) {
          RECT rc = {0};
          GetClientRect(hwnd,&rc);
          SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,rc.bottom - 32,0,0,SWP_NOSIZE);
@@ -232,109 +236,11 @@ static HWND hwndCameras = NULL;
 
       SendMessage(hwnd,WM_STOP_VIDEO,0L,0L);
 
-      if ( ! pObject -> szChosenDevice[0] )
+      if ( ! pObject -> szwChosenDevice[0] )
          break;
 
-      HRESULT hr;
-      ICreateDevEnum *pICreateDevEnum = NULL;
-      IEnumMoniker *pIEnumMoniker = NULL;
-
-      CoCreateInstance(CLSID_SystemDeviceEnum,NULL,CLSCTX_INPROC_SERVER,IID_ICreateDevEnum,reinterpret_cast<void**>(&pICreateDevEnum));
-
-      pICreateDevEnum -> CreateClassEnumerator(CLSID_VideoInputDeviceCategory,&pIEnumMoniker,0);
-
-      if ( ! pIEnumMoniker ) {
-         char szTemp[1024];
-         char szDevice[128];
-         WideCharToMultiByte(CP_ACP,0,pObject -> szChosenDevice, -1, szDevice,128,0,0);
-         sprintf(szTemp,"The video device: %s is not found or is disconnected",szDevice);
-         MessageBox(pObject -> hwndParent,szTemp,"Error",MB_ICONEXCLAMATION | MB_TOPMOST);
+      if ( ! pObject -> hostVideo(GetDlgItem(hwnd,IDDI_VIDEO)) )
          break;
-      }
-
-      IMoniker *pIMoniker = NULL;
-
-      pObject -> pIBaseFilter = NULL;
-
-      while ( S_OK == pIEnumMoniker -> Next(1, &pIMoniker, NULL) ) {
-
-         IPropertyBag *pIPropertyBag;
-
-         hr = pIMoniker -> BindToStorage(0,0,IID_IPropertyBag,reinterpret_cast<void **>(&pIPropertyBag));
-
-         VARIANT varName;
-         VariantInit(&varName);
-         hr = pIPropertyBag -> Read(L"FriendlyName", &varName, 0);
-
-         pIPropertyBag -> Release();
-
-         if ( 0 == wcscmp(varName.bstrVal,pObject -> szChosenDevice) ) {
-            hr = pIMoniker -> BindToObject(0,0,IID_IBaseFilter,reinterpret_cast<void **>(&pObject -> pIBaseFilter));
-            pIMoniker -> Release();
-            break;
-         }
-
-         pIMoniker -> Release();
-
-      }
-
-      pIEnumMoniker -> Release();
-      pICreateDevEnum -> Release();
-
-      if ( ! pObject -> pIBaseFilter ) {
-         char szTemp[1024];
-         char szDevice[128];
-         WideCharToMultiByte(CP_ACP,0,pObject -> szChosenDevice, -1, szDevice,128,0,0);
-         sprintf(szTemp,"The video device: %s is not found or is disconnected",szDevice);
-         MessageBox(pObject -> hwndParent,szTemp,"Error",MB_ICONEXCLAMATION | MB_TOPMOST);
-         break;
-      }
-
-      IBaseFilter *pIVideoMixingRenderer = NULL;
-
-      ICaptureGraphBuilder2 *pICaptureGraphBuilder = NULL;
-
-      CoCreateInstance(CLSID_FilterGraph,0,CLSCTX_INPROC_SERVER,IID_IGraphBuilder,reinterpret_cast<void **>(&pObject -> pIGraphBuilder));
-      CoCreateInstance(CLSID_CaptureGraphBuilder2,NULL,CLSCTX_INPROC_SERVER,IID_ICaptureGraphBuilder2,reinterpret_cast<void **>(&pICaptureGraphBuilder));
-
-      pICaptureGraphBuilder -> SetFiltergraph(pObject -> pIGraphBuilder);
-
-      pObject -> pIGraphBuilder -> AddFilter(pObject -> pIBaseFilter, L"Preview Renderer");
-
-      CoCreateInstance(CLSID_VideoMixingRenderer,NULL,CLSCTX_INPROC,IID_IBaseFilter,(void**)&pIVideoMixingRenderer);
-
-      pObject -> pIGraphBuilder -> AddFilter(pIVideoMixingRenderer, L"Video Mixing Renderer");
-
-      {
-      IVMRFilterConfig *pConfig = NULL;
-      pIVideoMixingRenderer -> QueryInterface(IID_IVMRFilterConfig,(void **)&pConfig);
-      pConfig -> SetRenderingMode(VMRMode_Windowless);
-      pConfig -> Release();
-      }
-
-      pIVideoMixingRenderer -> QueryInterface(IID_IVMRWindowlessControl,(void **)&pObject -> pIVMRWindowlessControl);
-
-      pObject -> pIVMRWindowlessControl -> SetVideoClippingWindow(GetDlgItem(hwnd,IDDI_VIDEO));
-
-      RECT rcClient;
-
-      GetClientRect(GetDlgItem(hwnd,IDDI_VIDEO),&rcClient);
-
-      pObject -> pIVMRWindowlessControl ->SetVideoPosition(NULL,&rcClient);
-
-      pICaptureGraphBuilder -> RenderStream(&PIN_CATEGORY_PREVIEW,&MEDIATYPE_Video,pObject -> pIBaseFilter,NULL,pIVideoMixingRenderer);
-
-      IMediaControl *pIMediaControl = NULL;
-
-      pObject -> pIGraphBuilder -> QueryInterface(IID_IMediaControl,reinterpret_cast<void **>(&pIMediaControl));
-
-      pIMediaControl -> Run();
-
-      pIMediaControl -> Release();
-
-      pICaptureGraphBuilder -> Release();
-
-      pIVideoMixingRenderer -> Release();
 
       waitingForImage = false;
 
@@ -356,7 +262,7 @@ static HWND hwndCameras = NULL;
 
       BYTE *pImage = NULL;
 
-      HRESULT hr = pObject -> pIVMRWindowlessControl -> GetCurrentImage(&pImage);
+      HRESULT hr = pIVMRWindowlessControl -> GetCurrentImage(&pImage);
 
       if ( ! pImage || ( S_OK != hr ) ) {
          SetTimer(hwnd,WM_TIMER_ALLOW_DRAW,pObject -> autoFocusDelay,NULL);
@@ -377,27 +283,8 @@ static HWND hwndCameras = NULL;
       break;
 
    case WM_DESTROY:
-   case WM_STOP_VIDEO: {
-
-      if ( ! pObject -> pIGraphBuilder )
-         break;
-
-      IMediaControl *pIMediaControl = NULL;
-      HRESULT hr = pObject -> pIGraphBuilder -> QueryInterface(IID_IMediaControl,reinterpret_cast<void **>(&pIMediaControl));
-      hr = pIMediaControl -> Stop();
-      pIMediaControl -> Release();
-
-      if ( pObject -> pIVMRWindowlessControl )
-         pObject -> pIVMRWindowlessControl -> Release();
-      pObject -> pIVMRWindowlessControl = NULL;
-
-      pObject -> pIGraphBuilder -> Release();
-      pObject -> pIGraphBuilder = NULL;
-
-      pObject -> pIBaseFilter -> Release();
-      pObject -> pIBaseFilter = NULL;
-
-      }
+   case WM_STOP_VIDEO:
+      pObject -> unHostVideo();
       break;
 
    case WM_TIMER: {
@@ -438,7 +325,7 @@ static HWND hwndCameras = NULL;
          long index = (long)SendMessage(hwndCameras,CB_GETCURSEL,0L,0L);
          if ( CB_ERR == index )
             break;
-         SendMessageW(hwndCameras,CB_GETLBTEXT,(WPARAM)index,(LPARAM)pObject -> szChosenDevice);
+         SendMessageW(hwndCameras,CB_GETLBTEXT,(WPARAM)index,(LPARAM)pObject -> szwChosenDevice);
          PostMessage(hwnd,WM_START_VIDEO,0L,0L);
          }
          break;
@@ -553,11 +440,11 @@ static HWND hwndCameras = NULL;
    switch ( msg ) {
 
    case WM_PAINT: {
-      if ( ! p -> pIVMRWindowlessControl )
+      if ( ! pIVMRWindowlessControl )
          return CallWindowProc(VideoBackEnd::defaultImageHandler,hwnd,msg,wParam,lParam);
       PAINTSTRUCT ps = {0};
       BeginPaint(hwnd,&ps);
-      p -> pIVMRWindowlessControl -> RepaintVideo(hwnd,ps.hdc);  
+      pIVMRWindowlessControl -> RepaintVideo(hwnd,ps.hdc);  
       EndPaint(hwnd,&ps);
       }
       break;

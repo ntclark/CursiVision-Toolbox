@@ -24,16 +24,10 @@
     <ClCompile Include="additionalSaveOptionsHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\include\dispositionSettingsBody.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="dispositionSettingsHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NamingBackEnd.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Common\source\resultdisposition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dllMain.cpp">
@@ -51,7 +45,13 @@
     <ClCompile Include="IUnknown.cpp">
       <Filter>Source Files\COM Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\source\utilities.cpp">
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\include\dispositionSettingsBody.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\resultdisposition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

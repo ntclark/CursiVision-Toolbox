@@ -15,7 +15,7 @@
 
    isProcessing = true;
 
-   if ( processingDisposition.doProperties || ( ! useAnyCamera && ! szChosenDevice[0] ) ) {
+   if ( processingDisposition.doProperties || ( ! useAnyCamera && ! szwChosenDevice[0] ) ) {
 
 SetProperties:
 
@@ -32,7 +32,7 @@ SetProperties:
    if ( ! doExecute )
       return S_OK;
 
-   if ( ! szChosenDevice[0] && ! useAnyCamera ) {
+   if ( ! szwChosenDevice[0] && ! useAnyCamera ) {
       char szMessage[512];
       sprintf(szMessage,"The camera has not been selected."
                         "\n\nSelect Retry to respecify the properties, or Cancel to exit without taking a photograph");
@@ -52,10 +52,10 @@ SetProperties:
    long deviceIndex = -1L;
 
    if ( useAnyCamera )
-      wcscpy(szChosenDevice,pCameraNames[0]);
+      wcscpy(szwChosenDevice,pCameraNames[0]);
       
    for ( DWORD k = 0; k < cameraCount; k++ ) {
-      if ( wcscmp(szChosenDevice,pCameraNames[k]) ) 
+      if ( wcscmp(szwChosenDevice,pCameraNames[k]) ) 
          continue;
       deviceIndex = k;
       break;
@@ -63,9 +63,9 @@ SetProperties:
 
    if ( -1L == deviceIndex && ! ignoreNoCamera ) {
 
-      char szMessage[1024];
-      sprintf(szMessage,"The device associated with the name: %ls\n\nWas not found on this system, is it disconnected ?\n\nPress Retry to specify the settings, or Cancel to exit",szChosenDevice);
-      if ( IDCANCEL == MessageBox(NULL,szMessage,"Error!",MB_ICONEXCLAMATION | MB_RETRYCANCEL | MB_DEFBUTTON1 ) )
+      OLECHAR szwMessage[1024];
+      swprintf(szwMessage,L"The device associated with the name: %ls\n\nWas not found on this system, is it disconnected ?\n\nPress Retry to specify the settings, or Cancel to exit",szwChosenDevice);
+      if ( IDCANCEL == MessageBoxW(NULL,szwMessage,L"Error!",MB_ICONEXCLAMATION | MB_RETRYCANCEL | MB_DEFBUTTON1 ) )
          return E_FAIL;
       goto SetProperties;
 
