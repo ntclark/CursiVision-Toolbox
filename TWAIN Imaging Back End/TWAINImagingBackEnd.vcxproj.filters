@@ -61,7 +61,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Midl Include="ImagingBackEnd.odl">
+    <Midl Include="TWAINImagingBackEnd.odl">
       <Filter>Source Files\COM Implementation</Filter>
     </Midl>
   </ItemGroup>

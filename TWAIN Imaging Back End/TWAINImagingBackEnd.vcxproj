@@ -295,7 +295,7 @@ copy "$(ProjectDir)\Support Files\$(Platform)\twaindsm.dll" "$(GSYSTEM_HOME)\Com
     <None Include="ImagingBackEnd.def" />
   </ItemGroup>
   <ItemGroup>
-    <Midl Include="ImagingBackEnd.odl">
+    <Midl Include="TWAINImagingBackEnd.odl">
       <TargetEnvironment Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Win32</TargetEnvironment>
       <TypeLibraryName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TWAINImagingBackEnd.tlb</TypeLibraryName>
       <TypeLibraryName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TWAINImagingBackEnd.tlb</TypeLibraryName>
