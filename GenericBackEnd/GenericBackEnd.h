@@ -183,11 +183,9 @@
 #ifdef DEFINE_DATA
 
    HMODULE hModule = NULL;
-   char szModuleName[MAX_PATH];
 
 #else
 
    extern HMODULE hModule;
-   extern char szModuleName[];
 
 #endif

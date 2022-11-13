@@ -228,17 +228,9 @@
 #ifdef DEFINE_DATA
 
    HMODULE hModule = NULL;
-   char szModuleName[MAX_PATH];
-   char szApplicationDataDirectory[MAX_PATH];
-   char szGlobalDataStore[MAX_PATH];
-   char szUserDirectory[MAX_PATH];
 
 #else
 
    extern HMODULE hModule;
-   extern char szModuleName[];
-   extern char szApplicationDataDirectory[];
-   extern char szGlobalDataStore[];
-   extern char szUserDirectory[];
 
 #endif

@@ -230,20 +230,12 @@ TW_UINT16 FAR PASCAL DSMCallback(pTW_IDENTITY _pOrigin,pTW_IDENTITY _pDest,TW_UI
 #ifdef DEFINE_DATA
 
    HMODULE hModule = NULL;
-   char szModuleName[MAX_PATH];
-   char szApplicationDataDirectory[MAX_PATH];
-   char szGlobalDataStore[MAX_PATH];
-   char szUserDirectory[MAX_PATH];
 
    DSMENTRYPROC dsmEntryProcedure = NULL;
 
 #else
 
    extern HMODULE hModule;
-   extern char szModuleName[];
-   extern char szApplicationDataDirectory[];
-   extern char szGlobalDataStore[];
-   extern char szUserDirectory[];
 
    extern DSMENTRYPROC dsmEntryProcedure;
 

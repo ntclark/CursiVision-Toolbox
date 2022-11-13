@@ -15,13 +15,12 @@
 #include "utilities.h"
 
 #include "GenericBackEnd.h"
+#include "directories.h"
 
 #include "Properties_i.c"
 #include "pdfEnabler_i.c"
 #include "GenericBackEnd_i.c"
 #include "CursiVision_i.c"
-
-   OLECHAR wstrModuleName[256];
 
    extern "C" BOOL WINAPI DllMain(HINSTANCE hI, DWORD dwReason, LPVOID) {
 

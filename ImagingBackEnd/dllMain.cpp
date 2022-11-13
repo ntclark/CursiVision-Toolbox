@@ -21,8 +21,6 @@
 #include "ImagingBackEnd_i.c"
 #include "CursiVision_i.c"
 
-   OLECHAR wstrModuleName[256];
-
    extern "C" BOOL WINAPI DllMain(HINSTANCE hI, DWORD dwReason, LPVOID) {
 
    switch ( dwReason ) {

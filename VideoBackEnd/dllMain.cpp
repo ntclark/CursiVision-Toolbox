@@ -1,6 +1,3 @@
-// Copyright 2017 InnoVisioNate Inc. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 #include <windows.h>
 #include <shlwapi.h>
@@ -23,8 +20,6 @@
 
 #include "VisioLoggerIntegration_i.c"
 #include "VisioLoggerVideo_i.c"
-
-   OLECHAR wstrModuleName[256];
 
    extern "C" BOOL WINAPI DllMain(HINSTANCE hI, DWORD dwReason, LPVOID) {
 
