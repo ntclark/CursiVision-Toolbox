@@ -1,6 +1,3 @@
-// Copyright 2017 InnoVisioNate Inc. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 #include <windows.h>
 #include <winres.h>
@@ -8,10 +5,20 @@
 
 #include "resource.h"
 
+#ifndef CV_VERSION_MAJOR
+#define CV_VERSION_MAJOR 5
+#endif
+#ifndef CV_VERSION_MINOR
+#define CV_VERSION_MINOR 1
+#endif
+#ifndef CV_VERSION_BUILD
+#define CV_VERSION_BUILD 1
+#endif
+
 VS_VERSION_INFO VERSIONINFO
 
- FILEVERSION 4,0,0,0
- PRODUCTVERSION 4,0,0,0
+ FILEVERSION CV_VERSION_MAJOR,0,0,CV_VERSION_BUILD
+ PRODUCTVERSION CV_VERSION_MAJOR,0,0,CV_VERSION_BUILD
  FILEFLAGSMASK 0x3fL
  FILEFLAGS 0x0L
  FILEOS 0x40004L
@@ -25,15 +32,15 @@ BEGIN
         BEGIN
             VALUE "Comments", "\0"
             VALUE "CompanyName", "InnoVisioNate\0"
-            VALUE "FileDescription", "CursiVision Spreadsheet Storage backend\0"
-            VALUE "FileVersion", "5, 0, 1, 0\0"
-            VALUE "InternalName", "EnhancedSpreadsheetBackEnd.ocx\0"
-            VALUE "LegalCopyright", "Copyright © 2010,2011,2012,2013,2014 InnoVisioNate Inc.\0"
+            VALUE "FileDescription", "The CursiVision Spreadsheet tool. Capture data from the document and store rows of it in a spreadsheet. Can also record the location of the result\0"
+            VALUE "FileVersion", CV_VERSION_MAJOR "," CV_VERSION_MINOR "," CV_VERSION_BUILD"\0"
+            VALUE "InternalName", "SpreadsheetBackEnd.dll\0"
+            VALUE "LegalCopyright", "Copyright © 2009-2023 InnoVisioNate Inc.\0"
             VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "EnhancedSpreadsheetBackEnd.ocx\0"
+            VALUE "OriginalFilename", "SpreadsheetBackEnd.dll\0"
             VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "CursiVision Spreadsheet Storage backend\0"
-            VALUE "ProductVersion", "5.0.1\0"
+            VALUE "ProductName", "CursiVision Spreadsheet tool\0"
+            VALUE "ProductVersion", CV_VERSION_MAJOR "," CV_VERSION_MINOR "," CV_VERSION_BUILD"\0"
             VALUE "SpecialBuild", "\0"
         END
     END
@@ -42,6 +49,7 @@ BEGIN
         VALUE "Translation", 0x409, 1200
     END
 END
+
 
 IDD_NO_PROFILE DIALOGEX 0,0, 256, 256 + 32 + 8
 CAPTION "Note"
