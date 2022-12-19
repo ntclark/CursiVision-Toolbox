@@ -53,7 +53,7 @@
    r.top -= shiftY;
    r.bottom -= shiftY;
 
-   pDocument -> convertToClippedPanePixels(pSG -> pdfPageNumber,&r);
+   pDocument -> convertToPixels(pSG -> pdfPageNumber,&r);
 
    if ( NULL == hbmDrawRestore[index] ) { // && isReplicant[index] ) {
 

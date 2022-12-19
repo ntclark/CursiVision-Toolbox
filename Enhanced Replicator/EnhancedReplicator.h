@@ -26,7 +26,6 @@
 #include "utilities.h"
 
 #define WRITING_LOCATION_COUNT 32
-#define CORNER_PROXIMITY 10
 
    class theReplicator : public ICursiVisionBackEnd {
    public:

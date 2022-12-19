@@ -77,8 +77,6 @@
       lastMouse.x = ptlMouse.x;
       lastMouse.y = ptlMouse.y;
 
-      pTemplateDocumentUI -> resolveCurrentPageNumber(&ptlMouse);
-
       if ( 0 == (wParam & MK_LBUTTON) ) {
 
          long oldActiveIndex = p -> activeIndex;
@@ -89,7 +87,11 @@
                      ptlMouse.y < pTemplateDocumentUI -> rcPDFPagePixelsInView.top || ptlMouse.y > pTemplateDocumentUI -> rcPDFPagePixelsInView.bottom ) 
             break;
 
-         pTemplateDocumentUI -> convertToPoints(&ptlMouse);
+        long pageNumber{-1};
+        pTemplateDocumentUI ->PDFiumControl() ->get_PDFPageUnderMouse(&pageNumber);
+
+Beep(2000,1000);
+         //pTemplateDocumentUI -> convertToPoints(pageNumber,&ptlMouse);
 
          for ( long k = 0; k < WRITING_LOCATION_COUNT; k++ ) {
 
@@ -280,8 +282,6 @@
       ptlMouse.x -= pTemplateDocumentUI -> rcPageParentCoordinates.left;
       ptlMouse.y -= pTemplateDocumentUI -> rcPageParentCoordinates.top;
 
-      pTemplateDocumentUI -> resolveCurrentPageNumber(&ptlMouse);
-
       if ( ! p -> isReplicant[p -> activeIndex] )
          break;
 
@@ -294,8 +294,9 @@
       memcpy(&rcNew,&pSG -> documentRect,sizeof(RECT));
 
       if ( ! ( pSG -> pdfPageNumber == pTemplateDocumentUI -> currentPageNumber() ) ) {
-         pTemplateDocumentUI -> convertToClippedPanePixels(pSG -> pdfPageNumber,&rcNew);
-         pTemplateDocumentUI -> convertToPoints(&rcNew);
+         pTemplateDocumentUI -> convertToPixels(pSG -> pdfPageNumber,&rcNew);
+Beep(2000,1000);
+         pTemplateDocumentUI -> convertToPoints(pSG -> pdfPageNumber,&rcNew);
          memcpy(&pSG -> documentRect,&rcNew,sizeof(RECT));
          pSG -> pdfPageNumber = pTemplateDocumentUI -> currentPageNumber();
       }
@@ -330,8 +331,6 @@
       ptlMouse.x -= pTemplateDocumentUI -> rcPageParentCoordinates.left;
       ptlMouse.y -= pTemplateDocumentUI -> rcPageParentCoordinates.top;
 
-      pTemplateDocumentUI -> resolveCurrentPageNumber(&ptlMouse);
-   
       p -> leftClickMousePoint.x = ptlMouse.x;
       p -> leftClickMousePoint.y = ptlMouse.y;
 
