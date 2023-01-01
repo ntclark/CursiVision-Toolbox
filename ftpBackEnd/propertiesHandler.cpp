@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 #include "ftpBackEnd.h"
+#include "utilities.h"
 
 #define PUT_BOOL(v,id)  SendDlgItemMessage(hwnd,id,BM_SETCHECK,v ? BST_CHECKED : BST_UNCHECKED,0L);
 #define PUT_LONG(v,id)  { char szX[32]; sprintf(szX,"%ld",v); SetDlgItemText(hwnd,id,szX); }
@@ -29,116 +30,132 @@
    GET_LONG(p -> ftpPort,IDDI_FTP_PORT)             \
    GET_BOOL(p -> showProperties,IDDI_FTP_SHOWDIALOG)\
 }
-   LRESULT CALLBACK FTPBackEnd::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   FTPBackEnd *p = (FTPBackEnd *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
+    static boolean needsAdmin = false;
 
-   switch ( msg ) {
+    LRESULT CALLBACK FTPBackEnd::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   case WM_INITDIALOG: {
-      PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
-      p = (FTPBackEnd *)pPage -> lParam;
-      SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
+    FTPBackEnd *p = (FTPBackEnd *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
 
-      if ( ! p -> isProcessing ) {
-         ShowWindow(GetDlgItem(hwnd,IDDI_FTP_SEND),SW_HIDE);
-      } else {
-         RECT rcGroup,rcParent;
-         GetWindowRect(GetDlgItem(hwnd,IDDI_FTP_GROUP),&rcGroup);
-         GetWindowRect(hwnd,&rcParent);
-         p -> hwndLog = CreateWindowEx(WS_EX_CLIENTEDGE,"RICHEDIT50W","",WS_CHILD | WS_VSCROLL | ES_READONLY | ES_MULTILINE | ES_AUTOVSCROLL | WS_VISIBLE,
-                     rcGroup.left - rcParent.left,rcGroup.bottom - rcParent.top + 8,rcGroup.right - rcGroup.left,(long)(1.65 * (double)(rcGroup.bottom - rcGroup.top)),hwnd,NULL,NULL,NULL);
-         HFONT hGUIFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
-         SendMessage(p -> hwndLog,WM_SETFONT,(WPARAM)hGUIFont,(LPARAM)TRUE);
-      }
+    switch ( msg ) {
 
-      p -> pIGProperties -> Push();
-      p -> pIGProperties -> Push();
+    case WM_INITDIALOG: {
 
-      IPrintingSupportProfile *px = NULL;
+        PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
+        p = (FTPBackEnd *)pPage -> lParam;
+        SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
 
-      p -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
-      if ( px && ! px -> AllowSaveProperties() ) {
-         RECT rc = {0};
-         GetClientRect(hwnd,&rc);
-         SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,rc.bottom - 32,0,0,SWP_NOSIZE);
-         EnableWindow(hwnd,FALSE);
-      } else
-         ShowWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),SW_HIDE);
+        if ( ! p -> isProcessing ) {
+            ShowWindow(GetDlgItem(hwnd,IDDI_FTP_SEND),SW_HIDE);
+        } else {
+            RECT rcGroup,rcParent;
+            GetWindowRect(GetDlgItem(hwnd,IDDI_FTP_GROUP),&rcGroup);
+            GetWindowRect(hwnd,&rcParent);
+            p -> hwndLog = CreateWindowEx(WS_EX_CLIENTEDGE,"RICHEDIT50W","",WS_CHILD | WS_VSCROLL | ES_READONLY | ES_MULTILINE | ES_AUTOVSCROLL | WS_VISIBLE,
+                        rcGroup.left - rcParent.left,rcGroup.bottom - rcParent.top + 8,rcGroup.right - rcGroup.left,(long)(1.65 * (double)(rcGroup.bottom - rcGroup.top)),hwnd,NULL,NULL,NULL);
+            HFONT hGUIFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
+            SendMessage(p -> hwndLog,WM_SETFONT,(WPARAM)hGUIFont,(LPARAM)TRUE);
+        }
 
-      }
-      return LRESULT(FALSE);
+        p -> pIGProperties -> Push();
+        p -> pIGProperties -> Push();
 
-   case WM_COMMAND: {
+        needsAdmin = false;
 
-      switch ( LOWORD(wParam) ) {
-      case IDDI_FTP_SEND: {
-         UNLOAD_CONTROLS
-         sendDocument(p -> szFTPServer,p -> ftpPort,p -> szFTPUserName,p -> szFTPPassword,p -> szResultFile,p -> hwndLog);
-         }
-         break;
-      default:
-         break;
+        IPrintingSupportProfile *px = NULL;
+        p -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
 
-      }
+        if ( px && ! px -> AllowPrintProfileChanges() ) {
+            SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+            SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change print profiles");
+            EnableWindow(hwnd,FALSE);
+            needsAdmin = true;
+        } else {
+            if ( ! p -> pICursiVisionServices -> AllowToolboxPropertyChanges() ) {
+                SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+                SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change tool properties");
+                EnableWindow(hwnd,FALSE);
+                needsAdmin = true;
+            } else
+                ShowWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),SW_HIDE);
+        }
 
-      }
-      break;   
+        if ( needsAdmin ) {
+            moveUpAllAmount(hwnd,-16,NULL);
+            enableDisableSiblings(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),FALSE);
+            SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+        }
+
+        }
+        return LRESULT(FALSE);
+
+    case WM_COMMAND: {
+
+        switch ( LOWORD(wParam) ) {
+        case IDDI_FTP_SEND: {
+            UNLOAD_CONTROLS
+            sendDocument(p -> szFTPServer,p -> ftpPort,p -> szFTPUserName,p -> szFTPPassword,p -> szResultFile,p -> hwndLog);
+            }
+            break;
+        default:
+            break;
+
+        }
+
+        }
+        break;   
 
 
-   case WM_NOTIFY: {
+    case WM_NOTIFY: {
 
-      NMHDR *pNotifyHeader = (NMHDR *)lParam;
+        NMHDR *pNotifyHeader = (NMHDR *)lParam;
 
-      switch ( pNotifyHeader -> code ) {
+        switch ( pNotifyHeader -> code ) {
 
-      case PSN_SETACTIVE: {
-         LOAD_CONTROLS
-         }
-         break;
+        case PSN_SETACTIVE: {
+            LOAD_CONTROLS
+            }
+            break;
 
-      case PSN_KILLACTIVE:
-         SetWindowLongPtr(pNotifyHeader -> hwndFrom,DWLP_MSGRESULT,FALSE);
-         break;
+        case PSN_KILLACTIVE:
+            SetWindowLongPtr(pNotifyHeader -> hwndFrom,DWLP_MSGRESULT,FALSE);
+            break;
 
-      case PSN_APPLY: {
+        case PSN_APPLY: {
 
-         PSHNOTIFY *pNotify = (PSHNOTIFY *)lParam;
+            PSHNOTIFY *pNotify = (PSHNOTIFY *)lParam;
 
-         UNLOAD_CONTROLS;
+            UNLOAD_CONTROLS;
 
-         if ( pNotify -> lParam ) {
-            IPrintingSupportProfile *px = NULL;
-            p -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
-            if ( p -> pICursiVisionServices -> IsAdministrator() || ! px )
-               p -> pIGProperties -> Save();
-            p -> pIGProperties -> Discard();
-            p -> pIGProperties -> Discard();
-         } else {
-            p -> pIGProperties -> Discard();
-            p -> pIGProperties -> Push();
-         }
+            if ( pNotify -> lParam && ! needsAdmin ) {
+                p -> pIGProperties -> Save();
+                p -> pIGProperties -> Discard();
+                p -> pIGProperties -> Discard();
+            } else {
+                p -> pIGProperties -> Discard();
+                p -> pIGProperties -> Push();
+            }
 
-         SetWindowLongPtr(pNotifyHeader -> hwndFrom,DWLP_MSGRESULT,PSNRET_NOERROR);
+            SetWindowLongPtr(pNotifyHeader -> hwndFrom,DWLP_MSGRESULT,PSNRET_NOERROR);
 
-         }
-         break;
+            }
+            break;
 
-      case PSN_RESET: {
-         p -> pIGProperties -> Pop();
-         p -> pIGProperties -> Pop();
-         p -> doExecute = false;
-         }
-         break;
+        case PSN_RESET: {
+            p -> pIGProperties -> Pop();
+            p -> pIGProperties -> Pop();
+            p -> doExecute = false;
+            }
+            break;
 
-      }
+        }
 
-      }
-      break;
+        }
+        break;
 
-   default:
-      break;
-   }
+    default:
+        break;
+    }
 
-   return (LRESULT)0L;
-   }
+    return (LRESULT)0L;
+    }

@@ -34,21 +34,21 @@ BEGIN
     END
 END
 
-#define NO_CURSIVISION_PROPERTIES
+#define SKIP_CURSIVISION_PROPERTIES
 #define DONT_TERMINATE_DIALOG_TEMPLATE
-#define ADDITIONAL_TOP_SPACE 24
+#define ADDITIONAL_TOP_SPACE 0
 
 #include "resultDisposition.rc"
 
    LTEXT "Please specify the storage options for the resulting document:",IDDI_HEADER_TEXT, 10, 5, 256, 12
 
-   LTEXT "Choose the field label from your print profile:",IDC_STATIC,10,146, 250, 14
-   COMBOBOX IDDI_NAME1_PREFIX,16, 160, 128, 64,WS_VISIBLE | CBS_DROPDOWNLIST
+   LTEXT "Choose the field label from your print profile:",IDC_STATIC,  10, 116, 250, 12
+   COMBOBOX IDDI_NAME1_PREFIX,                                          16, 130, 128, 64,WS_VISIBLE | CBS_DROPDOWNLIST
 
-   LTEXT "Optional: Choose another field from your print profile:",IDC_STATIC,10,160 + 24, 250, 14
-   COMBOBOX IDDI_NAME2_PREFIX,16, 160 + 24 + + 14, 128, 64,WS_VISIBLE | CBS_DROPDOWNLIST
+   LTEXT "Optional: Choose another field from your print profile:",IDC_STATIC,  10, 144, 250, 12
+   COMBOBOX IDDI_NAME2_PREFIX,                                                  16, 158, 128, 64,WS_VISIBLE | CBS_DROPDOWNLIST
 
-   LTEXT "",IDC_STATIC,10,160 + 4 + 20 + 20 + 20, 256, 64
+   LTEXT "",IDC_STATIC,10,224, 256, 64
 
 END
 

@@ -36,7 +36,7 @@ BEGIN
 END
 
 
-IDD_DISPOSITION_FTP DIALOGEX 0, 0, 256, 128 + 64
+IDD_DISPOSITION_FTP DIALOGEX 0, 0, 256 + 32, 128 + 64
 STYLE DS_SETFONT | DS_3DLOOK | WS_CHILD | WS_VISIBLE  
 EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
@@ -74,7 +74,7 @@ BEGIN
    PUSHBUTTON "Edit",IDDI_FTP_BODY_EDIT, 8 + 2 + 32 + 2 + 128 + 32 + 8 - 16 + 4,128 + 16 + 8 + 2 + 12 + 2 + 24 + 2 - 8 - 2,24,15,WS_TABSTOP
 #endif
 
-   LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,0,0,256, 24 
+   LTEXT "",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,8,8,280, 24 
 
 
 END

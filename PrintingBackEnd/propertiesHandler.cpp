@@ -49,172 +49,186 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
    GET_LONG(pObject -> copies,IDDI_PRINT_COPIES); \
 }
 
-   LRESULT CALLBACK PrintingBackEnd::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
+    static boolean needsAdmin = false;
 
-   resultDisposition *p = (resultDisposition *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
+    LRESULT CALLBACK PrintingBackEnd::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   static long controlsLoaded = 0L;
+    resultDisposition *p = (resultDisposition *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
 
-   switch ( msg ) {
+    static long controlsLoaded = 0L;
 
-   case WM_INITDIALOG: {
+    switch ( msg ) {
 
-      PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
-      p = (resultDisposition *)pPage -> lParam;
-      SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
+    case WM_INITDIALOG: {
 
-      PrintingBackEnd *pObject = (PrintingBackEnd *)(p -> pParent);
+        PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
+        p = (resultDisposition *)pPage -> lParam;
+        SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
 
-      pObject -> PushProperties();
-      pObject -> PushProperties();
+        PrintingBackEnd *pObject = (PrintingBackEnd *)(p -> pParent);
 
-      controlsLoaded = 0L;
+        pObject -> PushProperties();
+        pObject -> PushProperties();
 
-      HWND hwndSpinner = CreateWindowEx(0L,UPDOWN_CLASS,"",WS_CHILD | WS_VISIBLE | UDS_SETBUDDYINT,0,0,20,24,hwnd,(HMENU)IDDI_PRINT_COPIES_SPINNER,NULL,NULL);
+        controlsLoaded = 0L;
 
-      RECT rcOwner,rcParent;
-      GetWindowRect(hwnd,&rcParent);
-      GetWindowRect(GetDlgItem(hwnd,IDDI_PRINT_COPIES),&rcOwner);
-      rcOwner.left -= rcParent.left;
-      rcOwner.right -= rcParent.left;
-      rcOwner.top -= rcParent.top;  
-      rcOwner.bottom -= rcParent.top;
-      SetWindowPos(hwndSpinner,HWND_TOP,rcOwner.left + rcOwner.right - rcOwner.left,rcOwner.top - 2,0,0,SWP_NOSIZE);
+        HWND hwndSpinner = CreateWindowEx(0L,UPDOWN_CLASS,"",WS_CHILD | WS_VISIBLE | UDS_SETBUDDYINT,0,0,20,24,hwnd,(HMENU)IDDI_PRINT_COPIES_SPINNER,NULL,NULL);
 
-      SendMessage(hwndSpinner,UDM_SETBUDDY,(WPARAM)GetDlgItem(hwnd,IDDI_PRINT_COPIES),0L);
-      SendMessage(hwndSpinner,UDM_SETRANGE,0L,MAKELONG((short)UD_MAXVAL,(short)1));
+        RECT rcOwner,rcParent;
+        GetWindowRect(hwnd,&rcParent);
+        GetWindowRect(GetDlgItem(hwnd,IDDI_PRINT_COPIES),&rcOwner);
+        rcOwner.left -= rcParent.left;
+        rcOwner.right -= rcParent.left;
+        rcOwner.top -= rcParent.top;  
+        rcOwner.bottom -= rcParent.top;
+        SetWindowPos(hwndSpinner,HWND_TOP,rcOwner.left + rcOwner.right - rcOwner.left,rcOwner.top - 2,0,0,SWP_NOSIZE);
 
-      LOAD_CONTROLS
+        SendMessage(hwndSpinner,UDM_SETBUDDY,(WPARAM)GetDlgItem(hwnd,IDDI_PRINT_COPIES),0L);
+        SendMessage(hwndSpinner,UDM_SETRANGE,0L,MAKELONG((short)UD_MAXVAL,(short)1));
 
-      IPrintingSupportProfile *px = NULL;
+        LOAD_CONTROLS
 
-      pObject -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
-      if ( px && ! px -> AllowSaveProperties() ) {
-         RECT rc = {0};
-         GetClientRect(hwnd,&rc);
-         SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,rc.bottom - 32,0,0,SWP_NOSIZE);
-         EnableWindow(hwnd,FALSE);
-      } else
-         ShowWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),SW_HIDE);
+        needsAdmin = false;
 
-      }
-      return LRESULT(FALSE);
+        IPrintingSupportProfile *px = NULL;
+        pObject -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
 
-   case WM_COMMAND: {
+        if ( px && ! px -> AllowPrintProfileChanges() ) {
+            SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+            SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change print profiles");
+            EnableWindow(hwnd,FALSE);
+            needsAdmin = true;
+        } else {
+            if ( ! pObject -> pICursiVisionServices -> AllowToolboxPropertyChanges() ) {
+                SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+                SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change tool properties");
+                EnableWindow(hwnd,FALSE);
+                needsAdmin = true;
+            } else
+                ShowWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),SW_HIDE);
+        }
 
-      PrintingBackEnd *pObject = (PrintingBackEnd *)(p -> pParent);
+        if ( needsAdmin ) {
+            moveUpAllAmount(hwnd,-16,NULL);
+            enableDisableSiblings(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),FALSE);
+            SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+        }
 
-      switch ( LOWORD(wParam) ) {
+        }
+        return LRESULT(FALSE);
+
+    case WM_COMMAND: {
+
+        PrintingBackEnd *pObject = (PrintingBackEnd *)(p -> pParent);
+
+        switch ( LOWORD(wParam) ) {
 
 #if 0
-      case IDDI_PRINTER_PROPERTIES: {
+        case IDDI_PRINTER_PROPERTIES: {
 
-         char szPrinter[64];
-         HANDLE hPrinter;
-         SendMessage(GetDlgItem(hwnd,IDDI_PRINTER),CB_GETLBTEXT,SendMessage(GetDlgItem(hwnd,IDDI_PRINTER),CB_GETCURSEL,0L,0L),(LPARAM)szPrinter); 
+            char szPrinter[64];
+            HANDLE hPrinter;
+            SendMessage(GetDlgItem(hwnd,IDDI_PRINTER),CB_GETLBTEXT,SendMessage(GetDlgItem(hwnd,IDDI_PRINTER),CB_GETCURSEL,0L,0L),(LPARAM)szPrinter); 
 
-         if ( ! szPrinter[0] ) {
+            if ( ! szPrinter[0] ) {
 //            MessageBox(NULL,"No printer is selected","Note",MB_OK);
             break;
-         }
+            }
 
-         OpenPrinter(szPrinter,&hPrinter,NULL);
+            OpenPrinter(szPrinter,&hPrinter,NULL);
 
-         long sizeDevMode = DocumentProperties(hwnd,hPrinter,szPrinter,NULL,NULL,0);
+            long sizeDevMode = DocumentProperties(hwnd,hPrinter,szPrinter,NULL,NULL,0);
 
-         BYTE *pBuffer = new BYTE[sizeDevMode + 1];
-         memset(pBuffer,0,(sizeDevMode + 1) * sizeof(BYTE));
+            BYTE *pBuffer = new BYTE[sizeDevMode + 1];
+            memset(pBuffer,0,(sizeDevMode + 1) * sizeof(BYTE));
 
-         long rc = DocumentProperties(hwnd,hPrinter,szPrinter,(DEVMODE *)pBuffer,(DEVMODE *)pObject -> printerDevMode,DM_IN_BUFFER | DM_OUT_BUFFER | DM_PROMPT);
+            long rc = DocumentProperties(hwnd,hPrinter,szPrinter,(DEVMODE *)pBuffer,(DEVMODE *)pObject -> printerDevMode,DM_IN_BUFFER | DM_OUT_BUFFER | DM_PROMPT);
 
-         if ( IDOK == rc )
+            if ( IDOK == rc )
             memcpy(pObject -> printerDevMode,pBuffer,min(sizeDevMode,sizeof(pObject -> printerDevMode)));
 
-         ClosePrinter(hPrinter);
-         delete [] pBuffer;
-         }
-         break;
+            ClosePrinter(hPrinter);
+            delete [] pBuffer;
+            }
+            break;
 #endif
 
-      case IDDI_USE_DEFAULT_PRINTER:
-         GET_BOOL(pObject -> useDefaultPrinter,IDDI_USE_DEFAULT_PRINTER)
-         EnableWindow(GetDlgItem(hwnd,IDDI_PRINTER),pObject -> useDefaultPrinter ? FALSE : TRUE );
-         EnableWindow(GetDlgItem(hwnd,IDDI_CHOOSE_PRINTER_LABEL),pObject -> useDefaultPrinter ? FALSE : TRUE );
-         break;
+        case IDDI_USE_DEFAULT_PRINTER:
+            GET_BOOL(pObject -> useDefaultPrinter,IDDI_USE_DEFAULT_PRINTER)
+            EnableWindow(GetDlgItem(hwnd,IDDI_PRINTER),pObject -> useDefaultPrinter ? FALSE : TRUE );
+            EnableWindow(GetDlgItem(hwnd,IDDI_CHOOSE_PRINTER_LABEL),pObject -> useDefaultPrinter ? FALSE : TRUE );
+            break;
 
-      case IDDI_DISPOSITION_PRINT:
-         p -> doPrint = BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_DISPOSITION_PRINT,BM_GETCHECK,0L,0L);
-         EnableWindow(GetDlgItem(hwnd,IDDI_DISPOSITION_PRINTER),p -> doPrint ? TRUE : FALSE);
-         break;
+        case IDDI_DISPOSITION_PRINT:
+            p -> doPrint = BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_DISPOSITION_PRINT,BM_GETCHECK,0L,0L);
+            EnableWindow(GetDlgItem(hwnd,IDDI_DISPOSITION_PRINTER),p -> doPrint ? TRUE : FALSE);
+            break;
 
-      default:
-         break;
-      }
+        default:
+            break;
+        }
 
-      }
-      break;
+        }
+        break;
 
-   case WM_USER + 1: {
-      controlsLoaded = 1L;
-      }
-      break;
+    case WM_USER + 1: {
+        controlsLoaded = 1L;
+        }
+        break;
 
-   case WM_NOTIFY: {
+    case WM_NOTIFY: {
 
-      PrintingBackEnd *pObject = (PrintingBackEnd *)(p -> pParent);
+        PrintingBackEnd *pObject = (PrintingBackEnd *)(p -> pParent);
 
-      NMHDR *pNotifyHeader = (NMHDR *)lParam;
+        NMHDR *pNotifyHeader = (NMHDR *)lParam;
 
-      switch ( pNotifyHeader -> code ) {
+        switch ( pNotifyHeader -> code ) {
 
-      case PSN_KILLACTIVE: {
+        case PSN_KILLACTIVE: {
 
-         UNLOAD_CONTROLS
+            UNLOAD_CONTROLS
 
-         SetWindowLongPtr(hwnd,DWLP_MSGRESULT,FALSE);
+            SetWindowLongPtr(hwnd,DWLP_MSGRESULT,FALSE);
 
-         }
-         break;
+            }
+            break;
 
-      case PSN_APPLY: {
+        case PSN_APPLY: {
 
-         PSHNOTIFY *pNotify = (PSHNOTIFY *)lParam;
+            PSHNOTIFY *pNotify = (PSHNOTIFY *)lParam;
 
-         UNLOAD_CONTROLS
+            UNLOAD_CONTROLS
 
-         if ( pNotify -> lParam ) {
-            IPrintingSupportProfile *px = NULL;
-            pObject -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
-            if ( pObject -> pICursiVisionServices -> IsAdministrator() || ! px )
-               pObject -> SaveProperties();
-            pObject -> DiscardProperties();
-            pObject -> DiscardProperties();
-         } else {
-            pObject -> DiscardProperties();
-            pObject -> PushProperties();
-         }
+            if ( pNotify -> lParam && ! needsAdmin ) {
+                pObject -> SaveProperties();
+                pObject -> DiscardProperties();
+                pObject -> DiscardProperties();
+            } else {
+                pObject -> DiscardProperties();
+                pObject -> PushProperties();
+            }
 
-         SetWindowLongPtr(hwnd,DWLP_MSGRESULT,PSNRET_NOERROR);
+            SetWindowLongPtr(hwnd,DWLP_MSGRESULT,PSNRET_NOERROR);
 
-         return (LRESULT)TRUE;
-         }
-         break;
+            return (LRESULT)TRUE;
+            }
+            break;
 
-      case PSN_RESET: {
-         pObject -> PopProperties();
-         pObject -> PopProperties();
-         pObject -> doExecute = false;
-         }
-         break;
+        case PSN_RESET: {
+            pObject -> PopProperties();
+            pObject -> PopProperties();
+            pObject -> doExecute = false;
+            }
+            break;
 
-      }
+        }
 
-      }
-      break;
+        }
+        break;
 
-   default:
-      break;
-   }
+    default:
+        break;
+    }
 
-   return LRESULT(FALSE);
-   }
+    return LRESULT(FALSE);
+    }

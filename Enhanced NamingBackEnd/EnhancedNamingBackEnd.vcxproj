@@ -274,7 +274,12 @@ regsvr32 /s /c "$(TargetPath)"</Command>
     </ClCompile>
     <ClCompile Include="$(GSYSTEM_HOME)\Common\source\resultdisposition.cpp" />
     <ClCompile Include="$(GSYSTEM_HOME)\Common\source\utilities.cpp" />
-    <ClCompile Include="additionalSaveOptionsHandler.cpp" />
+    <ClCompile Include="additionalSaveOptionsHandler.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="dispositionSettingsHandler.cpp" />
     <ClCompile Include="dllMain.cpp" />
     <ClCompile Include="ICursiVisionBackEnd.cpp" />
@@ -303,6 +308,12 @@ regsvr32 /s /c "$(TargetPath)"</Command>
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ResourceCompile Include="..\..\Common\resources\resultDisposition.rc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ResourceCompile>
     <ResourceCompile Include="NamingBackEnd.rc">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OUTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OUTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

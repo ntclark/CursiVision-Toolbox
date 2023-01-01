@@ -9,25 +9,35 @@
 #include <shlobj.h>
 
 #define OBJECT_WITH_PROPERTIES NamingBackEnd
+#define CURSIVISION_SERVICES_INTERFACE pObject -> pICursiVisionServices
 
 #include "dispositionSettingsDefines.h"
 
 #define ROLLUP_ASSOCIATE_PROCESS
 
 #define ADDITIONAL_INITIALIZATION \
-   IPrintingSupportProfile *px = NULL;                                                                               \
-   if ( pObject -> pICursiVisionServices )                                                                           \
-      pObject -> pICursiVisionServices -> get_PrintingSupportProfile(&px);                                           \
-   if ( px && ! px -> AllowSaveProperties() ) {                                                                      \
-      RECT rc = {0};                                                                                                 \
-      GetClientRect(hwnd,&rc);                                                                                       \
-      SetWindowPos(GetDlgItem(hwnd,IDDI_DISPOSITION_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,rc.bottom - 32,0,0,SWP_NOSIZE);\
-      EnableWindow(hwnd,FALSE);                                                                                      \
-   } else {                                                                                                          \
-      ShowWindow(GetDlgItem(hwnd,IDDI_DISPOSITION_NEED_ADMIN_PRIVILEGES),SW_HIDE);                                   \
-      loadComboBox(hwnd,pObject -> szNamePrefix[0],0,pObject -> pICursiVisionServices);                              \
-      loadComboBox(hwnd,pObject -> szNamePrefix[1],1,pObject -> pICursiVisionServices);                              \
-      SendDlgItemMessage(hwnd,IDDI_NAME1_PREFIX + 1,CB_INSERTSTRING,(WPARAM)-1L,(LPARAM)"<none>");                   \
+   needsAdmin = false;                                                  \
+   IPrintingSupportProfile *px = NULL;                                  \
+   if ( CURSIVISION_SERVICES_INTERFACE )                                \
+      CURSIVISION_SERVICES_INTERFACE -> get_PrintingSupportProfile(&px);\
+   if ( px && ! px -> AllowPrintProfileChanges() ) {                    \
+      SetDlgItemText(hwnd,IDDI_DISPOSITION_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change print profiles");        \
+      needsAdmin = true;                                                \
+   } else {                                                             \
+      if ( ! CURSIVISION_SERVICES_INTERFACE -> AllowToolboxPropertyChanges() ) {        \
+         SetDlgItemText(hwnd,IDDI_DISPOSITION_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change tool properties");    \
+         needsAdmin = true;                                             \
+      } else {                                                          \
+          ShowWindow(GetDlgItem(hwnd,IDDI_DISPOSITION_NEED_ADMIN_PRIVILEGES),SW_HIDE);      \
+      }                                                                                 \
+      if ( needsAdmin ) {                                                               \
+         enableDisableSiblings(GetDlgItem(hwnd,IDDI_DISPOSITION_NEED_ADMIN_PRIVILEGES),FALSE);  \
+         moveUpAllAmount(hwnd,-16,NULL);                                                    \
+         SetWindowPos(GetDlgItem(hwnd,IDDI_DISPOSITION_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE | SWP_SHOWWINDOW); \
+      }                                                                                                     \
+      loadComboBox(hwnd,pObject -> szNamePrefix[0],0,pObject -> pICursiVisionServices);                     \
+      loadComboBox(hwnd,pObject -> szNamePrefix[1],1,pObject -> pICursiVisionServices);                     \
+      SendDlgItemMessage(hwnd,IDDI_NAME1_PREFIX + 1,CB_INSERTSTRING,(WPARAM)-1L,(LPARAM)"<none>");          \
    }
 
 
@@ -40,6 +50,8 @@
    REGISTER_TOOLTIP(hInst,IDDI_NAME2_PREFIX)
 
    void loadComboBox(HWND hwnd,char *pszNamePrefix,long index,ICursiVisionServices *pServices);
+
+   static boolean needsAdmin = false;
 
    LRESULT CALLBACK NamingBackEnd::dispositionSettingsHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 

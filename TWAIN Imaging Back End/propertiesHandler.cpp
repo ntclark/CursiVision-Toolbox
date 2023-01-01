@@ -52,302 +52,315 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
    GET_LONG(pObject -> pageNumber,IDDI_PAGE_PAGENO);        \
 }
 
-   BOOL CALLBACK adjustTop(HWND hwndTest,LPARAM lParam);
-   BOOL CALLBACK page1(HWND hwndTest,LPARAM lParam);
-   BOOL CALLBACK page2(HWND hwndTest,LPARAM lParam);
-   BOOL CALLBACK page3(HWND hwndTest,LPARAM lParam);
+    BOOL CALLBACK adjustTop(HWND hwndTest,LPARAM lParam);
+    BOOL CALLBACK page1(HWND hwndTest,LPARAM lParam);
+    BOOL CALLBACK page2(HWND hwndTest,LPARAM lParam);
+    BOOL CALLBACK page3(HWND hwndTest,LPARAM lParam);
 
-   LRESULT CALLBACK ImagingBackEnd::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
+    static boolean needsAdmin = false;
 
-   resultDisposition *p = (resultDisposition *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
-   ImagingBackEnd *pObject = NULL;
-   if ( p )
-      pObject = (ImagingBackEnd *)(p -> pParent);
+    LRESULT CALLBACK ImagingBackEnd::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   switch ( msg ) {
+    resultDisposition *p = (resultDisposition *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
+    ImagingBackEnd *pObject = NULL;
+    if ( p )
+        pObject = (ImagingBackEnd *)(p -> pParent);
 
-   case WM_INITDIALOG: {
+    switch ( msg ) {
 
-      PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
-      p = (resultDisposition *)pPage -> lParam;
-      SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
+    case WM_INITDIALOG: {
 
-      pObject = (ImagingBackEnd *)(p -> pParent);
+        PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
+        p = (resultDisposition *)pPage -> lParam;
+        SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
 
-      pObject -> PushProperties();
+        pObject = (ImagingBackEnd *)(p -> pParent);
 
-      pObject -> PushProperties();
+        pObject -> PushProperties();
 
-      SendDlgItemMessage(hwnd,IDDI_PAGE_PAGENO_OPT,BM_SETCHECK,0L,0L);
-      SendDlgItemMessage(hwnd,IDDI_PAGE_ONLAST,BM_SETCHECK,0L,0L);
-      SendDlgItemMessage(hwnd,IDDI_PAGE_NEWLAST,BM_SETCHECK,0L,0L);
+        pObject -> PushProperties();
+
+        SendDlgItemMessage(hwnd,IDDI_PAGE_PAGENO_OPT,BM_SETCHECK,0L,0L);
+        SendDlgItemMessage(hwnd,IDDI_PAGE_ONLAST,BM_SETCHECK,0L,0L);
+        SendDlgItemMessage(hwnd,IDDI_PAGE_NEWLAST,BM_SETCHECK,0L,0L);
 
 #if 0
-      if ( pObject -> skipImaging )
-         SendDlgItemMessage(hwnd,IDDI_SKIP,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
-      else if ( pObject -> scanOne )
-         SendDlgItemMessage(hwnd,IDDI_SCAN_ONE,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
-      else if ( pObject -> scanMultiple )
-         SendDlgItemMessage(hwnd,IDDI_SCAN_MULTIPLE,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);   
+        if ( pObject -> skipImaging )
+            SendDlgItemMessage(hwnd,IDDI_SKIP,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
+        else if ( pObject -> scanOne )
+            SendDlgItemMessage(hwnd,IDDI_SCAN_ONE,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
+        else if ( pObject -> scanMultiple )
+            SendDlgItemMessage(hwnd,IDDI_SCAN_MULTIPLE,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);   
 #endif
 
-      if ( pObject -> specifyPage )
-         SendDlgItemMessage(hwnd,IDDI_PAGE_PAGENO_OPT,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
-      else if ( pObject -> lastPage )
-         SendDlgItemMessage(hwnd,IDDI_PAGE_ONLAST,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
-      else 
-         SendDlgItemMessage(hwnd,IDDI_PAGE_NEWLAST,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
+        if ( pObject -> specifyPage )
+            SendDlgItemMessage(hwnd,IDDI_PAGE_PAGENO_OPT,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
+        else if ( pObject -> lastPage )
+            SendDlgItemMessage(hwnd,IDDI_PAGE_ONLAST,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
+        else 
+            SendDlgItemMessage(hwnd,IDDI_PAGE_NEWLAST,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
 
-      EnableWindow(GetDlgItem(hwnd,IDDI_PAGE_PAGENO),pObject -> specifyPage);
+        EnableWindow(GetDlgItem(hwnd,IDDI_PAGE_PAGENO),pObject -> specifyPage);
 
-      if ( pObject -> fitToPage ) {
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),FALSE);
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_WIDTH),FALSE);
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_MAINTAIN_ASPECT_RATIO),FALSE);
-         SendDlgItemMessage(hwnd,IDDI_SIZE_FITTOPAGE,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
-      } else {
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_WIDTH),TRUE);
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),TRUE);
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_MAINTAIN_ASPECT_RATIO),TRUE);
-         SendDlgItemMessage(hwnd,IDDI_SIZE_FITTOPAGE,BM_SETCHECK,(WPARAM)BST_UNCHECKED,0L);
-      }
+        if ( pObject -> fitToPage ) {
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),FALSE);
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_WIDTH),FALSE);
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_MAINTAIN_ASPECT_RATIO),FALSE);
+            SendDlgItemMessage(hwnd,IDDI_SIZE_FITTOPAGE,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
+        } else {
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_WIDTH),TRUE);
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),TRUE);
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_MAINTAIN_ASPECT_RATIO),TRUE);
+            SendDlgItemMessage(hwnd,IDDI_SIZE_FITTOPAGE,BM_SETCHECK,(WPARAM)BST_UNCHECKED,0L);
+        }
 
-      EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),! pObject -> keepAspectRatio);
+        EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),! pObject -> keepAspectRatio);
 
-      TCITEM tcItem = {0};
+        TCITEM tcItem = {0};
 
-      tcItem.pszText = "Scanner";
-      tcItem.mask = TCIF_TEXT;
+        tcItem.pszText = "Scanner";
+        tcItem.mask = TCIF_TEXT;
 
-      SendDlgItemMessage(hwnd,IDDI_TABS,TCM_INSERTITEM,0,(LPARAM)&tcItem);
+        SendDlgItemMessage(hwnd,IDDI_TABS,TCM_INSERTITEM,0,(LPARAM)&tcItem);
 
-      tcItem.pszText = "Location";
-      SendDlgItemMessage(hwnd,IDDI_TABS,TCM_INSERTITEM,1,(LPARAM)&tcItem);
+        tcItem.pszText = "Location";
+        SendDlgItemMessage(hwnd,IDDI_TABS,TCM_INSERTITEM,1,(LPARAM)&tcItem);
 
-      EnumChildWindows(hwnd,page1,NULL);
+        EnumChildWindows(hwnd,page1,NULL);
 
-      tcItem.pszText = DISPOSITION_TITLE;
-      SendDlgItemMessage(hwnd,IDDI_TABS,TCM_INSERTITEM,2,(LPARAM)&tcItem);
+        tcItem.pszText = DISPOSITION_TITLE;
+        SendDlgItemMessage(hwnd,IDDI_TABS,TCM_INSERTITEM,2,(LPARAM)&tcItem);
 
-      EnumChildWindows(hwnd,page1,NULL);
+        EnumChildWindows(hwnd,page1,NULL);
 
-      LOAD_CONTROLS
+        LOAD_CONTROLS
 
-      LOAD_ADDITIONAL
+        LOAD_ADDITIONAL
 
-      TW_UINT16 ret = dsmEntryProcedure(&pObject -> twainIdentity,0,DG_CONTROL,DAT_PARENT,MSG_OPENDSM,(TW_MEMREF)&hwnd);
+        TW_UINT16 ret = dsmEntryProcedure(&pObject -> twainIdentity,0,DG_CONTROL,DAT_PARENT,MSG_OPENDSM,(TW_MEMREF)&hwnd);
 
-      TW_IDENTITY *pSource = new TW_IDENTITY;
+        TW_IDENTITY *pSource = new TW_IDENTITY;
 
-      memset(pSource,0,sizeof(TW_IDENTITY));
+        memset(pSource,0,sizeof(TW_IDENTITY));
 
-      if ( 0 == pObject -> twainSources.size() ) {
+        if ( 0 == pObject -> twainSources.size() ) {
 
-         TW_IDENTITY *pSource = new TW_IDENTITY;
+            TW_IDENTITY *pSource = new TW_IDENTITY;
 
-         memset(pSource,0,sizeof(TW_IDENTITY));
+            memset(pSource,0,sizeof(TW_IDENTITY));
 
-         ret = dsmEntryProcedure(&pObject -> twainIdentity,0,DG_CONTROL,DAT_IDENTITY,MSG_GETFIRST,(TW_MEMREF)pSource);
+            ret = dsmEntryProcedure(&pObject -> twainIdentity,0,DG_CONTROL,DAT_IDENTITY,MSG_GETFIRST,(TW_MEMREF)pSource);
 
-         while ( TWRC_SUCCESS == ret ) {
+            while ( TWRC_SUCCESS == ret ) {
             pObject -> twainSources.insert(pObject -> twainSources.end(),pSource);
             pSource = new TW_IDENTITY;
             memset(pSource,0,sizeof(TW_IDENTITY));
             ret = dsmEntryProcedure(&pObject -> twainIdentity,0,DG_CONTROL,DAT_IDENTITY,MSG_GETNEXT,(TW_MEMREF)pSource);
-         }
+            }
 
-         delete pSource;
+            delete pSource;
 
-      }
+        }
 
-      TW_UINT16 rc = dsmEntryProcedure(&pObject -> twainIdentity,0,DG_CONTROL,DAT_IDENTITY,MSG_GETFIRST,(TW_MEMREF)pSource);
+        TW_UINT16 rc = dsmEntryProcedure(&pObject -> twainIdentity,0,DG_CONTROL,DAT_IDENTITY,MSG_GETFIRST,(TW_MEMREF)pSource);
 
-      while ( TWRC_SUCCESS == rc ) {
-         if ( 1 == 1 || strncmp("WIA-",pSource -> ProductName,4) ) {
+        while ( TWRC_SUCCESS == rc ) {
+            if ( 1 == 1 || strncmp("WIA-",pSource -> ProductName,4) ) {
             long index = (long)SendDlgItemMessage(hwnd,IDDI_IMAGER,CB_INSERTSTRING,0L,(WPARAM)pSource -> ProductName);
             if ( 0 == strcmp(pObject -> szChosenDevice,pSource -> ProductName) )
-               SendDlgItemMessage(hwnd,IDDI_IMAGER,CB_SETCURSEL,index,0L);
+                SendDlgItemMessage(hwnd,IDDI_IMAGER,CB_SETCURSEL,index,0L);
             pObject -> twainSources.insert(pObject -> twainSources.end(),pSource);
-         } else
+            } else
             delete pSource;
-         pSource = new TW_IDENTITY;
-         memset(pSource,0,sizeof(TW_IDENTITY));
-         rc = dsmEntryProcedure(&pObject -> twainIdentity,0,DG_CONTROL,DAT_IDENTITY,MSG_GETNEXT,(TW_MEMREF)pSource);
-      }
+            pSource = new TW_IDENTITY;
+            memset(pSource,0,sizeof(TW_IDENTITY));
+            rc = dsmEntryProcedure(&pObject -> twainIdentity,0,DG_CONTROL,DAT_IDENTITY,MSG_GETNEXT,(TW_MEMREF)pSource);
+        }
 
-      ret = dsmEntryProcedure(&pObject -> twainIdentity,0,DG_CONTROL,DAT_PARENT,MSG_CLOSEDSM,(TW_MEMREF)&pObject -> hwndParent);
+        ret = dsmEntryProcedure(&pObject -> twainIdentity,0,DG_CONTROL,DAT_PARENT,MSG_CLOSEDSM,(TW_MEMREF)&pObject -> hwndParent);
 
-      RECT rcTabs;
+        RECT rcTabs;
 
-      memset(&rcTabs,0,sizeof(RECT));
+        memset(&rcTabs,0,sizeof(RECT));
 
-      SendDlgItemMessage(hwnd,IDDI_TABS,TCM_ADJUSTRECT,(WPARAM)TRUE,(LPARAM)&rcTabs);
+        SendDlgItemMessage(hwnd,IDDI_TABS,TCM_ADJUSTRECT,(WPARAM)TRUE,(LPARAM)&rcTabs);
 
-      long deltaY = rcTabs.bottom - rcTabs.top;
+        long deltaY = rcTabs.bottom - rcTabs.top;
 
-      EnumChildWindows(hwnd,adjustTop,deltaY);
+        EnumChildWindows(hwnd,adjustTop,deltaY);
 
-      IPrintingSupportProfile *px = NULL;
+        needsAdmin = false;
 
-      pObject -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
+        IPrintingSupportProfile *px = NULL;
+        pObject -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
 
-      if ( px && ! px -> AllowSaveProperties() ) {
-         RECT rc = {0};
-         GetClientRect(hwnd,&rc);
-         SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,rc.bottom - 32,0,0,SWP_NOSIZE);
-         EnableWindow(hwnd,FALSE);
-      } else
-         ShowWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),SW_HIDE);
+        if ( px && ! px -> AllowPrintProfileChanges() ) {
+            SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+            SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change print profiles");
+            EnableWindow(hwnd,FALSE);
+            needsAdmin = true;
+        } else {
+            if ( ! pObject -> pICursiVisionServices -> AllowToolboxPropertyChanges() ) {
+                SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+                SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change tool properties");
+                EnableWindow(hwnd,FALSE);
+                needsAdmin = true;
+            } else
+                ShowWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),SW_HIDE);
+        }
 
-      }
-      return LRESULT(FALSE);
+        if ( needsAdmin ) {
+            moveUpAllAmount(hwnd,-16,NULL);
+            enableDisableSiblings(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),FALSE);
+            SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+        }
 
-   case WM_COMMAND: {
+        }
+        return LRESULT(FALSE);
 
-      switch ( LOWORD(wParam) ) {
+    case WM_COMMAND: {
+
+        switch ( LOWORD(wParam) ) {
 
 #include "dispositionSettingsSaveOptionsWMCommand.cpp"
 
 #include "dispositionSettingsSaveMoreOptionWMCommand.cpp"
 
-      case IDDI_SIZE_MAINTAIN_ASPECT_RATIO:
-         pObject -> keepAspectRatio = (BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_SIZE_MAINTAIN_ASPECT_RATIO,BM_GETCHECK,0L,0L));
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),! pObject -> keepAspectRatio && ! pObject -> fitToPage);
-         break;
-		 
-      case IDDI_PAGE_PAGENO_OPT:
-      case IDDI_PAGE_ONLAST:
-      case IDDI_PAGE_NEWLAST:
-         EnableWindow(GetDlgItem(hwnd,IDDI_PAGE_PAGENO),BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_PAGE_PAGENO_OPT,BM_GETCHECK,0L,0L) ? TRUE : FALSE);
-         break;
+        case IDDI_SIZE_MAINTAIN_ASPECT_RATIO:
+            pObject -> keepAspectRatio = (BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_SIZE_MAINTAIN_ASPECT_RATIO,BM_GETCHECK,0L,0L));
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),! pObject -> keepAspectRatio && ! pObject -> fitToPage);
+            break;
 
-      case IDDI_SIZE_FITTOPAGE:
-         pObject -> fitToPage = (BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_SIZE_FITTOPAGE,BM_GETCHECK,0L,0L));
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),! pObject -> fitToPage && ! pObject -> keepAspectRatio);
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_WIDTH),! pObject -> fitToPage);
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_MAINTAIN_ASPECT_RATIO),! pObject -> fitToPage);
-         break;
+        case IDDI_PAGE_PAGENO_OPT:
+        case IDDI_PAGE_ONLAST:
+        case IDDI_PAGE_NEWLAST:
+            EnableWindow(GetDlgItem(hwnd,IDDI_PAGE_PAGENO),BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_PAGE_PAGENO_OPT,BM_GETCHECK,0L,0L) ? TRUE : FALSE);
+            break;
 
-      default:
-         break;
-      }
+        case IDDI_SIZE_FITTOPAGE:
+            pObject -> fitToPage = (BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_SIZE_FITTOPAGE,BM_GETCHECK,0L,0L));
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),! pObject -> fitToPage && ! pObject -> keepAspectRatio);
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_WIDTH),! pObject -> fitToPage);
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_MAINTAIN_ASPECT_RATIO),! pObject -> fitToPage);
+            break;
 
-      }
-      break;
+        default:
+            break;
+        }
 
-   case WM_NOTIFY: {
+        }
+        break;
 
-      NMHDR *pNotifyHeader = (NMHDR *)lParam;
+    case WM_NOTIFY: {
 
-      switch ( pNotifyHeader -> code ) {
+        NMHDR *pNotifyHeader = (NMHDR *)lParam;
 
-      case TCN_SELCHANGE: {
-         switch ( SendDlgItemMessage(hwnd,IDDI_TABS,TCM_GETCURSEL,0L,0L) ) {
-         case 0:
+        switch ( pNotifyHeader -> code ) {
+
+        case TCN_SELCHANGE: {
+            switch ( SendDlgItemMessage(hwnd,IDDI_TABS,TCM_GETCURSEL,0L,0L) ) {
+            case 0:
             EnumChildWindows(hwnd,page1,NULL);
             break;
-         case 1:
+            case 1:
             EnumChildWindows(hwnd,page2,NULL);
             break;
-         case 2:
+            case 2:
             EnumChildWindows(hwnd,page3,NULL);
             break;
-         }
-         }
-         break;
+            }
+            }
+            break;
 
-      case PSN_KILLACTIVE: {
-         UNLOAD_CONTROLS
-         UNLOAD_ADDITIONAL
-         SetWindowLongPtr(hwnd,DWLP_MSGRESULT,FALSE);
-         }
-         break;
+        case PSN_KILLACTIVE: {
+            UNLOAD_CONTROLS
+            UNLOAD_ADDITIONAL
+            SetWindowLongPtr(hwnd,DWLP_MSGRESULT,FALSE);
+            }
+            break;
 
-      case PSN_APPLY: {
+        case PSN_APPLY: {
 
-         PSHNOTIFY *pNotify = (PSHNOTIFY *)lParam;
+            PSHNOTIFY *pNotify = (PSHNOTIFY *)lParam;
 
-         UNLOAD_CONTROLS
+            UNLOAD_CONTROLS
 
-         UNLOAD_ADDITIONAL
+            UNLOAD_ADDITIONAL
 
-         if ( pNotify -> lParam ) {
-            IPrintingSupportProfile *px = NULL;
-            pObject -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
-            if ( pObject -> pICursiVisionServices -> IsAdministrator() || ! px )
-               pObject -> SaveProperties();
-            pObject -> DiscardProperties();
-            pObject -> DiscardProperties();
-         } else {
-            pObject -> DiscardProperties();
-            pObject -> PushProperties();
-         }
+            if ( pNotify -> lParam && ! needsAdmin ) {
+                pObject -> SaveProperties();
+                pObject -> DiscardProperties();
+                pObject -> DiscardProperties();
+            } else {
+                pObject -> DiscardProperties();
+                pObject -> PushProperties();
+            }
 
-         SetWindowLongPtr(hwnd,DWLP_MSGRESULT,PSNRET_NOERROR);
+            SetWindowLongPtr(hwnd,DWLP_MSGRESULT,PSNRET_NOERROR);
 
-         return (LRESULT)TRUE;
-         }
-         break;
+            return (LRESULT)TRUE;
+            }
+            break;
 
-      case PSN_RESET: {
-         pObject -> doExecute = false;
-         pObject -> PopProperties();
-         pObject -> PopProperties();
-         }
-         break;
+        case PSN_RESET: {
+            pObject -> doExecute = false;
+            pObject -> PopProperties();
+            pObject -> PopProperties();
+            }
+            break;
 
-      }
+        }
 
-      }
-      break;
+        }
+        break;
 
-   default:
-      break;
-   }
+    default:
+        break;
+    }
 
-   return LRESULT(FALSE);
-   }
+    return LRESULT(FALSE);
+    }
 
 
-   BOOL CALLBACK adjustTop(HWND hwndTest,LPARAM lParam) {
-   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
-   if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) || ( 3000 < id && id < 3100 ) ) {
-      RECT rcNow,rcParent;
-      GetWindowRect(GetParent(hwndTest),&rcParent);
-      GetWindowRect(hwndTest,&rcNow);
-      rcNow.top += (long)lParam;
-      rcNow.bottom += (long)lParam;
-      SetWindowPos(hwndTest,HWND_TOP,rcNow.left - rcParent.left,rcNow.top - rcParent.top,0,0,SWP_NOSIZE | SWP_NOZORDER);
-   }
-   return TRUE;
-   }
+    BOOL CALLBACK adjustTop(HWND hwndTest,LPARAM lParam) {
+    long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
+    if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) || ( 3000 < id && id < 3100 ) ) {
+        RECT rcNow,rcParent;
+        GetWindowRect(GetParent(hwndTest),&rcParent);
+        GetWindowRect(hwndTest,&rcNow);
+        rcNow.top += (long)lParam;
+        rcNow.bottom += (long)lParam;
+        SetWindowPos(hwndTest,HWND_TOP,rcNow.left - rcParent.left,rcNow.top - rcParent.top,0,0,SWP_NOSIZE | SWP_NOZORDER);
+    }
+    return TRUE;
+    }
 
 
-   BOOL CALLBACK page1(HWND hwndTest,LPARAM lParam) {
-   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
-   if ( 1000 < id && id < 1100 )
-      ShowWindow(hwndTest,SW_SHOW);
-   else
-      if ( ! ( 4000 < id && id < 4100 ) )
-         ShowWindow(hwndTest,SW_HIDE);
-   return TRUE;
-   }
+    BOOL CALLBACK page1(HWND hwndTest,LPARAM lParam) {
+    long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
+    if ( 1000 < id && id < 1100 )
+        ShowWindow(hwndTest,SW_SHOW);
+    else
+        if ( ! ( 4000 < id && id < 4100 ) )
+            ShowWindow(hwndTest,SW_HIDE);
+    return TRUE;
+    }
 
-   BOOL CALLBACK page2(HWND hwndTest,LPARAM lParam) {
-   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
-   if ( 2000 < id && id < 2100 )
-      ShowWindow(hwndTest,SW_SHOW);
-   else 
-      if ( ! ( 4000 < id && id < 4100 ) )
-         ShowWindow(hwndTest,SW_HIDE);
-   return TRUE;
-   }
+    BOOL CALLBACK page2(HWND hwndTest,LPARAM lParam) {
+    long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
+    if ( 2000 < id && id < 2100 )
+        ShowWindow(hwndTest,SW_SHOW);
+    else 
+        if ( ! ( 4000 < id && id < 4100 ) )
+            ShowWindow(hwndTest,SW_HIDE);
+    return TRUE;
+    }
 
-   BOOL CALLBACK page3(HWND hwndTest,LPARAM lParam) {
-   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
-   if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) )
-      ShowWindow(hwndTest,SW_HIDE);
-   else  
-      ShowWindow(hwndTest,SW_SHOW);
-   return TRUE;
-   }
+    BOOL CALLBACK page3(HWND hwndTest,LPARAM lParam) {
+    long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
+    if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) )
+        ShowWindow(hwndTest,SW_HIDE);
+    else  
+        ShowWindow(hwndTest,SW_SHOW);
+    return TRUE;
+    }

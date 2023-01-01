@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 #include "emailBackEnd.h"
+#include "utilities.h"
 
 #include "ToolBoxResources.h"
 
@@ -46,116 +47,128 @@
    GET_BOOL(p -> showProperties,IDDI_BACKENDS_EMAIL_SHOWDIALOG) \
 }
 
-   LRESULT CALLBACK EmailBackEnd::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
+    static boolean needsAdmin = false;
 
-   EmailBackEnd *p = (EmailBackEnd *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
+    LRESULT CALLBACK EmailBackEnd::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   static long controlsLoaded = false;
+    EmailBackEnd *p = (EmailBackEnd *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
 
-   switch ( msg ) {
+    static long controlsLoaded = false;
 
-   case WM_INITDIALOG: {
+    switch ( msg ) {
 
-      PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
-      p = (EmailBackEnd *)pPage -> lParam;
-      SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
-      p -> pIGProperties -> Push();
-      p -> pIGProperties -> Push();
-      controlsLoaded = false;
+    case WM_INITDIALOG: {
 
-      IPrintingSupportProfile *px = NULL;
+        PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
+        p = (EmailBackEnd *)pPage -> lParam;
+        SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
+        p -> pIGProperties -> Push();
+        p -> pIGProperties -> Push();
+        controlsLoaded = false;
 
-      p -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
+        IPrintingSupportProfile *px = NULL;
+        p -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
 
-      if ( px && ! px -> AllowSaveProperties() ) {
-         RECT rc = {0};
-         GetClientRect(hwnd,&rc);
-         SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,rc.bottom - 32,0,0,SWP_NOSIZE);
-         EnableWindow(hwnd,FALSE);
-      } else
-         ShowWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),SW_HIDE);
+        needsAdmin = false;
+        if ( px && ! px -> AllowPrintProfileChanges() ) {
+            SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+            EnableWindow(hwnd,FALSE);
+            SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change print profiles");
+            needsAdmin = true;
+        } else {
+            if ( ! p -> pICursiVisionServices -> AllowToolboxPropertyChanges() ) {
+                SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+                EnableWindow(hwnd,FALSE);
+                SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change tool properties");
+                needsAdmin = true;
+            } else
+                ShowWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),SW_HIDE);
+        }
 
-      }
-      return LRESULT(FALSE);
+        if ( needsAdmin ) {
+            moveUpAllAmount(hwnd,-16,NULL);
+            enableDisableSiblings(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),FALSE);
+            SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+        }
 
-   case WM_COMMAND: {
+        }
+        return LRESULT(FALSE);
+
+    case WM_COMMAND: {
    
-      if ( controlsLoaded )
-         SendMessage(GetParent(hwnd),PSM_CHANGED,(WPARAM)hwnd,0L);
+        if ( controlsLoaded )
+            SendMessage(GetParent(hwnd),PSM_CHANGED,(WPARAM)hwnd,0L);
 
-      switch ( LOWORD(wParam) ) {
+        switch ( LOWORD(wParam) ) {
 
-      case IDDI_BACKENDS_EMAIL_BODY_EDIT: {
-         GetDlgItemText(hwnd,IDDI_BACKENDS_EMAIL_BODY,p -> szEmailBody,1024);
-         DLGTEMPLATE *dt = (DLGTEMPLATE *)LoadResource(hModule,FindResource(hModule,MAKEINTRESOURCE(IDD_DISPOSITION_EMAIL_BODY),RT_DIALOG));
-         if ( 1L == DialogBoxIndirectParam(hModule,dt,hwnd,(DLGPROC)EmailBackEnd::bodyHandler,(LPARAM)p) ) 
-            SetWindowText(GetDlgItem(hwnd,IDDI_BACKENDS_EMAIL_BODY),p -> szEmailBody);
-         
-         }
-         break;
+        case IDDI_BACKENDS_EMAIL_BODY_EDIT: {
+            GetDlgItemText(hwnd,IDDI_BACKENDS_EMAIL_BODY,p -> szEmailBody,1024);
+            DLGTEMPLATE *dt = (DLGTEMPLATE *)LoadResource(hModule,FindResource(hModule,MAKEINTRESOURCE(IDD_DISPOSITION_EMAIL_BODY),RT_DIALOG));
+            if ( 1L == DialogBoxIndirectParam(hModule,dt,hwnd,(DLGPROC)EmailBackEnd::bodyHandler,(LPARAM)p) ) 
+                SetWindowText(GetDlgItem(hwnd,IDDI_BACKENDS_EMAIL_BODY),p -> szEmailBody);
 
-      default:
-         break;
+            }
+            break;
 
-      }
+        default:
+            break;
 
-      }
-      break;   
+        }
+
+        }
+        break;   
 
 
-   case WM_NOTIFY: {
+    case WM_NOTIFY: {
 
-      NMHDR *pNotifyHeader = (NMHDR *)lParam;
+        NMHDR *pNotifyHeader = (NMHDR *)lParam;
 
-      switch ( pNotifyHeader -> code ) {
+        switch ( pNotifyHeader -> code ) {
 
-      case PSN_SETACTIVE: {
-         LOAD_CONTROLS
-         }
-         break;
+        case PSN_SETACTIVE: {
+            LOAD_CONTROLS
+            }
+            break;
 
-      case PSN_KILLACTIVE:
-         SetWindowLongPtr(pNotifyHeader -> hwndFrom,DWLP_MSGRESULT,FALSE);
-         break;
+        case PSN_KILLACTIVE:
+            SetWindowLongPtr(pNotifyHeader -> hwndFrom,DWLP_MSGRESULT,FALSE);
+            break;
 
-      case PSN_APPLY: {
+        case PSN_APPLY: {
 
-         PSHNOTIFY *pNotify = (PSHNOTIFY *)lParam;
+            PSHNOTIFY *pNotify = (PSHNOTIFY *)lParam;
 
-         UNLOAD_CONTROLS;
+            UNLOAD_CONTROLS;
 
-         if ( pNotify -> lParam ) {
-            IPrintingSupportProfile *px = NULL;
-            p -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
-            if ( p -> pICursiVisionServices -> IsAdministrator() || ! px ) 
-               p -> pIGProperties -> Save();
-            p -> pIGProperties -> Discard();
-            p -> pIGProperties -> Discard();
-         } else {
-            p -> pIGProperties -> Discard();
-            p -> pIGProperties -> Push();
-         }
+            if ( pNotify -> lParam && ! needsAdmin ) {
+                p -> pIGProperties -> Save();
+                p -> pIGProperties -> Discard();
+                p -> pIGProperties -> Discard();
+            } else {
+                p -> pIGProperties -> Discard();
+                p -> pIGProperties -> Push();
+            }
 
-         SetWindowLongPtr(pNotifyHeader -> hwndFrom,DWLP_MSGRESULT,PSNRET_NOERROR);
+            SetWindowLongPtr(pNotifyHeader -> hwndFrom,DWLP_MSGRESULT,PSNRET_NOERROR);
 
-         }
-         break;
+            }
+            break;
 
-      case PSN_RESET: {
-         p -> pIGProperties -> Pop();
-         p -> pIGProperties -> Pop();
-         p -> doExecute = false;
-         }
-         break;
+        case PSN_RESET: {
+            p -> pIGProperties -> Pop();
+            p -> pIGProperties -> Pop();
+            p -> doExecute = false;
+            }
+            break;
 
-      }
+        }
 
-      }
-      break;
+        }
+        break;
 
-   default:
-      break;
-   }
+    default:
+        break;
+    }
 
-   return (LRESULT)0L;
-   }
+    return (LRESULT)0L;
+    }

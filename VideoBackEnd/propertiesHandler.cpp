@@ -76,426 +76,439 @@ static HWND hwndCameras = NULL;
    GET_LONG(pObject -> autoFocusDelay,IDDI_FOCUS_TIME);     \
 }
 
-   BOOL CALLBACK adjustTop(HWND hwndTest,LPARAM lParam);
-   BOOL CALLBACK page1(HWND hwndTest,LPARAM lParam);
-   BOOL CALLBACK page2(HWND hwndTest,LPARAM lParam);
-   BOOL CALLBACK page3(HWND hwndTest,LPARAM lParam);
+    BOOL CALLBACK adjustTop(HWND hwndTest,LPARAM lParam);
+    BOOL CALLBACK page1(HWND hwndTest,LPARAM lParam);
+    BOOL CALLBACK page2(HWND hwndTest,LPARAM lParam);
+    BOOL CALLBACK page3(HWND hwndTest,LPARAM lParam);
 
-   IVideoWindow *pIVideoWindow = NULL;
+    IVideoWindow *pIVideoWindow = NULL;
 
-   LRESULT CALLBACK VideoBackEnd::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
+    static boolean needsAdmin = false;
 
-   resultDisposition *p = (resultDisposition *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
-   VideoBackEnd *pObject = NULL;
-   if ( p )
-      pObject = (VideoBackEnd *)(p -> pParent);
+    LRESULT CALLBACK VideoBackEnd::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   switch ( msg ) {
+    resultDisposition *p = (resultDisposition *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
+    VideoBackEnd *pObject = NULL;
+    if ( p )
+        pObject = (VideoBackEnd *)(p -> pParent);
 
-   case WM_INITDIALOG: {
+    switch ( msg ) {
 
-      PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
-      p = (resultDisposition *)pPage -> lParam;
-      SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
+    case WM_INITDIALOG: {
 
-      pObject = (VideoBackEnd *)(p -> pParent);
+        PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
+        p = (resultDisposition *)pPage -> lParam;
+        SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
 
-      pObject -> PushProperties();
-      pObject -> PushProperties();
+        pObject = (VideoBackEnd *)(p -> pParent);
 
-      RECT rcCameras,rcParent;
+        pObject -> PushProperties();
+        pObject -> PushProperties();
 
-      GetWindowRect(GetDlgItem(hwnd,IDDI_IMAGER),&rcCameras);
-      GetWindowRect(hwnd,&rcParent);
+        RECT rcCameras,rcParent;
 
-      DestroyWindow(GetDlgItem(hwnd,IDDI_IMAGER));
+        GetWindowRect(GetDlgItem(hwnd,IDDI_IMAGER),&rcCameras);
+        GetWindowRect(hwnd,&rcParent);
 
-      hwndCameras = CreateWindowExW(0L,WC_COMBOBOXW,L"",CBS_DROPDOWNLIST | WS_VSCROLL | WS_CHILD | WS_VISIBLE,rcCameras.left - rcParent.left,rcCameras.top - rcParent.top,
-                           rcCameras.right - rcCameras.left,128 + rcCameras.bottom - rcCameras.top,hwnd,(HMENU)IDDI_IMAGER,hModule,NULL);
+        DestroyWindow(GetDlgItem(hwnd,IDDI_IMAGER));
 
-      SendMessage(hwndCameras,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0L);
+        hwndCameras = CreateWindowExW(0L,WC_COMBOBOXW,L"",CBS_DROPDOWNLIST | WS_VSCROLL | WS_CHILD | WS_VISIBLE,rcCameras.left - rcParent.left,rcCameras.top - rcParent.top,
+                            rcCameras.right - rcCameras.left,128 + rcCameras.bottom - rcCameras.top,hwnd,(HMENU)IDDI_IMAGER,hModule,NULL);
 
-      LOAD_CONTROLS
+        SendMessage(hwndCameras,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0L);
 
-      LOAD_ADDITIONAL
+        LOAD_CONTROLS
 
-      EnableWindow(GetDlgItem(hwnd,IDDI_IMAGER),pObject -> useAnyCamera ? FALSE : TRUE);
-      EnableWindow(GetDlgItem(hwnd,IDDI_SAVE_FILE_ANYWAY),pObject -> ignoreNoCamera ? TRUE : FALSE);
+        LOAD_ADDITIONAL
 
-      SendDlgItemMessage(hwnd,IDDI_PAGE_PAGENO_OPT,BM_SETCHECK,0L,0L);
-      SendDlgItemMessage(hwnd,IDDI_PAGE_ONLAST,BM_SETCHECK,0L,0L);
-      SendDlgItemMessage(hwnd,IDDI_PAGE_NEWLAST,BM_SETCHECK,0L,0L);
+        EnableWindow(GetDlgItem(hwnd,IDDI_IMAGER),pObject -> useAnyCamera ? FALSE : TRUE);
+        EnableWindow(GetDlgItem(hwnd,IDDI_SAVE_FILE_ANYWAY),pObject -> ignoreNoCamera ? TRUE : FALSE);
 
-      if ( pObject -> specifyPage )
-         SendDlgItemMessage(hwnd,IDDI_PAGE_PAGENO_OPT,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
-      else if ( pObject -> lastPage )
-         SendDlgItemMessage(hwnd,IDDI_PAGE_ONLAST,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
-      else 
-         SendDlgItemMessage(hwnd,IDDI_PAGE_NEWLAST,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
+        SendDlgItemMessage(hwnd,IDDI_PAGE_PAGENO_OPT,BM_SETCHECK,0L,0L);
+        SendDlgItemMessage(hwnd,IDDI_PAGE_ONLAST,BM_SETCHECK,0L,0L);
+        SendDlgItemMessage(hwnd,IDDI_PAGE_NEWLAST,BM_SETCHECK,0L,0L);
 
-      EnableWindow(GetDlgItem(hwnd,IDDI_PAGE_PAGENO),pObject -> specifyPage);
+        if ( pObject -> specifyPage )
+            SendDlgItemMessage(hwnd,IDDI_PAGE_PAGENO_OPT,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
+        else if ( pObject -> lastPage )
+            SendDlgItemMessage(hwnd,IDDI_PAGE_ONLAST,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
+        else 
+            SendDlgItemMessage(hwnd,IDDI_PAGE_NEWLAST,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
 
-      if ( pObject -> fitToPage ) {
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),FALSE);
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_WIDTH),FALSE);
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_MAINTAIN_ASPECT_RATIO),FALSE);
-         SendDlgItemMessage(hwnd,IDDI_SIZE_FITTOPAGE,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
-      } else {
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_WIDTH),TRUE);
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),TRUE);
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_MAINTAIN_ASPECT_RATIO),TRUE);
-         SendDlgItemMessage(hwnd,IDDI_SIZE_FITTOPAGE,BM_SETCHECK,(WPARAM)BST_UNCHECKED,0L);
-      }
+        EnableWindow(GetDlgItem(hwnd,IDDI_PAGE_PAGENO),pObject -> specifyPage);
 
-      EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),! pObject -> keepAspectRatio);
+        if ( pObject -> fitToPage ) {
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),FALSE);
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_WIDTH),FALSE);
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_MAINTAIN_ASPECT_RATIO),FALSE);
+            SendDlgItemMessage(hwnd,IDDI_SIZE_FITTOPAGE,BM_SETCHECK,(WPARAM)BST_CHECKED,0L);
+        } else {
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_WIDTH),TRUE);
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),TRUE);
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_MAINTAIN_ASPECT_RATIO),TRUE);
+            SendDlgItemMessage(hwnd,IDDI_SIZE_FITTOPAGE,BM_SETCHECK,(WPARAM)BST_UNCHECKED,0L);
+        }
 
-      if ( pObject -> isProcessing || pObject -> szwChosenDevice[0] )
-         PostMessage(hwnd,WM_START_VIDEO,0L,0L);
+        EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),! pObject -> keepAspectRatio);
 
-      RECT rcTabs,rcVideo;
+        if ( pObject -> isProcessing || pObject -> szwChosenDevice[0] )
+            PostMessage(hwnd,WM_START_VIDEO,0L,0L);
 
-      GetWindowRect(GetDlgItem(hwnd,IDDI_TABS),&rcTabs);
-      GetWindowRect(GetDlgItem(hwnd,IDDI_VIDEO),&rcVideo);
+        RECT rcTabs,rcVideo;
 
-      rcVideo.right += (rcVideo.right - rcVideo.left) % 8;
-      rcVideo.bottom += (rcVideo.bottom - rcVideo.top) % 8;
+        GetWindowRect(GetDlgItem(hwnd,IDDI_TABS),&rcTabs);
+        GetWindowRect(GetDlgItem(hwnd,IDDI_VIDEO),&rcVideo);
 
-      AdjustWindowRectEx(&rcVideo,(DWORD)GetWindowLongPtr(GetDlgItem(hwnd,IDDI_VIDEO),GWL_STYLE),FALSE,(DWORD)GetWindowLongPtr(GetDlgItem(hwnd,IDDI_VIDEO),GWL_EXSTYLE));
+        rcVideo.right += (rcVideo.right - rcVideo.left) % 8;
+        rcVideo.bottom += (rcVideo.bottom - rcVideo.top) % 8;
 
-      SetWindowPos(GetDlgItem(hwnd,IDDI_VIDEO),HWND_TOP,0,0,rcVideo.right - rcVideo.left,rcVideo.bottom - rcVideo.top,SWP_NOMOVE);
+        AdjustWindowRectEx(&rcVideo,(DWORD)GetWindowLongPtr(GetDlgItem(hwnd,IDDI_VIDEO),GWL_STYLE),FALSE,(DWORD)GetWindowLongPtr(GetDlgItem(hwnd,IDDI_VIDEO),GWL_EXSTYLE));
 
-      SetWindowPos(GetDlgItem(hwnd,IDDI_TABS),HWND_TOP,0,0,rcVideo.right - rcVideo.left + 64,rcVideo.bottom - rcTabs.top + 32,SWP_NOMOVE);
+        SetWindowPos(GetDlgItem(hwnd,IDDI_VIDEO),HWND_TOP,0,0,rcVideo.right - rcVideo.left,rcVideo.bottom - rcVideo.top,SWP_NOMOVE);
 
-      TCITEM tcItem = {0};
+        SetWindowPos(GetDlgItem(hwnd,IDDI_TABS),HWND_TOP,0,0,rcVideo.right - rcVideo.left + 64,rcVideo.bottom - rcTabs.top + 32,SWP_NOMOVE);
 
-      tcItem.pszText = "Image";
-      tcItem.mask = TCIF_TEXT;
+        TCITEM tcItem = {0};
 
-      SendDlgItemMessage(hwnd,IDDI_TABS,TCM_INSERTITEM,0,(LPARAM)&tcItem);
+        tcItem.pszText = "Image";
+        tcItem.mask = TCIF_TEXT;
 
-      tcItem.pszText = "Location";
-      SendDlgItemMessage(hwnd,IDDI_TABS,TCM_INSERTITEM,1,(LPARAM)&tcItem);
+        SendDlgItemMessage(hwnd,IDDI_TABS,TCM_INSERTITEM,0,(LPARAM)&tcItem);
 
-      tcItem.pszText = DISPOSITION_TITLE;
-      SendDlgItemMessage(hwnd,IDDI_TABS,TCM_INSERTITEM,2,(LPARAM)&tcItem);
+        tcItem.pszText = "Location";
+        SendDlgItemMessage(hwnd,IDDI_TABS,TCM_INSERTITEM,1,(LPARAM)&tcItem);
 
-      EnumChildWindows(hwnd,page1,NULL);
+        tcItem.pszText = DISPOSITION_TITLE;
+        SendDlgItemMessage(hwnd,IDDI_TABS,TCM_INSERTITEM,2,(LPARAM)&tcItem);
 
-      if ( pObject -> isProcessing )
-         EnableWindow(GetDlgItem(GetParent(hwnd),IDOK),FALSE);
+        EnumChildWindows(hwnd,page1,NULL);
 
-      memset(&rcTabs,0,sizeof(RECT));
+        if ( pObject -> isProcessing )
+            EnableWindow(GetDlgItem(GetParent(hwnd),IDOK),FALSE);
 
-      SendDlgItemMessage(hwnd,IDDI_TABS,TCM_ADJUSTRECT,(WPARAM)TRUE,(LPARAM)&rcTabs);
+        memset(&rcTabs,0,sizeof(RECT));
 
-      long deltaY = rcTabs.bottom - rcTabs.top;
+        SendDlgItemMessage(hwnd,IDDI_TABS,TCM_ADJUSTRECT,(WPARAM)TRUE,(LPARAM)&rcTabs);
 
-      EnumChildWindows(hwnd,adjustTop,deltaY);
+        long deltaY = rcTabs.bottom - rcTabs.top;
 
-      GetWindowRect(GetDlgItem(hwnd,IDDI_TABS),&rcTabs);
+        EnumChildWindows(hwnd,adjustTop,deltaY);
 
-      SetWindowPos(GetDlgItem(hwnd,IDDI_TABS),HWND_TOP,0,0,rcTabs.right - rcTabs.left,rcTabs.bottom - rcTabs.top + deltaY,SWP_NOMOVE | SWP_NOZORDER);
+        GetWindowRect(GetDlgItem(hwnd,IDDI_TABS),&rcTabs);
 
-      SetWindowLongPtr(GetDlgItem(hwnd,IDDI_VIDEO),GWLP_USERDATA,(LONG_PTR)pObject);
+        SetWindowPos(GetDlgItem(hwnd,IDDI_TABS),HWND_TOP,0,0,rcTabs.right - rcTabs.left,rcTabs.bottom - rcTabs.top + deltaY,SWP_NOMOVE | SWP_NOZORDER);
 
-      VideoBackEnd::defaultImageHandler = (WNDPROC)SetWindowLongPtr(GetDlgItem(hwnd,IDDI_VIDEO),GWLP_WNDPROC,(LONG_PTR)VideoBackEnd::imageHandler);
+        SetWindowLongPtr(GetDlgItem(hwnd,IDDI_VIDEO),GWLP_USERDATA,(LONG_PTR)pObject);
 
-      UDACCEL accelerators[1];
-      accelerators[0].nSec = 0;
-      accelerators[0].nInc = 100;
+        VideoBackEnd::defaultImageHandler = (WNDPROC)SetWindowLongPtr(GetDlgItem(hwnd,IDDI_VIDEO),GWLP_WNDPROC,(LONG_PTR)VideoBackEnd::imageHandler);
 
-      SendDlgItemMessage(hwnd,IDDI_FOCUS_TIME_SPINNER,UDM_SETBUDDY,(WPARAM)GetDlgItem(hwnd,IDDI_FOCUS_TIME),0L);
-      SendDlgItemMessage(hwnd,IDDI_FOCUS_TIME_SPINNER,UDM_SETRANGE,0L,MAKELPARAM(10000,0));
-      SendDlgItemMessage(hwnd,IDDI_FOCUS_TIME_SPINNER,UDM_SETACCEL,1L,(LPARAM)accelerators);
+        UDACCEL accelerators[1];
+        accelerators[0].nSec = 0;
+        accelerators[0].nInc = 100;
 
-      EnableWindow(GetDlgItem(hwnd,IDDI_FOCUS_TIME),pObject -> autoSnap);
-      EnableWindow(GetDlgItem(hwnd,IDDI_FOCUS_TIME_SPINNER),pObject -> autoSnap);
+        SendDlgItemMessage(hwnd,IDDI_FOCUS_TIME_SPINNER,UDM_SETBUDDY,(WPARAM)GetDlgItem(hwnd,IDDI_FOCUS_TIME),0L);
+        SendDlgItemMessage(hwnd,IDDI_FOCUS_TIME_SPINNER,UDM_SETRANGE,0L,MAKELPARAM(10000,0));
+        SendDlgItemMessage(hwnd,IDDI_FOCUS_TIME_SPINNER,UDM_SETACCEL,1L,(LPARAM)accelerators);
 
-      if ( pObject -> isProcessing && pObject -> autoSnap ) {
-         waitingForImage = true;
-         skipToDraw = true;
-         PostMessage(hwnd,WM_SNAP_PHOTO,0L,0L);
-      }
+        EnableWindow(GetDlgItem(hwnd,IDDI_FOCUS_TIME),pObject -> autoSnap);
+        EnableWindow(GetDlgItem(hwnd,IDDI_FOCUS_TIME_SPINNER),pObject -> autoSnap);
 
-      IPrintingSupportProfile *px = NULL;
+        if ( pObject -> isProcessing && pObject -> autoSnap ) {
+            waitingForImage = true;
+            skipToDraw = true;
+            PostMessage(hwnd,WM_SNAP_PHOTO,0L,0L);
+        }
 
-      pObject -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
+        needsAdmin = false;
 
-      if ( px && ! px -> AllowSaveProperties() ) {
-         RECT rc = {0};
-         GetClientRect(hwnd,&rc);
-         SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,rc.bottom - 32,0,0,SWP_NOSIZE);
-         EnableWindow(hwnd,FALSE);
-      } else
-         DestroyWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES));
+        IPrintingSupportProfile *px = NULL;
+        pObject -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
 
-      }
-      return LRESULT(FALSE);
+        if ( px && ! px -> AllowPrintProfileChanges() ) {
+            SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+            SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change print profiles");
+            EnableWindow(hwnd,FALSE);
+            needsAdmin = true;
+        } else {
+            if ( ! pObject -> pICursiVisionServices -> AllowToolboxPropertyChanges() ) {
+                SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+                SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change tool properties");
+                EnableWindow(hwnd,FALSE);
+                needsAdmin = true;
+            } else
+                ShowWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),SW_HIDE);
+        }
 
-   case WM_START_VIDEO: {
+        if ( needsAdmin ) {
+            moveUpAllAmount(hwnd,-24,NULL);
+            enableDisableSiblings(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),FALSE);
+            SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+        }
 
-      SendMessage(hwnd,WM_STOP_VIDEO,0L,0L);
+        }
+        return LRESULT(FALSE);
 
-      if ( ! pObject -> szwChosenDevice[0] )
-         break;
+    case WM_START_VIDEO: {
 
-      if ( ! pObject -> hostVideo(GetDlgItem(hwnd,IDDI_VIDEO)) )
-         break;
+        SendMessage(hwnd,WM_STOP_VIDEO,0L,0L);
 
-      waitingForImage = false;
+        if ( ! pObject -> szwChosenDevice[0] )
+            break;
 
-      if ( pObject -> isProcessing )
-         EnableWindow(GetDlgItem(GetParent(hwnd),IDOK),TRUE);
+        if ( ! pObject -> hostVideo(GetDlgItem(hwnd,IDDI_VIDEO)) )
+            break;
 
-      }
-      break;
+        waitingForImage = false;
 
-   case WM_SNAP_PHOTO: {
+        if ( pObject -> isProcessing )
+            EnableWindow(GetDlgItem(GetParent(hwnd),IDOK),TRUE);
 
-      if ( waitingForImage ) {
-         PostMessage(hwnd,msg,wParam,lParam);
-         break;
-      } else if ( skipToDraw ) {
-         SetTimer(hwnd,WM_TIMER_ALLOW_DRAW,pObject -> autoFocusDelay,NULL);
-         break;
-      }
+        }
+        break;
 
-      BYTE *pImage = NULL;
+    case WM_SNAP_PHOTO: {
 
-      HRESULT hr = pIVMRWindowlessControl -> GetCurrentImage(&pImage);
+        if ( waitingForImage ) {
+            PostMessage(hwnd,msg,wParam,lParam);
+            break;
+        } else if ( skipToDraw ) {
+            SetTimer(hwnd,WM_TIMER_ALLOW_DRAW,pObject -> autoFocusDelay,NULL);
+            break;
+        }
 
-      if ( ! pImage || ( S_OK != hr ) ) {
-         SetTimer(hwnd,WM_TIMER_ALLOW_DRAW,pObject -> autoFocusDelay,NULL);
-         break;
-      }
+        BYTE *pImage = NULL;
 
-      if ( pObject -> timeStamp || pObject -> includeComputerName ) 
-         TimeStampBitmap(pImage,pObject -> szTargetFile,pObject -> timeStamp,pObject -> includeComputerName);
-      else
-         SaveJPEG(pImage,pObject -> szTargetFile);
+        HRESULT hr = pIVMRWindowlessControl -> GetCurrentImage(&pImage);
 
-      CoTaskMemFree(pImage);
+        if ( ! pImage || ( S_OK != hr ) ) {
+            SetTimer(hwnd,WM_TIMER_ALLOW_DRAW,pObject -> autoFocusDelay,NULL);
+            break;
+        }
 
-      if ( pObject -> autoSnap )
-         SendMessage(GetParent(hwnd),PSM_REMOVEPAGE,0L,SendMessage(GetParent(hwnd),PSM_INDEXTOPAGE,0L,0L));
+        if ( pObject -> timeStamp || pObject -> includeComputerName ) 
+            TimeStampBitmap(pImage,pObject -> szTargetFile,pObject -> timeStamp,pObject -> includeComputerName);
+        else
+            SaveJPEG(pImage,pObject -> szTargetFile);
 
-      }
-      break;
+        CoTaskMemFree(pImage);
 
-   case WM_DESTROY:
-   case WM_STOP_VIDEO:
-      pObject -> unHostVideo();
-      break;
+        if ( pObject -> autoSnap )
+            SendMessage(GetParent(hwnd),PSM_REMOVEPAGE,0L,SendMessage(GetParent(hwnd),PSM_INDEXTOPAGE,0L,0L));
 
-   case WM_TIMER: {
-      if ( WM_TIMER_ALLOW_DRAW == wParam ) {
-         skipToDraw = false;
-         KillTimer(hwnd,WM_TIMER_ALLOW_DRAW);
-         PostMessage(hwnd,WM_SNAP_PHOTO,0L,0L);
-      }
-      }
-      break;
+        }
+        break;
 
-   case WM_COMMAND: {
+    case WM_DESTROY:
+    case WM_STOP_VIDEO:
+        pObject -> unHostVideo();
+        break;
 
-      switch ( LOWORD(wParam) ) {
+    case WM_TIMER: {
+        if ( WM_TIMER_ALLOW_DRAW == wParam ) {
+            skipToDraw = false;
+            KillTimer(hwnd,WM_TIMER_ALLOW_DRAW);
+            PostMessage(hwnd,WM_SNAP_PHOTO,0L,0L);
+        }
+        }
+        break;
+
+    case WM_COMMAND: {
+
+        switch ( LOWORD(wParam) ) {
 
 #include "dispositionSettingsSaveOptionsWMCommand.cpp"
 
 #include "dispositionSettingsSaveMoreOptionWMCommand.cpp"
 
-      case IDDI_SIZE_MAINTAIN_ASPECT_RATIO:
-         pObject -> keepAspectRatio = (BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_SIZE_MAINTAIN_ASPECT_RATIO,BM_GETCHECK,0L,0L));
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),! pObject -> keepAspectRatio && ! pObject -> fitToPage);
-         break;
-
-      case IDDI_USE_ANY_CAMERA:
-         pObject -> useAnyCamera = (BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_USE_ANY_CAMERA,BM_GETCHECK,0L,0L));
-         EnableWindow(GetDlgItem(hwnd,IDDI_IMAGER),pObject -> useAnyCamera ? FALSE : TRUE);
-         break;
-
-      case IDDI_IGNORE_NO_CAMERA:
-         pObject -> ignoreNoCamera = (BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_IGNORE_NO_CAMERA,BM_GETCHECK,0L,0L));
-         EnableWindow(GetDlgItem(hwnd,IDDI_SAVE_FILE_ANYWAY),pObject -> ignoreNoCamera ? TRUE : FALSE);
-         break;
-
-      case IDDI_IMAGER: {
-         if ( ! (HIWORD(wParam) == CBN_SELCHANGE) )
+        case IDDI_SIZE_MAINTAIN_ASPECT_RATIO:
+            pObject -> keepAspectRatio = (BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_SIZE_MAINTAIN_ASPECT_RATIO,BM_GETCHECK,0L,0L));
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),! pObject -> keepAspectRatio && ! pObject -> fitToPage);
             break;
-         long index = (long)SendMessage(hwndCameras,CB_GETCURSEL,0L,0L);
-         if ( CB_ERR == index )
+
+        case IDDI_USE_ANY_CAMERA:
+            pObject -> useAnyCamera = (BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_USE_ANY_CAMERA,BM_GETCHECK,0L,0L));
+            EnableWindow(GetDlgItem(hwnd,IDDI_IMAGER),pObject -> useAnyCamera ? FALSE : TRUE);
             break;
-         SendMessageW(hwndCameras,CB_GETLBTEXT,(WPARAM)index,(LPARAM)pObject -> szwChosenDevice);
-         PostMessage(hwnd,WM_START_VIDEO,0L,0L);
-         }
-         break;
 
-      case IDDI_PAGE_PAGENO_OPT:
-      case IDDI_PAGE_ONLAST:
-      case IDDI_PAGE_NEWLAST:
-         EnableWindow(GetDlgItem(hwnd,IDDI_PAGE_PAGENO),BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_PAGE_PAGENO_OPT,BM_GETCHECK,0L,0L) ? TRUE : FALSE);
-         break;
+        case IDDI_IGNORE_NO_CAMERA:
+            pObject -> ignoreNoCamera = (BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_IGNORE_NO_CAMERA,BM_GETCHECK,0L,0L));
+            EnableWindow(GetDlgItem(hwnd,IDDI_SAVE_FILE_ANYWAY),pObject -> ignoreNoCamera ? TRUE : FALSE);
+            break;
 
-      case IDDI_SIZE_FITTOPAGE:
-         pObject -> fitToPage = (BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_SIZE_FITTOPAGE,BM_GETCHECK,0L,0L));
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),! pObject -> fitToPage && ! pObject -> keepAspectRatio);
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_WIDTH),! pObject -> fitToPage);
-         EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_MAINTAIN_ASPECT_RATIO),! pObject -> fitToPage);
-         break;
+        case IDDI_IMAGER: {
+            if ( ! (HIWORD(wParam) == CBN_SELCHANGE) )
+            break;
+            long index = (long)SendMessage(hwndCameras,CB_GETCURSEL,0L,0L);
+            if ( CB_ERR == index )
+            break;
+            SendMessageW(hwndCameras,CB_GETLBTEXT,(WPARAM)index,(LPARAM)pObject -> szwChosenDevice);
+            PostMessage(hwnd,WM_START_VIDEO,0L,0L);
+            }
+            break;
 
-      case IDDI_AUTO_SNAP:
-         pObject -> autoSnap = (BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_AUTO_SNAP,BM_GETCHECK,0L,0L));
-         EnableWindow(GetDlgItem(hwnd,IDDI_FOCUS_TIME),pObject -> autoSnap);
-         EnableWindow(GetDlgItem(hwnd,IDDI_FOCUS_TIME_SPINNER),pObject -> autoSnap);
-         break;
+        case IDDI_PAGE_PAGENO_OPT:
+        case IDDI_PAGE_ONLAST:
+        case IDDI_PAGE_NEWLAST:
+            EnableWindow(GetDlgItem(hwnd,IDDI_PAGE_PAGENO),BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_PAGE_PAGENO_OPT,BM_GETCHECK,0L,0L) ? TRUE : FALSE);
+            break;
 
-      default:
-         break;
-      }
+        case IDDI_SIZE_FITTOPAGE:
+            pObject -> fitToPage = (BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_SIZE_FITTOPAGE,BM_GETCHECK,0L,0L));
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_HEIGHT),! pObject -> fitToPage && ! pObject -> keepAspectRatio);
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_WIDTH),! pObject -> fitToPage);
+            EnableWindow(GetDlgItem(hwnd,IDDI_SIZE_MAINTAIN_ASPECT_RATIO),! pObject -> fitToPage);
+            break;
 
-      }
-      break;
+        case IDDI_AUTO_SNAP:
+            pObject -> autoSnap = (BST_CHECKED == SendDlgItemMessage(hwnd,IDDI_AUTO_SNAP,BM_GETCHECK,0L,0L));
+            EnableWindow(GetDlgItem(hwnd,IDDI_FOCUS_TIME),pObject -> autoSnap);
+            EnableWindow(GetDlgItem(hwnd,IDDI_FOCUS_TIME_SPINNER),pObject -> autoSnap);
+            break;
 
-   case WM_NOTIFY: {
+        default:
+            break;
+        }
 
-      NMHDR *pNotifyHeader = (NMHDR *)lParam;
+        }
+        break;
 
-      switch ( pNotifyHeader -> code ) {
+    case WM_NOTIFY: {
 
-      case TCN_SELCHANGE: {
-         switch ( SendDlgItemMessage(hwnd,IDDI_TABS,TCM_GETCURSEL,0L,0L) ) {
-         case 0:
+        NMHDR *pNotifyHeader = (NMHDR *)lParam;
+
+        switch ( pNotifyHeader -> code ) {
+
+        case TCN_SELCHANGE: {
+            switch ( SendDlgItemMessage(hwnd,IDDI_TABS,TCM_GETCURSEL,0L,0L) ) {
+            case 0:
             EnumChildWindows(hwnd,page1,NULL);
             break;
-         case 1:
+            case 1:
             EnumChildWindows(hwnd,page2,NULL);
             break;
-         case 2:
+            case 2:
             EnumChildWindows(hwnd,page3,NULL);
             break;
-         }
-         }
-         break;
+            }
+            }
+            break;
 
-      case PSN_KILLACTIVE: {
-         UNLOAD_CONTROLS
-         UNLOAD_ADDITIONAL
-         SetWindowLongPtr(hwnd,DWLP_MSGRESULT,FALSE);
-         }
-         break;
+        case PSN_KILLACTIVE: {
+            UNLOAD_CONTROLS
+            UNLOAD_ADDITIONAL
+            SetWindowLongPtr(hwnd,DWLP_MSGRESULT,FALSE);
+            }
+            break;
 
-      case PSN_APPLY: {
+        case PSN_APPLY: {
 
-         PSHNOTIFY *pNotify = (PSHNOTIFY *)lParam;
+            PSHNOTIFY *pNotify = (PSHNOTIFY *)lParam;
 
-         UNLOAD_CONTROLS
+            UNLOAD_CONTROLS
 
-         UNLOAD_ADDITIONAL
+            UNLOAD_ADDITIONAL
 
-         if ( pNotify -> lParam ) {
-            IPrintingSupportProfile *px = NULL;
-            pObject -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
-            if ( pObject -> pICursiVisionServices -> IsAdministrator() || ! px )
-               pObject -> SaveProperties();
-            pObject -> DiscardProperties();
-            pObject -> DiscardProperties();
-         } else {
-            pObject -> DiscardProperties();
-            pObject -> PushProperties();
-         }
+            if ( pNotify -> lParam && ! needsAdmin ) {
+                pObject -> SaveProperties();
+                pObject -> DiscardProperties();
+                pObject -> DiscardProperties();
+            } else {
+                pObject -> DiscardProperties();
+                pObject -> PushProperties();
+            }
 
-         if ( pObject -> isProcessing ) 
+            if ( pObject -> isProcessing ) 
             SendMessage(hwnd,WM_SNAP_PHOTO,0L,0L);
 
-         SetWindowLongPtr(hwnd,DWLP_MSGRESULT,PSNRET_NOERROR);
+            SetWindowLongPtr(hwnd,DWLP_MSGRESULT,PSNRET_NOERROR);
 
-         return (LRESULT)TRUE;
-         }
-         break;
+            return (LRESULT)TRUE;
+            }
+            break;
 
-      case PSN_RESET: {
-         pObject -> doExecute = false;
-         pObject -> PopProperties();
-         pObject -> PopProperties();
-         }
-         break;
+        case PSN_RESET: {
+            pObject -> doExecute = false;
+            pObject -> PopProperties();
+            pObject -> PopProperties();
+            }
+            break;
 
-      }
+        }
 
-      }
-      break;
+        }
+        break;
 
-   default:
-      break;
-   }
+    default:
+        break;
+    }
 
-   return LRESULT(FALSE);
-   }
-
-
-   LRESULT CALLBACK VideoBackEnd::imageHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
-
-   VideoBackEnd *p = (VideoBackEnd *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
-
-   switch ( msg ) {
-
-   case WM_PAINT: {
-      if ( ! pIVMRWindowlessControl )
-         return CallWindowProc(VideoBackEnd::defaultImageHandler,hwnd,msg,wParam,lParam);
-      PAINTSTRUCT ps = {0};
-      BeginPaint(hwnd,&ps);
-      pIVMRWindowlessControl -> RepaintVideo(hwnd,ps.hdc);  
-      EndPaint(hwnd,&ps);
-      }
-      break;
-
-   default:
-      break;
-
-   }
-
-   return CallWindowProc(VideoBackEnd::defaultImageHandler,hwnd,msg,wParam,lParam);
-   }
-
-   BOOL CALLBACK adjustTop(HWND hwndTest,LPARAM lParam) {
-   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
-   if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) || ( 3000 < id && id < 3100 ) ) {
-      RECT rcNow,rcParent;
-      GetWindowRect(GetParent(hwndTest),&rcParent);
-      GetWindowRect(hwndTest,&rcNow);
-      rcNow.top += (long)lParam;
-      rcNow.bottom += (long)lParam;
-      SetWindowPos(hwndTest,HWND_TOP,rcNow.left - rcParent.left,rcNow.top - rcParent.top,0,0,SWP_NOSIZE | SWP_NOZORDER);
-   }
-   return TRUE;
-   }
+    return LRESULT(FALSE);
+    }
 
 
-   BOOL CALLBACK page1(HWND hwndTest,LPARAM lParam) {
-   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
-   if ( 1000 < id && id < 1100 )
-      ShowWindow(hwndTest,SW_SHOW);
-   else
-      if ( ! ( 4000 < id && id < 4100 ) )
-         ShowWindow(hwndTest,SW_HIDE);
-   return TRUE;
-   }
+    LRESULT CALLBACK VideoBackEnd::imageHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   BOOL CALLBACK page2(HWND hwndTest,LPARAM lParam) {
-   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
-   if ( 2000 < id && id < 2100 )
-      ShowWindow(hwndTest,SW_SHOW);
-   else 
-      if ( ! ( 4000 < id && id < 4100 ) )
-         ShowWindow(hwndTest,SW_HIDE);
-   return TRUE;
-   }
+    VideoBackEnd *p = (VideoBackEnd *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
 
-   BOOL CALLBACK page3(HWND hwndTest,LPARAM lParam) {
-   long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
-   if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) )
-      ShowWindow(hwndTest,SW_HIDE);
-   else  
-      ShowWindow(hwndTest,SW_SHOW);
-   return TRUE;
-   }
+    switch ( msg ) {
+
+    case WM_PAINT: {
+        if ( ! pIVMRWindowlessControl )
+            return CallWindowProc(VideoBackEnd::defaultImageHandler,hwnd,msg,wParam,lParam);
+        PAINTSTRUCT ps = {0};
+        BeginPaint(hwnd,&ps);
+        pIVMRWindowlessControl -> RepaintVideo(hwnd,ps.hdc);  
+        EndPaint(hwnd,&ps);
+        }
+        break;
+
+    default:
+        break;
+
+    }
+
+    return CallWindowProc(VideoBackEnd::defaultImageHandler,hwnd,msg,wParam,lParam);
+    }
+
+    BOOL CALLBACK adjustTop(HWND hwndTest,LPARAM lParam) {
+    long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
+    if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) || ( 3000 < id && id < 3100 ) ) {
+        RECT rcNow,rcParent;
+        GetWindowRect(GetParent(hwndTest),&rcParent);
+        GetWindowRect(hwndTest,&rcNow);
+        rcNow.top += (long)lParam;
+        rcNow.bottom += (long)lParam;
+        SetWindowPos(hwndTest,HWND_TOP,rcNow.left - rcParent.left,rcNow.top - rcParent.top,0,0,SWP_NOSIZE | SWP_NOZORDER);
+    }
+    return TRUE;
+    }
+
+
+    BOOL CALLBACK page1(HWND hwndTest,LPARAM lParam) {
+    long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
+    if ( 1000 < id && id < 1100 )
+        ShowWindow(hwndTest,SW_SHOW);
+    else
+        if ( ! ( 4000 < id && id < 4100 ) )
+            ShowWindow(hwndTest,SW_HIDE);
+    return TRUE;
+    }
+
+    BOOL CALLBACK page2(HWND hwndTest,LPARAM lParam) {
+    long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
+    if ( 2000 < id && id < 2100 )
+        ShowWindow(hwndTest,SW_SHOW);
+    else 
+        if ( ! ( 4000 < id && id < 4100 ) )
+            ShowWindow(hwndTest,SW_HIDE);
+    return TRUE;
+    }
+
+    BOOL CALLBACK page3(HWND hwndTest,LPARAM lParam) {
+    long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
+    if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) )
+        ShowWindow(hwndTest,SW_HIDE);
+    else  
+        ShowWindow(hwndTest,SW_SHOW);
+    return TRUE;
+    }

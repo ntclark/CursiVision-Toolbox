@@ -34,7 +34,7 @@ BEGIN
     END
 END
 
-#define NO_CURSIVISION_PROPERTIES
+#define SKIP_CURSIVISION_PROPERTIES
 #define DONT_TERMINATE_DIALOG_TEMPLATE
 #define ADDITIONAL_TOP_SPACE 24
 
@@ -100,7 +100,8 @@ BEGIN
 
 #include "resultDispositionSaveOptions.rc"
 
-   LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,0,0,256, 24 
+   LTEXT "",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,0,0,280, 12 
+
 END
 
 #include "resultDispositionSaveOptionsMore.rc"

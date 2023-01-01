@@ -47,7 +47,7 @@ BEGIN
 
    //LTEXT "",IDDI_REPLICATOR_ACTION_INSTRUCTIONS, 8, 8, 24, 16
 
-   LTEXT "Changes are disabled because Admin privileges are required to change tools in printing profiles",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,0,0,256, 24 
+   LTEXT "",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,0,0,280, 24 
 
 END
 

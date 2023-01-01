@@ -77,5 +77,8 @@
     <ResourceCompile Include="NamingBackEnd.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+    <ResourceCompile Include="..\..\Common\resources\resultDisposition.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

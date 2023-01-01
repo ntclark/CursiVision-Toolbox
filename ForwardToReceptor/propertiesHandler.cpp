@@ -4,7 +4,9 @@
 
 #include "forwardToReceptor.h"
 
+#include "utilities.h"
 #include "resource.h"
+
 #include "ToolBoxResources.h"
 
 #define PUT_BOOL(v,id)  SendDlgItemMessage(hwnd,id,BM_SETCHECK,v ? BST_CHECKED : BST_UNCHECKED,0L);
@@ -23,7 +25,6 @@
    PUT_STRING(p -> szNextServerName,IDDI_BACKENDS_RECEPTOR_NEXT_SERVER)  \
    PUT_STRING(p -> szServerStoreLocation,IDDI_SERVER_LOCATION)  \
 }
-//   PUT_LONG(p -> portNumber,IDDI_BACKENDS_RECEPTOR_PORT)        \
 
 #define UNLOAD_CONTROLS                                         \
 {                                                               \
@@ -33,118 +34,127 @@
    GET_STRING(p -> szNextServerName,IDDI_BACKENDS_RECEPTOR_NEXT_SERVER)  \
    GET_STRING(p -> szServerStoreLocation,IDDI_SERVER_LOCATION)  \
 }
-//   GET_LONG(p -> portNumber,IDDI_BACKENDS_RECEPTOR_PORT)        \
 
-   LRESULT CALLBACK forwardToReceptor::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
+    static boolean needsAdmin = false;
 
-   forwardToReceptor *p = (forwardToReceptor *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
+    LRESULT CALLBACK forwardToReceptor::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
-   static long controlsLoaded = false;
+    forwardToReceptor *p = (forwardToReceptor *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
 
-   switch ( msg ) {
+    static long controlsLoaded = false;
 
-   case WM_INITDIALOG: {
-      PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
-      p = (forwardToReceptor *)pPage -> lParam;
-      SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
-      p -> pIGProperties -> Push();
-      p -> pIGProperties -> Push();
-      controlsLoaded = false;
+    switch ( msg ) {
 
-      IPrintingSupportProfile *px = NULL;
+    case WM_INITDIALOG: {
 
-      p -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
+        PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
+        p = (forwardToReceptor *)pPage -> lParam;
+        SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
+        p -> pIGProperties -> Push();
+        p -> pIGProperties -> Push();
+        controlsLoaded = false;
 
-      if ( px && ! px -> AllowSaveProperties() ) {
-         RECT rc = {0};
-         GetClientRect(hwnd,&rc);
-         SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,rc.bottom - 32,0,0,SWP_NOSIZE);
-         EnableWindow(hwnd,FALSE);
-      } else
-         ShowWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),SW_HIDE);
+        needsAdmin = false;
 
-      }
-      return LRESULT(FALSE);
+        IPrintingSupportProfile *px = NULL;
+        p -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
 
-   case WM_COMMAND: {
+        if ( px && ! px -> AllowPrintProfileChanges() ) {
+            SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+            SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change print profiles");
+            EnableWindow(hwnd,FALSE);
+            needsAdmin = true;
+        } else {
+            if ( ! p -> pICursiVisionServices -> AllowToolboxPropertyChanges() ) {
+                SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+                SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change tool properties");
+                EnableWindow(hwnd,FALSE);
+                needsAdmin = true;
+            } else
+                ShowWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),SW_HIDE);
+        }
+
+        if ( needsAdmin ) {
+            moveUpAllAmount(hwnd,-16,NULL);
+            enableDisableSiblings(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),FALSE);
+            SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+        }
+
+        }
+        return LRESULT(FALSE);
+
+    case WM_COMMAND: {
    
-      if ( controlsLoaded )
-         SendMessage(GetParent(hwnd),PSM_CHANGED,(WPARAM)hwnd,0L);
+        if ( controlsLoaded )
+            SendMessage(GetParent(hwnd),PSM_CHANGED,(WPARAM)hwnd,0L);
 
-      switch ( LOWORD(wParam) ) {
+        switch ( LOWORD(wParam) ) {
 
-//      case IDDI_BACKENDS_EMAIL_OK:
-//         UNLOAD_CONTROLS;
-//         break;
+        default:
+            break;
 
-      default:
-         break;
+        }
 
-      }
+        }
+        break;   
 
-      }
-      break;   
+    case WM_USER + 1: {
+        controlsLoaded = 1L;
+        }
+        break;
 
-   case WM_USER + 1: {
-      controlsLoaded = 1L;
-      }
-      break;
+    case WM_NOTIFY: {
 
-   case WM_NOTIFY: {
+        NMHDR *pNotifyHeader = (NMHDR *)lParam;
 
-      NMHDR *pNotifyHeader = (NMHDR *)lParam;
+        switch ( pNotifyHeader -> code ) {
 
-      switch ( pNotifyHeader -> code ) {
+        case PSN_SETACTIVE: {
+            LOAD_CONTROLS
+            PostMessage(hwnd,WM_USER + 1,0L,0L);
+            }
+            break;
 
-      case PSN_SETACTIVE: {
-         LOAD_CONTROLS
-         PostMessage(hwnd,WM_USER + 1,0L,0L);
-         }
-         break;
+        case PSN_KILLACTIVE: {
+            SetWindowLongPtr(pNotifyHeader -> hwndFrom,DWLP_MSGRESULT,FALSE);
+            }
+            break;
 
-      case PSN_KILLACTIVE: {
-         SetWindowLongPtr(pNotifyHeader -> hwndFrom,DWLP_MSGRESULT,FALSE);
-         }
-         break;
+        case PSN_APPLY: {
 
-      case PSN_APPLY: {
+            PSHNOTIFY *pNotify = (PSHNOTIFY *)lParam;
 
-         PSHNOTIFY *pNotify = (PSHNOTIFY *)lParam;
+            UNLOAD_CONTROLS;
 
-         UNLOAD_CONTROLS;
+            if ( pNotify -> lParam && ! needsAdmin ) {
+                p -> pIGProperties -> Save();
+                p -> pIGProperties -> Discard();
+                p -> pIGProperties -> Discard();
+            } else {
+                p -> pIGProperties -> Discard();
+                p -> pIGProperties -> Push();
+            }
 
-         if ( pNotify -> lParam ) {
-            IPrintingSupportProfile *px = NULL;
-            p -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
-            if ( p -> pICursiVisionServices -> IsAdministrator() || ! px ) 
-               p -> pIGProperties -> Save();
-            p -> pIGProperties -> Discard();
-            p -> pIGProperties -> Discard();
-         } else {
-            p -> pIGProperties -> Discard();
-            p -> pIGProperties -> Push();
-         }
+            SetWindowLongPtr(pNotifyHeader -> hwndFrom,DWLP_MSGRESULT,PSNRET_NOERROR);
 
-         SetWindowLongPtr(pNotifyHeader -> hwndFrom,DWLP_MSGRESULT,PSNRET_NOERROR);
+            }
+            break;
 
-         }
-         break;
+        case PSN_RESET: {
+            p -> doExecute = false;
+            p -> pIGProperties -> Pop();
+            p -> pIGProperties -> Pop();
+            }
+            break;
 
-      case PSN_RESET: {
-         p -> doExecute = false;
-         p -> pIGProperties -> Pop();
-         p -> pIGProperties -> Pop();
-         }
-         break;
+        }
 
-      }
+        }
+        break;
 
-      }
-      break;
+    default:
+        break;
+    }
 
-   default:
-      break;
-   }
-
-   return LRESULT(FALSE);
-   }
+    return LRESULT(FALSE);
+    }
