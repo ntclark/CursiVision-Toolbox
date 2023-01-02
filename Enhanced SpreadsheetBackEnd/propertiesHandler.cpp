@@ -52,8 +52,9 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
    for ( long k = 0; k < FIELD_DISPLAY_COUNT; k++ ) if ( 0 == strcmp(pObject -> szNamePrefix[k],"<none>") ) pObject -> szNamePrefix[k][0] = '\0';    \
 }
 
-
     static boolean needsAdmin = false;
+    LRESULT CALLBACK redTextHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam);
+    WNDPROC defaultTextHandler{NULL};
 
     LRESULT CALLBACK SpreadsheetBackEnd::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
@@ -183,13 +184,13 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
         IPrintingSupportProfile *px = NULL;
         pObject -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
 
-        if ( px && ! px -> AllowPrintProfileChanges() ) {
+        if ( px && ! px -> AllowPrintProfileChanges() && ! pObject -> editAllowed ) {
             SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
             SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change print profiles");
             EnableWindow(hwnd,FALSE);
             needsAdmin = true;
         } else {
-            if ( ! pObject -> pICursiVisionServices -> AllowToolboxPropertyChanges() ) {
+            if ( ! pObject -> pICursiVisionServices -> AllowToolboxPropertyChanges() && ! pObject -> editAllowed ) {
                 SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
                 SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change tool properties");
                 EnableWindow(hwnd,FALSE);
@@ -202,6 +203,10 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
             moveUpAllAmount(hwnd,-16,NULL);
             enableDisableSiblings(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),FALSE);
             SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+            if ( NULL == defaultTextHandler )
+                defaultTextHandler = (WNDPROC)SetWindowLongPtr(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),GWLP_WNDPROC,(UINT_PTR)redTextHandler);
+            else
+                SetWindowLongPtr(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),GWLP_WNDPROC,(UINT_PTR)redTextHandler);
         }
 
         }
@@ -357,6 +362,33 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
     }
 
     return (LRESULT)0L;
+    }
+
+
+    LRESULT CALLBACK redTextHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
+
+    switch ( msg ) {
+
+    case WM_PAINT: {
+        PAINTSTRUCT ps = {0};
+        BeginPaint(hwnd,&ps);
+        char szText[1024];
+        GetWindowText(hwnd,szText,1024);
+        HFONT hGUIFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
+        SelectObject(ps.hdc,hGUIFont);
+        SetTextColor(ps.hdc,RGB(255,0,0));
+        SetBkColor(ps.hdc,GetSysColor(COLOR_MENU));
+        DrawText(ps.hdc,szText,(int)strlen(szText),&ps.rcPaint,DT_TOP);
+        EndPaint(hwnd,&ps);
+        }
+        break;
+
+    default:
+        break;
+
+    }
+
+    return CallWindowProc(defaultTextHandler,hwnd,msg,wParam,lParam);
     }
 
 

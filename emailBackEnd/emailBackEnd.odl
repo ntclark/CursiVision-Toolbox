@@ -15,10 +15,10 @@ library CursiVisionEmailBackEnd {
     importlib(STDOLE_TLB); 
     importlib(STDTYPE_TLB);
 
-	[uuid(A64AB7AF-8A26-4f07-8877-56FE99570341),
-		helpstring("CursiVision Email Back End Object")]
-		coclass CursiVisionEmailBackEnd {
-		[default] interface IUnknown;
-	};
+    [uuid(A64AB7AF-8A26-4f07-8877-56FE99570341),
+    helpstring("CursiVision Email Back End Object")]
+        coclass CursiVisionEmailBackEnd {
+        [default] interface IUnknown;
+    };
 
 };

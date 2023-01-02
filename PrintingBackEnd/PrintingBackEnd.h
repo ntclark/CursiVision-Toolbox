@@ -50,17 +50,19 @@
 
       HRESULT __stdcall put_CommandLine(BSTR theCommandLine);
 
-      HRESULT __stdcall put_PrintingSupportProfile(IPrintingSupportProfile *) { return E_NOTIMPL; };
+      HRESULT __stdcall put_PrintingSupportProfile(IPrintingSupportProfile *) { return E_NOTIMPL; }
 
-      HRESULT __stdcall get_Description(BSTR *p) { if ( ! p ) return E_POINTER; *p = SysAllocString(L"CursiVision Printing Tool"); return S_OK; };
+      HRESULT __stdcall get_Description(BSTR *p) { if ( ! p ) return E_POINTER; *p = SysAllocString(L"CursiVision Printing Tool"); return S_OK; }
+
+      HRESULT __stdcall put_UserMayEdit(BOOL mayEdit) { editAllowed = mayEdit; return S_OK; }
 
       HRESULT __stdcall Dispose(BSTR inputFile,BSTR resultsFile,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile);
 
-      HRESULT __stdcall CanRunFromTools() { return S_OK; };
+      HRESULT __stdcall CanRunFromTools() { return S_OK; }
 
-      HRESULT __stdcall CanRunFromCursiVisionControl() { return S_OK; };
+      HRESULT __stdcall CanRunFromCursiVisionControl() { return S_OK; }
 
-      HRESULT __stdcall ServicesAdvise(ICursiVisionServices *p) { pICursiVisionServices = p; return S_OK; };
+      HRESULT __stdcall ServicesAdvise(ICursiVisionServices *p) { pICursiVisionServices = p; return S_OK; }
 
       class _IPrintingBackEndAdditional : IUnknown {
 
@@ -194,6 +196,7 @@
 
       HWND hwndProperties,hwndParent;
 
+      bool editAllowed{false};
       bool doExecute;
 
       long startParameters;

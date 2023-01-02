@@ -11,6 +11,8 @@
     static RECT rSizeBase;
 
     static boolean needsAdmin = false;
+    LRESULT CALLBACK redTextHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam);
+    WNDPROC defaultTextHandler{NULL};
 
     LRESULT CALLBACK theReplicator::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
@@ -42,13 +44,13 @@
         IPrintingSupportProfile *px = NULL;
         p -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
 
-        if ( px && ! px -> AllowPrintProfileChanges() ) {
+        if ( px && ! px -> AllowPrintProfileChanges() && ! p -> editAllowed ) {
             SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
             SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change print profiles");
             EnableWindow(hwnd,FALSE);
             needsAdmin = true;
         } else {
-            if ( ! p -> pICursiVisionServices -> AllowToolboxPropertyChanges() ) {
+            if ( ! p -> pICursiVisionServices -> AllowToolboxPropertyChanges() && ! p -> editAllowed ) {
                 SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
                 SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change tool properties");
                 EnableWindow(hwnd,FALSE);
@@ -61,6 +63,10 @@
             moveUpAllAmount(hwnd,-16,NULL);
             enableDisableSiblings(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),FALSE);
             SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+            if ( NULL == defaultTextHandler )
+                defaultTextHandler = (WNDPROC)SetWindowLongPtr(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),GWLP_WNDPROC,(UINT_PTR)redTextHandler);
+            else
+                SetWindowLongPtr(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),GWLP_WNDPROC,(UINT_PTR)redTextHandler);
         }
 
         pTemplateDocumentUI = p -> pTemplateDocument -> createView(hwnd,16,80,theReplicator::clearBitmapsAndDrawSignatures);
@@ -555,5 +561,32 @@ Beep(2000,1000);
     }
 
     return LRESULT(FALSE);
+    }
+
+
+    LRESULT CALLBACK redTextHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
+
+    switch ( msg ) {
+
+    case WM_PAINT: {
+        PAINTSTRUCT ps = {0};
+        BeginPaint(hwnd,&ps);
+        char szText[1024];
+        GetWindowText(hwnd,szText,1024);
+        HFONT hGUIFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
+        SelectObject(ps.hdc,hGUIFont);
+        SetTextColor(ps.hdc,RGB(255,0,0));
+        SetBkColor(ps.hdc,GetSysColor(COLOR_MENU));
+        DrawText(ps.hdc,szText,(int)strlen(szText),&ps.rcPaint,DT_TOP);
+        EndPaint(hwnd,&ps);
+        }
+        break;
+
+    default:
+        break;
+
+    }
+
+    return CallWindowProc(defaultTextHandler,hwnd,msg,wParam,lParam);
     }
 

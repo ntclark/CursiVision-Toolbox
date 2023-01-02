@@ -44,17 +44,19 @@
 
       HRESULT __stdcall put_CommandLine(BSTR theCommandLine);
 
-      HRESULT __stdcall put_PrintingSupportProfile(IPrintingSupportProfile *) { return E_NOTIMPL; };
+      HRESULT __stdcall put_PrintingSupportProfile(IPrintingSupportProfile *) { return E_NOTIMPL; }
 
-      HRESULT __stdcall get_Description(BSTR *p) { if ( ! p ) return E_POINTER; *p = SysAllocString(L"CursiVision E-Mailing Tool"); return S_OK; };
+      HRESULT __stdcall get_Description(BSTR *p) { if ( ! p ) return E_POINTER; *p = SysAllocString(L"CursiVision E-Mailing Tool"); return S_OK; }
+
+      HRESULT __stdcall put_UserMayEdit(BOOL mayEdit) { editAllowed = mayEdit; return S_OK; }
 
       HRESULT __stdcall Dispose(BSTR originalFile,BSTR resultsFile,BSTR graphicFileName,BSTR dispositionSettingsFileName,BOOL isTempFile);
 
-      HRESULT __stdcall CanRunFromTools() { return S_OK; };
+      HRESULT __stdcall CanRunFromTools() { return S_OK; }
 
-      HRESULT __stdcall CanRunFromCursiVisionControl() { return S_OK; };
+      HRESULT __stdcall CanRunFromCursiVisionControl() { return S_OK; }
 
-      HRESULT __stdcall ServicesAdvise(ICursiVisionServices *p) { pICursiVisionServices = p; return S_OK; };
+      HRESULT __stdcall ServicesAdvise(ICursiVisionServices *p) { pICursiVisionServices = p; return S_OK; }
 
       //   IPropertiesClient
 
@@ -145,6 +147,7 @@
       char szEmailBody[1024];
 
       bool showProperties;
+      bool editAllowed{false};
 
       long endParameters;
 

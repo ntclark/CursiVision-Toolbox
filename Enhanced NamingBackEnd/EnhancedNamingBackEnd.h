@@ -56,13 +56,15 @@
 
       HRESULT __stdcall put_PrintingSupportProfile(IPrintingSupportProfile *pProfile);
 
-      HRESULT __stdcall get_Description(BSTR *p) { if ( ! p ) return E_POINTER; *p = SysAllocString(L"CursiVision File Naming Tool"); return S_OK; };
+      HRESULT __stdcall get_Description(BSTR *p) { if ( ! p ) return E_POINTER; *p = SysAllocString(L"CursiVision File Naming Tool"); return S_OK; }
+
+      HRESULT __stdcall put_UserMayEdit(BOOL mayEdit) { editAllowed = mayEdit; return S_OK; }
 
       HRESULT __stdcall Dispose(BSTR inputFile,BSTR resultsFile,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile);
 
-      HRESULT __stdcall CanRunFromTools() { return S_OK; };
+      HRESULT __stdcall CanRunFromTools() { return S_OK; }
 
-      HRESULT __stdcall CanRunFromCursiVisionControl() { return S_OK; };
+      HRESULT __stdcall CanRunFromCursiVisionControl() { return S_OK; }
 
       HRESULT __stdcall ServicesAdvise(ICursiVisionServices *);
 
@@ -211,6 +213,8 @@
       char szNamePrefix[16][64];
 
       long endParameters;
+
+      bool editAllowed{false};
 
       BSTR bstrResultsFile;
 
