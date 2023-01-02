@@ -44,7 +44,6 @@
     }
 
 
-
 #define UNLOAD_ADDITIONAL \
    SendMessage(GetDlgItem(hwnd,IDDI_NAME1_PREFIX),CB_GETLBTEXT,SendMessage(GetDlgItem(hwnd,IDDI_NAME1_PREFIX),CB_GETCURSEL,0L,0L),(WPARAM)pObject -> szNamePrefix[0]); \
    SendMessage(GetDlgItem(hwnd,IDDI_NAME2_PREFIX),CB_GETLBTEXT,SendMessage(GetDlgItem(hwnd,IDDI_NAME2_PREFIX),CB_GETCURSEL,0L,0L),(WPARAM)pObject -> szNamePrefix[1]);
