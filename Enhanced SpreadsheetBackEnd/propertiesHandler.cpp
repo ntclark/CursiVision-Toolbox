@@ -75,6 +75,36 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
         pObject -> PushProperties();
         pObject -> PushProperties();
 
+        needsAdmin = false;
+
+        IPrintingSupportProfile *px = NULL;
+        pObject -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
+
+        if ( px && ! px -> AllowPrintProfileChanges() && ! pObject -> editAllowed ) {
+            SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+            SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change print profiles");
+            EnableWindow(hwnd,FALSE);
+            needsAdmin = true;
+        } else {
+            if ( ! pObject -> pICursiVisionServices -> AllowToolboxPropertyChanges() && ! pObject -> editAllowed ) {
+                SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+                SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change tool properties");
+                EnableWindow(hwnd,FALSE);
+                needsAdmin = true;
+            } else
+                ShowWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),SW_HIDE);
+        }
+
+        if ( needsAdmin ) {
+            moveUpAllAmount(hwnd,-16,NULL);
+            enableDisableSiblings(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),FALSE);
+            SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+            if ( NULL == defaultTextHandler )
+                defaultTextHandler = (WNDPROC)SetWindowLongPtr(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),GWLP_WNDPROC,(UINT_PTR)redTextHandler);
+            else
+                SetWindowLongPtr(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),GWLP_WNDPROC,(UINT_PTR)redTextHandler);
+        }
+
         RECT rcParent,rcPrefix,rcColumnName,rcColumnId;
 
         HFONT hGUIFont = (HFONT)SendMessage(GetDlgItem(hwnd,IDDI_NAME_PREFIX),WM_GETFONT,0L,0L);
@@ -122,20 +152,21 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
         for ( long k = 0; k < FIELD_DISPLAY_COUNT - 1; k++ ) {
 
-            HWND hwndx = CreateWindowEx(0L,"ComboBox","",WS_CHILD | WS_VSCROLL | WS_VISIBLE | ES_AUTOVSCROLL | WS_TABSTOP | CBS_DROPDOWNLIST,rcPrefix.left,y,cxPrefix,6 * cyPrefix,hwnd,(HMENU)(UINT_PTR)(IDDI_NAME_PREFIX + k),NULL,NULL);
+            HWND hwndx = CreateWindowEx(0L,"ComboBox","",WS_CHILD | WS_VSCROLL | WS_VISIBLE | ES_AUTOVSCROLL | WS_TABSTOP | CBS_DROPDOWNLIST,
+                                                rcPrefix.left,y,cxPrefix,6 * cyPrefix,hwnd,(HMENU)(UINT_PTR)(IDDI_NAME_PREFIX + k),NULL,NULL);
             SendMessage(hwndx,WM_SETFONT,(WPARAM)hGUIFont,(LPARAM)TRUE);
+
+            EnableWindow(hwndx,needsAdmin ? FALSE : TRUE);
 
             char *pStart = pFieldNames;
 
-            for ( long j = 0; j < fieldCount; j++ ) {
+            for ( long j = 0; j < fieldCount; j++, pStart += 32 ) {
 
-            if ( pStart[0] ) {
-                SendMessage(hwndx,CB_INSERTSTRING,(WPARAM)-1L,(LPARAM)pStart);
-                if ( 0 < strlen(pObject -> szNamePrefix[k]) && 0 == strcmp(pObject -> szNamePrefix[k],pStart) )
-                    SendMessage(hwndx,CB_SETCURSEL,(WPARAM)SendMessage(hwndx,CB_GETCOUNT,0L,0L) - 1,0L);
-            }
-
-            pStart += 32;
+                if ( pStart[0] ) {
+                    SendMessage(hwndx,CB_INSERTSTRING,(WPARAM)-1L,(LPARAM)pStart);
+                    if ( 0 < strlen(pObject -> szNamePrefix[k]) && 0 == strcmp(pObject -> szNamePrefix[k],pStart) )
+                        SendMessage(hwndx,CB_SETCURSEL,(WPARAM)SendMessage(hwndx,CB_GETCOUNT,0L,0L) - 1,0L);
+                }
 
             }
 
@@ -143,8 +174,11 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
             hwndx = CreateWindowEx(WS_EX_CLIENTEDGE,"Edit","",WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_TABSTOP,rcColumnName.left,y,cxColumnName,cyColumnName,hwnd,(HMENU)(UINT_PTR)(IDDI_COLUMN_NAME + k),NULL,NULL);
             SendMessage(hwndx,WM_SETFONT,(WPARAM)hGUIFont,(LPARAM)TRUE);
+            EnableWindow(hwndx,needsAdmin ? FALSE : TRUE);
+
             hwndx = CreateWindowEx(WS_EX_CLIENTEDGE,"Edit","",WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_CENTER | WS_TABSTOP,rcColumnId.left,y,cxColumnId,cyColumnId,hwnd,(HMENU)(UINT_PTR)(IDDI_COLUMN_ID + k),NULL,NULL);
             SendMessage(hwndx,WM_SETFONT,(WPARAM)hGUIFont,(LPARAM)TRUE);
+            EnableWindow(hwndx,needsAdmin ? FALSE : TRUE);
 
             y += cyPrefix + 4;
 
@@ -178,36 +212,6 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
         controlsLoaded = 0L;
    
         LOAD_CONTROLS
-
-        needsAdmin = false;
-
-        IPrintingSupportProfile *px = NULL;
-        pObject -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
-
-        if ( px && ! px -> AllowPrintProfileChanges() && ! pObject -> editAllowed ) {
-            SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
-            SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change print profiles");
-            EnableWindow(hwnd,FALSE);
-            needsAdmin = true;
-        } else {
-            if ( ! pObject -> pICursiVisionServices -> AllowToolboxPropertyChanges() && ! pObject -> editAllowed ) {
-                SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
-                SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change tool properties");
-                EnableWindow(hwnd,FALSE);
-                needsAdmin = true;
-            } else
-                ShowWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),SW_HIDE);
-        }
-
-        if ( needsAdmin ) {
-            moveUpAllAmount(hwnd,-16,NULL);
-            enableDisableSiblings(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),FALSE);
-            SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
-            if ( NULL == defaultTextHandler )
-                defaultTextHandler = (WNDPROC)SetWindowLongPtr(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),GWLP_WNDPROC,(UINT_PTR)redTextHandler);
-            else
-                SetWindowLongPtr(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),GWLP_WNDPROC,(UINT_PTR)redTextHandler);
-        }
 
         }
         return (LRESULT)TRUE;

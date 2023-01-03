@@ -13,12 +13,12 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
 #define OBJECT_WITH_PROPERTIES ImagingBackEnd
 
-#define LOAD_ADDITIONAL                                          \
-{                                                                \
+#define LOAD_ADDITIONAL                                     \
+{                                                           \
    PUT_BOOL(p -> doProperties,IDDI_SHOW_PROPERTIES);        \
    PUT_BOOL(pObject -> skipImaging,IDDI_SKIP);              \
-   PUT_BOOL(pObject -> scanOne,IDDI_SCAN_ONE);                   \
-   PUT_BOOL(pObject -> scanMultiple,IDDI_SCAN_MULTIPLE);         \
+   PUT_BOOL(pObject -> scanOne,IDDI_SCAN_ONE);              \
+   PUT_BOOL(pObject -> scanMultiple,IDDI_SCAN_MULTIPLE);    \
    PUT_BOOL(pObject -> specifyPage,IDDI_PAGE_PAGENO_OPT);   \
    PUT_BOOL(pObject -> lastPage,IDDI_PAGE_ONLAST);          \
    PUT_BOOL(pObject -> newLastPage,IDDI_PAGE_NEWLAST);      \
@@ -34,11 +34,11 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
 #define UNLOAD_ADDITIONAL \
 {  \
-   GET_STRING(pObject -> szChosenDevice,IDDI_IMAGER);             \
+   GET_STRING(pObject -> szChosenDevice,IDDI_IMAGER);       \
    GET_BOOL(p -> doProperties,IDDI_SHOW_PROPERTIES);        \
    GET_BOOL(pObject -> skipImaging,IDDI_SKIP);              \
-   GET_BOOL(pObject -> scanOne,IDDI_SCAN_ONE);                    \
-   GET_BOOL(pObject -> scanMultiple,IDDI_SCAN_MULTIPLE);          \
+   GET_BOOL(pObject -> scanOne,IDDI_SCAN_ONE);              \
+   GET_BOOL(pObject -> scanMultiple,IDDI_SCAN_MULTIPLE);    \
    GET_BOOL(pObject -> specifyPage,IDDI_PAGE_PAGENO_OPT);   \
    GET_BOOL(pObject -> lastPage,IDDI_PAGE_ONLAST);          \
    GET_BOOL(pObject -> newLastPage,IDDI_PAGE_NEWLAST);      \
@@ -128,12 +128,8 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
         tcItem.pszText = "Location";
         SendDlgItemMessage(hwnd,IDDI_TABS,TCM_INSERTITEM,1,(LPARAM)&tcItem);
 
-        EnumChildWindows(hwnd,page1,NULL);
-
         tcItem.pszText = DISPOSITION_TITLE;
         SendDlgItemMessage(hwnd,IDDI_TABS,TCM_INSERTITEM,2,(LPARAM)&tcItem);
-
-        EnumChildWindows(hwnd,page1,NULL);
 
         LOAD_CONTROLS
 
@@ -181,14 +177,11 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
         ret = dsmEntryProcedure(&pObject -> twainIdentity,0,DG_CONTROL,DAT_PARENT,MSG_CLOSEDSM,(TW_MEMREF)&pObject -> hwndParent);
 
-        RECT rcTabs;
-
-        memset(&rcTabs,0,sizeof(RECT));
+        RECT rcTabs{0,0,0,0};
 
         SendDlgItemMessage(hwnd,IDDI_TABS,TCM_ADJUSTRECT,(WPARAM)TRUE,(LPARAM)&rcTabs);
 
         long deltaY = rcTabs.bottom - rcTabs.top;
-
         EnumChildWindows(hwnd,adjustTop,deltaY);
 
         needsAdmin = false;
@@ -199,27 +192,33 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
         if ( px && ! px -> AllowPrintProfileChanges() && ! pObject -> editAllowed ) {
             SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
             SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change print profiles");
-            EnableWindow(hwnd,FALSE);
             needsAdmin = true;
         } else {
             if ( ! pObject -> pICursiVisionServices -> AllowToolboxPropertyChanges() && ! pObject -> editAllowed ) {
                 SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
                 SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change tool properties");
-                EnableWindow(hwnd,FALSE);
                 needsAdmin = true;
             } else
                 ShowWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),SW_HIDE);
         }
 
         if ( needsAdmin ) {
-            moveUpAllAmount(hwnd,-16,NULL);
+            moveUpAllAmount(hwnd,-38,NULL);
             enableDisableSiblings(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),FALSE);
+            EnableWindow(GetDlgItem(hwnd,IDDI_TABS),TRUE);
             SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+            SetWindowPos(GetDlgItem(hwnd,IDDI_SHOW_PROPERTIES),HWND_TOP,8,24,0,0,SWP_NOSIZE);
             if ( NULL == defaultTextHandler )
                 defaultTextHandler = (WNDPROC)SetWindowLongPtr(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),GWLP_WNDPROC,(UINT_PTR)redTextHandler);
             else
                 SetWindowLongPtr(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),GWLP_WNDPROC,(UINT_PTR)redTextHandler);
+        } else {
+            moveUpAllAmount(hwnd,-16,NULL);
+            SetWindowPos(GetDlgItem(hwnd,IDDI_SHOW_PROPERTIES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
+            DestroyWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES));
         }
+
+        EnumChildWindows(hwnd,page1,NULL);
 
         }
         return LRESULT(FALSE);
@@ -266,14 +265,14 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
         case TCN_SELCHANGE: {
             switch ( SendDlgItemMessage(hwnd,IDDI_TABS,TCM_GETCURSEL,0L,0L) ) {
             case 0:
-            EnumChildWindows(hwnd,page1,NULL);
-            break;
+                EnumChildWindows(hwnd,page1,NULL);
+                break;
             case 1:
-            EnumChildWindows(hwnd,page2,NULL);
-            break;
+                EnumChildWindows(hwnd,page2,NULL);
+                break;
             case 2:
-            EnumChildWindows(hwnd,page3,NULL);
-            break;
+                EnumChildWindows(hwnd,page3,NULL);
+                break;
             }
             }
             break;
@@ -331,6 +330,8 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
     BOOL CALLBACK adjustTop(HWND hwndTest,LPARAM lParam) {
     long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
     if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) || ( 3000 < id && id < 3100 ) ) {
+        if ( IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES == id )
+            return TRUE;
         RECT rcNow,rcParent;
         GetWindowRect(GetParent(hwndTest),&rcParent);
         GetWindowRect(hwndTest,&rcNow);
@@ -344,13 +345,16 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
     BOOL CALLBACK page1(HWND hwndTest,LPARAM lParam) {
     long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
-    if ( 1000 < id && id < 1100 )
-        ShowWindow(hwndTest,SW_SHOW);
-    else
+    if ( 1000 < id && id < 1100 ) {
+        if ( ! ( IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES == id ) )
+            ShowWindow(hwndTest,SW_SHOW);
+    } else
         if ( ! ( 4000 < id && id < 4100 ) )
-            ShowWindow(hwndTest,SW_HIDE);
+            if ( ! ( IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES == id ) )
+                ShowWindow(hwndTest,SW_HIDE);
     return TRUE;
     }
+
 
     BOOL CALLBACK page2(HWND hwndTest,LPARAM lParam) {
     long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
@@ -358,15 +362,18 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
         ShowWindow(hwndTest,SW_SHOW);
     else 
         if ( ! ( 4000 < id && id < 4100 ) )
-            ShowWindow(hwndTest,SW_HIDE);
+            if ( ! ( IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES == id ) )
+                ShowWindow(hwndTest,SW_HIDE);
     return TRUE;
     }
 
+
     BOOL CALLBACK page3(HWND hwndTest,LPARAM lParam) {
     long id = (long)GetWindowLongPtr(hwndTest,GWL_ID);
-    if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) )
-        ShowWindow(hwndTest,SW_HIDE);
-    else  
+    if ( ( 1000 < id && id < 1100 ) || ( 2000 < id && id < 2100 ) ) {
+        if ( ! ( IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES == id ) )
+            ShowWindow(hwndTest,SW_HIDE);
+    } else  
         ShowWindow(hwndTest,SW_SHOW);
     return TRUE;
     }

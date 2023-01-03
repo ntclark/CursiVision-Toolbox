@@ -260,7 +260,7 @@
     <ClCompile Include="IPropertyPageClient.cpp" />
     <ClCompile Include="IUnknown.cpp" />
     <ClCompile Include="IWiaTransferCallback.cpp" />
-    <ClCompile Include="propertiesHandler.cpp" />
+    <ClCompile Include="WIAScannerPropertiesHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ImagingBackEnd.def" />
@@ -270,7 +270,7 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="ImagingBackEnd.rc">
+    <ResourceCompile Include="WIAScannerImagingBackEnd.rc">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OUTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OUTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OUTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

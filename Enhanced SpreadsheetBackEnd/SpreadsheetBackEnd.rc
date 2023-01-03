@@ -45,7 +45,7 @@ BEGIN
 
 END
 
-IDD_OPTIONS DIALOGEX 0,0, 256, 256 + 64 + 8 + 32
+IDD_OPTIONS DIALOGEX 0,0, 288, 360
 CAPTION "Note"
 STYLE DS_SETFONT | WS_CHILD | WS_POPUP | WS_CAPTION
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
@@ -53,37 +53,37 @@ BEGIN
 
    AUTOCHECKBOX "Show these properties every time", IDDI_SHOW_PROPERTIES,10,8,128,14, WS_VISIBLE | WS_TABSTOP
 
-   LTEXT "Please specify the name of your Excel Workbook",-1,10,8 + 14,256 - 10,14
-   EDITTEXT IDDI_WORKBOOK_NAME, 10,8 + 14 + 12,256 - 10 - 32 - 4, 12, ES_AUTOHSCROLL | WS_TABSTOP
-   PUSHBUTTON "...", IDDI_WORKBOOK_GET, 10 + 256 - 10 - 32 - 4 + 4, 8 + 14 + 12,16, 12
+   LTEXT "Please specify the name of your Excel Workbook",-1,   10, 22,246, 12
+   EDITTEXT IDDI_WORKBOOK_NAME,                                 10, 34,210, 12, ES_AUTOHSCROLL | WS_TABSTOP
+   PUSHBUTTON "...", IDDI_WORKBOOK_GET,                        224, 34, 16, 12
 
-   LTEXT "Please choose the spreadsheet",-1,10,8 + 14 + 12 + 12 + 4 + 4,96 + 8,14
-   COMBOBOX IDDI_CHOOSE_SPREADSHEET, 10 + 96 + 8 + 4, 8 + 14 + 12 + 12 + 4, 64 + 32, 64, CBS_DROPDOWNLIST | WS_VSCROLL
+   LTEXT "Please choose the spreadsheet",IDC_STATIC,            10, 54,104, 14
+   COMBOBOX IDDI_CHOOSE_SPREADSHEET,                           118, 50, 96, 64, CBS_DROPDOWNLIST | WS_VSCROLL
 
-   LTEXT "Select the field labels from your CursiVision printing profile.",-1,10,8 + 14 + 12 + 4 + 14 + 20,256 - 20,40
+   LTEXT "Select the field labels from your CursiVision printing profile.",-1,10,72,236,40
 
-   LTEXT "Field name",-1,10,8 + 14 + 12 + 4 + 14 + 20 + 40,90,14
-   COMBOBOX IDDI_NAME_PREFIX,10,8 + 14 + 12 + 4 + 14 + 20 + 40 + 12,90,12, CBS_DROPDOWN | WS_TABSTOP
+   LTEXT "Field name",IDC_STATIC,                               10,  92, 90, 12
+   COMBOBOX IDDI_NAME_PREFIX,                                   10, 104, 90, 12, CBS_DROPDOWN | WS_TABSTOP
 
-   LTEXT "Column Name",-1,10 + 90 + 8,8 + 14 + 12 + 4 + 14 + 20 + 40,70,14
-   EDITTEXT IDDI_COLUMN_NAME,10 + 90 + 8,8 + 14 + 12 + 4 + 14 + 20 + 40 + 12,70,12, ES_AUTOHSCROLL
+   LTEXT "Column Name",IDC_STATIC,                             108,  92, 70, 12
+   EDITTEXT IDDI_COLUMN_NAME,                                  108, 104, 70, 12, ES_AUTOHSCROLL
 
-   LTEXT "Column ID\r(A,B, etc)",-1,10 + 90 + 8 + 70 + 8,8 + 14 + 12 + 4 + 14 + 20 + 40 - 8,40,24
-   EDITTEXT IDDI_COLUMN_ID,10 + 90 + 8 + 70 + 8,8 + 14 + 12 + 4 + 14 + 20 + 40 + 12,40,12, ES_CENTER
+   LTEXT "Column ID\r(A,B, etc)",IDC_STATIC,                   186,  84, 40, 16
+   EDITTEXT IDDI_COLUMN_ID,                                    186, 104, 40, 12, ES_CENTER
 
-   AUTOCHECKBOX "Include the signing date",IDDI_INCLUDE_DATE, 10,10,88, 14, WS_VISIBLE
-   RTEXT "Column:",IDDI_INCLUDE_DATE_LABEL,10,10, 32, 14
-   EDITTEXT IDDI_DATE_COLUMN_ID,10,10,32,12,ES_CENTER
+   AUTOCHECKBOX "Include the signing date",IDDI_INCLUDE_DATE,   10,  10, 88, 12, WS_VISIBLE
+   RTEXT "Column:",IDDI_INCLUDE_DATE_LABEL,                     10,  10, 32, 12
+   EDITTEXT IDDI_DATE_COLUMN_ID,                                10,  10, 32, 12,ES_CENTER
 
-   AUTOCHECKBOX "Include the signing time",IDDI_INCLUDE_TIME, 10,24,88, 14, WS_VISIBLE
-   RTEXT "Column:",IDDI_INCLUDE_TIME_LABEL,10,10, 32, 14
-   EDITTEXT IDDI_TIME_COLUMN_ID,10,10,32,12,ES_CENTER
+   AUTOCHECKBOX "Include the signing time",IDDI_INCLUDE_TIME,   10,  24, 88, 12, WS_VISIBLE
+   RTEXT "Column:",IDDI_INCLUDE_TIME_LABEL,                     10,  10, 32, 12
+   EDITTEXT IDDI_TIME_COLUMN_ID,                                10,  10, 32, 12,ES_CENTER
 
    AUTOCHECKBOX "Include a link to the signed document",IDDI_INCLUDE_DOCUMENT_LINK, 10, 24, 128 + 8, 14
-   RTEXT "Column:",IDDI_DOCUMENT_LINK_LABEL,10,10, 32, 14
-   EDITTEXT IDDI_DOCUMENT_LINK_COLUMN,10,10,32,12,ES_CENTER
+   RTEXT "Column:",IDDI_DOCUMENT_LINK_LABEL,                    10,  10, 32, 14
+   EDITTEXT IDDI_DOCUMENT_LINK_COLUMN,                          10,  10, 32,12,ES_CENTER
 
-   LTEXT "",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,0,0,280, 24 
+   LTEXT "",IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,0,0,280, 12 
 END
 
 STRINGTABLE 

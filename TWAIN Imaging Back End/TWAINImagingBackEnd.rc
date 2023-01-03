@@ -16,14 +16,14 @@ BEGIN
         BEGIN
             VALUE "Comments", "\0"
             VALUE "CompanyName", "InnoVisioNate\0"
-            VALUE "FileDescription", "CursiVision Camera Tool. Take a picture at signing time and place it in the document\0"
+            VALUE "FileDescription", "The CursiVision Imaging tool using a TWAIN scanner device. Scan one or more documents into the resulting document\0"
             VALUE "FileVersion", CV_PRODUCT_VERSION
-            VALUE "InternalName", "VideoBackEnd.ocx\0"
+            VALUE "InternalName", "TWAIN ImagingBackEnd.dll\0"
             VALUE "LegalCopyright", "Copyright © 2009-2023 InnoVisioNate Inc.\0"
             VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "VideoBackEnd.ocx\0"
+            VALUE "OriginalFilename", "TWAIN ImagingBackEnd.dll\0"
             VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "CursiVision Camera Tool\0"
+            VALUE "ProductName", "CursiVision TWAIN scanning tool\0"
             VALUE "ProductVersion", CV_PRODUCT_VERSION
             VALUE "SpecialBuild", "\0"
         END
@@ -34,40 +34,39 @@ BEGIN
     END
 END
 
+
 #define SKIP_CURSIVISION_PROPERTIES
 #define DONT_TERMINATE_DIALOG_TEMPLATE
 #define ADDITIONAL_TOP_SPACE 24
 
-IDD_VIDEO_PROPERTIES DIALOGEX 0, 0, 256 + 32 + 16, 256 + 64 + 14 + 32
+IDD_SCAN_AGAIN DIALOGEX 0, 0, 128 + 32, 48
+CAPTION "Scan Again ?"
+STYLE DS_SETFONT | DS_3DLOOK | DS_CENTER | WS_CAPTION | WS_VISIBLE
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+
+   LTEXT "Would you like to scan another document ?",-1,8, 8, 128 + 32 - 8, 12
+
+   PUSHBUTTON "Yes",IDOK, 8, 8 + 12 + 4, 32, 16
+   PUSHBUTTON "No", IDNO, 8 + 32 + 8, 8 + 12 + 4, 32, 16
+
+END
+
+IDD_DISPOSITION_PROPERTIES DIALOGEX 0, 0, 256 + 64, 256 + 32
 STYLE DS_SETFONT | DS_3DLOOK | WS_CHILD | WS_VISIBLE
 EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
 
-   AUTOCHECKBOX "Show these properties every time",IDDI_SHOW_PROPERTIES,    8, 8,128,12,WS_GROUP
+   AUTOCHECKBOX "Show these properties every time",IDDI_SHOW_PROPERTIES, 8,8,128,12,WS_GROUP
 
-   CONTROL "", IDDI_TABS, WC_TABCONTROLA, WS_VISIBLE | WS_CHILD,            8, 8, 256 - 16, 128
+   CONTROL "", IDDI_TABS, WC_TABCONTROLA, WS_VISIBLE | WS_CHILD,         8,  8, 272, 210
 
-   AUTOCHECKBOX "Skip image capture", IDDI_SKIP,                     16, 12, 96, 14
-   AUTOCHECKBOX "Take the picture automatically", IDDI_AUTO_SNAP,    16, 26, 112, 14
-   AUTOCHECKBOX "Time stamp the image", IDDI_TIME_STAMP,            136, 26, 96, 14
-   AUTOCHECKBOX "Show the Computer Name", IDDI_COMPUTER_NAME,        16, 40, 128, 14
-
-   AUTOCHECKBOX "Use any camera on the signing computer", IDDI_USE_ANY_CAMERA,                     16, 54, 192, 14
-   AUTOCHECKBOX "Ignore this tool on computers with no camera", IDDI_IGNORE_NO_CAMERA,             16, 68, 192, 14
-   AUTOCHECKBOX " ... but, still save the document if otherwise specified", IDDI_SAVE_FILE_ANYWAY, 24, 82, 192, 14
-
-   LTEXT "Choose the source video device:",IDDI_CHOOSE_LABEL,                                      16, 100, 160, 10
-
-   COMBOBOX IDDI_IMAGER,                                                                           16, 112, 152, 128, CBS_DROPDOWNLIST | WS_VSCROLL
-
-   LTEXT "Auto Focus time (milliseconds)", IDDI_FOCUS_TIME_LABEL,                                 176, 102,  96, 12
-
-   EDITTEXT IDDI_FOCUS_TIME,                                                                      176, 114,  32, 12, ES_CENTER
-
-   CONTROL "",IDDI_FOCUS_TIME_SPINNER, UPDOWN_CLASS, UDS_SETBUDDYINT | UDS_NOTHOUSANDS | WS_VISIBLE, 208, 113, 32, 14
-
-   CONTROL "",IDDI_VIDEO, "STATIC", WS_VISIBLE,                                                    16, 130, 224, 160, WS_EX_CLIENTEDGE
+   AUTORADIOBUTTON "Skip scanning", IDDI_SKIP,                          20, 12,  96, 14
+   AUTORADIOBUTTON "Scan one document", IDDI_SCAN_ONE,                  20, 26,  96, 14
+   AUTORADIOBUTTON "Scan multiple documents", IDDI_SCAN_MULTIPLE,       20, 40,  96, 14
+   LTEXT "Please choose the source scanning device:",IDDI_IMAGER_LABEL1,16, 60, 160, 14
+   COMBOBOX IDDI_IMAGER,                                                16, 76, 152, 128, CBS_DROPDOWNLIST | WS_VSCROLL
 
    LTEXT "Specify the top left corner of the image",    2001,   14, 12, 124, 12
    LTEXT "Inches from the top of the document:",        2002,   20, 26, 120, 12
@@ -89,9 +88,12 @@ BEGIN
    AUTORADIOBUTTON "On the last page", IDDI_PAGE_ONLAST,                                    20, 152,  64, 12
    AUTORADIOBUTTON "Create a new last page", IDDI_PAGE_NEWLAST,                             20, 166, 128, 12
 
-   AUTOCHECKBOX "Save the captured image next to the document ?", IDDI_POSITION_KEEP_IMAGE, 14, 180, 255, 12
+   AUTOCHECKBOX "Keep the captured image next to the document ?", IDDI_POSITION_KEEP_IMAGE, 14, 180, 255, 12
 
-   LTEXT "Specify the file saving options:",IDDI_DISPOSITION_LABEL,                         14,  12, 160, 12
+   LTEXT "Specify the file saving options:",IDC_STATIC,         14,32, 160, 12
+
+#undef ADDITIONAL_TOP_SPACE
+#define ADDITIONAL_TOP_SPACE 20
 
 #include "resultDispositionSaveOptions.rc"
 

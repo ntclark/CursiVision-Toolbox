@@ -27,7 +27,7 @@
     <ClCompile Include="ImagingBackEnd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="propertiesHandler.cpp">
+    <ClCompile Include="WIAScannerPropertiesHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dllMain.cpp">
@@ -69,7 +69,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="ImagingBackEnd.rc">
+    <ResourceCompile Include="WIAScannerImagingBackEnd.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

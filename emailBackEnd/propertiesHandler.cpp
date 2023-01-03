@@ -89,7 +89,7 @@
         }
 
         if ( needsAdmin ) {
-            moveUpAllAmount(hwnd,-16,NULL);
+            moveUpAllAmount(hwnd,-20,NULL);
             enableDisableSiblings(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),FALSE);
             SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
             if ( NULL == defaultTextHandler )

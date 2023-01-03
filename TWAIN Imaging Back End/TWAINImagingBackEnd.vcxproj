@@ -178,7 +178,7 @@ copy "$(ProjectDir)\Support Files\$(Platform)\twaindsm.dll" "$(GSYSTEM_HOME)\Com
     </Bscmake>
     <PostBuildEvent>
       <Command>
-regsvr32 /s /c "$(TargetPath)"</Command>
+regsvr32  /s /c "$(TargetPath)"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -289,7 +289,7 @@ copy "$(ProjectDir)\Support Files\$(Platform)\twaindsm.dll" "$(GSYSTEM_HOME)\Com
     <ClCompile Include="IPropertiesClient.cpp" />
     <ClCompile Include="IPropertyPageClient.cpp" />
     <ClCompile Include="IUnknown.cpp" />
-    <ClCompile Include="propertiesHandler.cpp" />
+    <ClCompile Include="TWAINpropertiesHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ImagingBackEnd.def" />
@@ -311,7 +311,7 @@ copy "$(ProjectDir)\Support Files\$(Platform)\twaindsm.dll" "$(GSYSTEM_HOME)\Com
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="ImagingBackEnd.rc">
+    <ResourceCompile Include="TWAINImagingBackEnd.rc">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OUTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OUTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OUTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
