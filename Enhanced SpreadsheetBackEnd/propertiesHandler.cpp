@@ -142,13 +142,8 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
         DestroyWindow(GetDlgItem(hwnd,IDDI_COLUMN_NAME));
         DestroyWindow(GetDlgItem(hwnd,IDDI_COLUMN_ID));
 
-        char *pFieldNames = NULL;
-        long fieldCount = 0L;
-
-        if ( pObject -> pICursiVisionServices ) {
-            pFieldNames = pObject -> pICursiVisionServices -> FieldLabels();
-            fieldCount = pObject -> pICursiVisionServices -> FieldCount();
-        }
+        char *pFieldNames = pObject -> pICursiVisionServices -> FieldLabels();
+        long fieldCount = pObject -> pICursiVisionServices -> FieldCount();
 
         for ( long k = 0; k < FIELD_DISPLAY_COUNT - 1; k++ ) {
 

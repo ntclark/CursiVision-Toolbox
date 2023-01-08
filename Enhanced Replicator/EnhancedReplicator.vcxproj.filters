@@ -87,8 +87,8 @@
     <ClCompile Include="$(GSYSTEM_HOME)\Common\source\templateDocument_UI.cpp">
       <Filter>Source Files\Template Document</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\source\templateDocument_UI_hilitedArea.cpp">
-      <Filter>Source Files\Template Document</Filter>
+    <ClCompile Include="$(GSYSTEM_HOME)\Common\source\templateDocument_UI_hilitedArea.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -104,6 +104,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(GSYSTEM_HOME)\Common\include\templateDocument.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\include\drawBoxDefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

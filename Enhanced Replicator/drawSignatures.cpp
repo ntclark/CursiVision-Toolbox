@@ -4,183 +4,131 @@
 
 #include "EnhancedReplicator.h"
 
-   void theReplicator::drawSignatures(HDC hdc,templateDocument::tdUI *pDocument) {
+#include "drawBoxDefines.h"
 
-   if ( ! pDocument -> isDocumentRendered() )
-      return;
+#ifdef BORDER_RADIUS
+#undef BORDER_RADIUS
+#endif
 
-   for ( long k = 0; k < WRITING_LOCATION_COUNT; k++ ) {
-      if ( ! pThis -> pWritingLocations[k] )
-         break;
-      if ( pThis -> pWritingLocations[k] -> pdfPageNumber != pDocument -> currentPageNumber() ) 
-         continue;
-      pThis -> drawSignature(NULL,k,0L,0L,NULL,pDocument);
-   }
+#define BORDER_RADIUS 20
 
-   return;
-   }
+    void theReplicator::drawSignatures(HDC hdc,templateDocument::tdUI *pDocument) {
 
+    if ( ! pDocument -> isDocumentRendered() )
+        return;
 
-   void theReplicator::drawSignature(HDC hdc,long index,long shiftX,long shiftY,RECT *pNewLocation,templateDocument::tdUI *pDocument) {
+    for ( long k = 0; k < WRITING_LOCATION_COUNT; k++ ) {
+        if ( ! pThis -> pWritingLocations[k] )
+            break;
+        if ( pThis -> pWritingLocations[k] -> pdfPageNumber != pDocument -> currentPageNumber() ) 
+            continue;
+        pThis -> drawSignature(NULL,k,NULL,NULL);
+    }
 
-   bool wasProvided = true;
+    return;
+    }
 
-   if ( ! hdc ) {
-      hdc = GetDC(pDocument -> hwndPane);
-      wasProvided = false;
-   }
 
-   writingLocation *pSG = pWritingLocations[index];
+    void theReplicator::drawSignature(HDC hdc,long index,RECT *prcNewPixels,RECT *pNewLocation) {
 
-   HGDIOBJ oldFont = SelectObject(hdc,GetStockObject(DEFAULT_GUI_FONT));
+    bool wasProvided = true;
 
-   HGDIOBJ oldPen;
+    if ( ! hdc ) {
+        hdc = GetDC(pTemplateDocumentUI -> hwndPane);
+        wasProvided = false;
+    }
 
-   HPEN hPen = NULL;
-   if ( index == activeIndex )
-      hPen = CreatePen(PS_SOLID,1,RGB(255,0,0));
-   else
-      hPen = CreatePen(PS_SOLID,1,RGB(128,128,128));
+    writingLocation *pSG = pWritingLocations[index];
 
-   oldPen = SelectObject(hdc,hPen);
+    LOGFONT systemFont;
+    HFONT hGUIFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
 
-   RECT r;
+    GetObject(hGUIFont,sizeof(LOGFONT),&systemFont);
 
-   memcpy(&r,&pSG -> documentRect,sizeof(RECT));
+    systemFont.lfHeight = (long)((double)systemFont.lfHeight * 1.25);
+    systemFont.lfWeight *= 2;
 
-   r.left += shiftX;
-   r.right += shiftX;
-   r.top -= shiftY;
-   r.bottom -= shiftY;
+    HFONT hfontMain = CreateFontIndirect(&systemFont);
 
-   pDocument -> convertToPixels(pSG -> pdfPageNumber,&r);
+    HGDIOBJ oldFont = SelectObject(hdc,hfontMain);
 
-   if ( NULL == hbmDrawRestore[index] ) { // && isReplicant[index] ) {
+    HGDIOBJ oldPen;
 
-      long cx = r.right - r.left;
-      long cy = r.bottom - r.top;
+    HPEN hPen = NULL;
+    if ( index == activeIndex )
+        hPen = CreatePen(PS_SOLID,BORDER_WEIGHT,DB_RED);
+    else
+        hPen = CreatePen(PS_SOLID,BORDER_WEIGHT,DB_GRAY);
 
-      HDC hdcSave = CreateCompatibleDC(NULL);
+    oldPen = SelectObject(hdc,hPen);
 
-      if ( hbmDrawRestore[index] )
-         DeleteObject(hbmDrawRestore[index]);
+    HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+    HGDIOBJ oldBrush = SelectObject(hdc,hBrush);
 
-      memcpy(&restoreRect[index],&r,sizeof(RECT));
+    if ( ! ( NULL == hdcDrawRestore[index] ) ) {
+        long scrollAmount = pageScrollTop[index] - pTemplateDocumentUI -> prcPDFSpecificPagePixels[pSG -> pdfPageNumber - 1].top;
+        BitBlt(hdc,restoreRect[index].left,restoreRect[index].top - scrollAmount,
+                        restoreRect[index].right - restoreRect[index].left,restoreRect[index].bottom - restoreRect[index].top,
+                            hdcDrawRestore[index],0,0,SRCCOPY);
+        pTemplateDocumentUI -> pdfDCRelease(hdcDrawRestore[index]);
+        hdcDrawRestore[index] = NULL;
+    }
 
-      hbmDrawRestore[index] = CreateBitmap(cx + 4,cy + 4,1,GetDeviceCaps(hdcSave,BITSPIXEL),NULL);
+    restoreRect[index] = pSG -> documentRect;
+    pTemplateDocumentUI -> convertToPixels(pSG -> pdfPageNumber,&restoreRect[index]);
 
-      HGDIOBJ oldBitmap = SelectObject(hdcSave,hbmDrawRestore[index]);
+    restoreRect[index].left -= BORDER_WEIGHT;
+    restoreRect[index].right += BORDER_WEIGHT;
+    restoreRect[index].top -= BORDER_WEIGHT;
+    restoreRect[index].bottom += BORDER_WEIGHT;
+    hdcDrawRestore[index] = pTemplateDocumentUI -> pdfDCArea(pSG -> pdfPageNumber,&restoreRect[index]);
+    pageScrollTop[index] = pTemplateDocumentUI -> prcPDFSpecificPagePixels[pSG -> pdfPageNumber - 1].top;
 
-      BitBlt(hdcSave,0,0,cx + 4,cy + 4,hdc,r.left - 2,r.top - 2,SRCCOPY);
+    RECT rcPixels{0,0,0,0};
 
-      SelectObject(hdcSave,oldBitmap);
+    if ( ! ( NULL == prcNewPixels ) )
+        rcPixels = *prcNewPixels;
+    else {
+        rcPixels = pSG -> documentRect;
+        pTemplateDocumentUI -> convertToPixels(pSG -> pdfPageNumber,&rcPixels);
+    }
 
-      DeleteDC(hdcSave);
+    RoundRect(hdc,rcPixels.left,rcPixels.top,rcPixels.right,rcPixels.bottom,BORDER_WEIGHT,BORDER_RADIUS);
 
-   }
+    RECT rcText{rcPixels.left + 8,rcPixels.top + 8,rcPixels.right - 16,rcPixels.bottom - 16};
 
-   MoveToEx(hdc,r.left,r.top,NULL);
-   LineTo(hdc,r.right,r.top);
-   LineTo(hdc,r.right,r.bottom);
-   LineTo(hdc,r.left,r.bottom);
-   LineTo(hdc,r.left,r.top);
+    if ( isReplicant[index] )
+        DrawText(hdc,"Replicant",-1,&rcText,DT_CENTER | DT_VCENTER);
+    else  
+        DrawText(hdc,"Native",-1,&rcText,DT_CENTER | DT_VCENTER);
 
-   r.left += 8;
-   r.top += 8;
-   r.right -= 16;
-   r.bottom -= 16;
+    DeleteObject(SelectObject(hdc,oldPen));
 
-   if ( isReplicant[index] || shiftX || shiftY )
-      DrawText(hdc,"Replicant",9,(RECT *)&r,0L);
-   else  
-      DrawText(hdc,"Native",6,(RECT *)&r,0);
-
-   DeleteObject(SelectObject(hdc,oldPen));         
-
-   if ( pNewLocation ) {
-      pNewLocation -> left = pSG -> documentRect.left + shiftX;
-      pNewLocation -> right = pNewLocation -> left + pSG -> documentRect.right - pSG -> documentRect.left;
-      pNewLocation -> bottom = pSG -> documentRect.bottom - shiftY;
-      pNewLocation -> top = pNewLocation -> bottom + pSG -> documentRect.top - pSG -> documentRect.bottom;
-   }
-
-   SelectObject(hdc,oldFont);
-
-   if ( ! wasProvided )
-      ReleaseDC(pDocument -> hwndPane,hdc);
-
-   return;
-   }
-
-   void theReplicator::reDrawSignature(HDC hdc,long index,long shiftX,long shiftY,RECT *pNewLocation,templateDocument::tdUI *pDocument) {
-
-   clearSignature(pDocument,index);
-
-   drawSignature(hdc,index,shiftX,shiftY,pNewLocation,pDocument);
-
-   return;
-   }
-
-   void theReplicator::clearBitmapsAndDrawSignatures(HDC hdc,templateDocument::tdUI *pDocument) {
-
-   for ( long k = 0; k < WRITING_LOCATION_COUNT; k++ ) {
-      if ( ! pThis -> pWritingLocations[k] )
-         break;
-      if ( NULL == pThis -> hbmDrawRestore[k] )
-         continue;
-      DeleteObject(pThis -> hbmDrawRestore[k]);
-      pThis -> hbmDrawRestore[k] = NULL;
-   }
-
-   drawSignatures(hdc,pDocument);
-
-   return;
-   }
-
-
-   void theReplicator::clearSignature(templateDocument::tdUI *pDocument,long index) {
-
-   if ( NULL == hbmDrawRestore[index] )
-      return;
-
-   writingLocation *pSG = pWritingLocations[index];
-
-   RECT r;
-
-   memcpy(&r,&restoreRect[index],sizeof(RECT));
-
-   HDC hdc = GetDC(pDocument -> hwndPane);
-
-   HDC hdcRestore = CreateCompatibleDC(NULL);
-
-   HGDIOBJ oldBitmap = SelectObject(hdcRestore,hbmDrawRestore[index]);
-
-   BOOL rc = BitBlt(hdc,r.left - 2,r.top - 2,r.right - r.left + 4,r.bottom - r.top + 4,hdcRestore,0,0,SRCCOPY);
-
-   SelectObject(hdcRestore,oldBitmap);
-
-   DeleteDC(hdcRestore);
-
-   ReleaseDC(pDocument -> hwndPane,hdc);
-
-   DeleteObject(hbmDrawRestore[index]);
-
-   hbmDrawRestore[index] = NULL;
-
-   return;
-   }
-
-
-   void theReplicator::clearPage(templateDocument::tdUI *pDocument) {
-
-   HDC hdc = GetDC(pDocument -> hwndPane);
-
-   long cxHTML = pDocument -> rcPageParentCoordinates.right - pDocument -> rcPageParentCoordinates.left;
-   long cyHTML = pDocument -> rcPageParentCoordinates.bottom - pDocument -> rcPageParentCoordinates.top;
-
-   BitBlt(hdc,0,0,cxHTML,cyHTML,pDocument -> pdfDC(),0,0,SRCCOPY);
-
-   ReleaseDC(pDocument -> hwndPane,hdc);
-   
-   return;
-   }
+    if ( pNewLocation )  {
+        if ( ! ( NULL == prcNewPixels ) ) {
+            pTemplateDocumentUI -> convertToPoints(pSG -> pdfPageNumber,&rcPixels);
+            *pNewLocation = rcPixels;
+        } else
+            *pNewLocation = pSG -> documentRect;
+    }
+
+    DeleteObject(SelectObject(hdc,oldFont));
+    SelectObject(hdc,oldBrush);
+
+    if ( ! wasProvided )
+        ReleaseDC(pTemplateDocumentUI -> hwndPane,hdc);
+
+    return;
+    }
+
+
+    void theReplicator::clearPage() {
+    HDC hdc = GetDC(pTemplateDocumentUI -> hwndPane);
+    long cxHTML = pTemplateDocumentUI -> rcPDFPagePixels.right - pTemplateDocumentUI -> rcPDFPagePixels.left;
+    long cyHTML = pTemplateDocumentUI -> rcPDFPagePixels.bottom - pTemplateDocumentUI -> rcPDFPagePixels.top;
+    HDC hdcPage = pTemplateDocumentUI -> pdfDC();
+    BitBlt(hdc,pTemplateDocumentUI -> rcPDFPagePixels.left,pTemplateDocumentUI -> rcPDFPagePixels.top,cxHTML,cyHTML,hdcPage,0,0,SRCCOPY);
+    pTemplateDocumentUI -> pdfDCRelease(hdcPage);
+    ReleaseDC(pTemplateDocumentUI -> hwndPane,hdc);
+    return;
+    }

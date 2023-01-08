@@ -75,13 +75,11 @@
         needsAdmin = false;
         if ( px && ! px -> AllowPrintProfileChanges() && ! p -> editAllowed ) {
             SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
-            EnableWindow(hwnd,FALSE);
             SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change print profiles");
             needsAdmin = true;
         } else {
             if ( ! p -> pICursiVisionServices -> AllowToolboxPropertyChanges() && ! p -> editAllowed ) {
                 SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
-                EnableWindow(hwnd,FALSE);
                 SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change tool properties");
                 needsAdmin = true;
             } else

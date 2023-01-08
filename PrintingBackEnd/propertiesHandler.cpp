@@ -98,13 +98,11 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
         if ( px && ! px -> AllowPrintProfileChanges() && ! pObject -> editAllowed ) {
             SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
             SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change print profiles");
-            EnableWindow(hwnd,FALSE);
             needsAdmin = true;
         } else {
             if ( ! pObject -> pICursiVisionServices -> AllowToolboxPropertyChanges() && ! pObject -> editAllowed ) {
                 SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
                 SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change tool properties");
-                EnableWindow(hwnd,FALSE);
                 needsAdmin = true;
             } else
                 ShowWindow(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),SW_HIDE);
@@ -128,36 +126,6 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
         PrintingBackEnd *pObject = (PrintingBackEnd *)(p -> pParent);
 
         switch ( LOWORD(wParam) ) {
-
-#if 0
-        case IDDI_PRINTER_PROPERTIES: {
-
-            char szPrinter[64];
-            HANDLE hPrinter;
-            SendMessage(GetDlgItem(hwnd,IDDI_PRINTER),CB_GETLBTEXT,SendMessage(GetDlgItem(hwnd,IDDI_PRINTER),CB_GETCURSEL,0L,0L),(LPARAM)szPrinter); 
-
-            if ( ! szPrinter[0] ) {
-//            MessageBox(NULL,"No printer is selected","Note",MB_OK);
-            break;
-            }
-
-            OpenPrinter(szPrinter,&hPrinter,NULL);
-
-            long sizeDevMode = DocumentProperties(hwnd,hPrinter,szPrinter,NULL,NULL,0);
-
-            BYTE *pBuffer = new BYTE[sizeDevMode + 1];
-            memset(pBuffer,0,(sizeDevMode + 1) * sizeof(BYTE));
-
-            long rc = DocumentProperties(hwnd,hPrinter,szPrinter,(DEVMODE *)pBuffer,(DEVMODE *)pObject -> printerDevMode,DM_IN_BUFFER | DM_OUT_BUFFER | DM_PROMPT);
-
-            if ( IDOK == rc )
-            memcpy(pObject -> printerDevMode,pBuffer,min(sizeDevMode,sizeof(pObject -> printerDevMode)));
-
-            ClosePrinter(hPrinter);
-            delete [] pBuffer;
-            }
-            break;
-#endif
 
         case IDDI_USE_DEFAULT_PRINTER:
             GET_BOOL(pObject -> useDefaultPrinter,IDDI_USE_DEFAULT_PRINTER)

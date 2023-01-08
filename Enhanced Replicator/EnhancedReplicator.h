@@ -27,50 +27,39 @@
 
 #define WRITING_LOCATION_COUNT 32
 
-   class theReplicator : public ICursiVisionBackEnd {
-   public:
+    class theReplicator : public ICursiVisionBackEnd {
+    public:
 
-      theReplicator(IUnknown *pOuter);
-      ~theReplicator();
+        theReplicator(IUnknown *pOuter);
+        ~theReplicator();
 
-      //   IUnknown
+        //   IUnknown
 
-      STDMETHOD (QueryInterface)(REFIID riid,void **ppv);
-      STDMETHOD_ (ULONG, AddRef)();
-      STDMETHOD_ (ULONG, Release)();
+        STDMETHOD (QueryInterface)(REFIID riid,void **ppv);
+        STDMETHOD_ (ULONG, AddRef)();
+        STDMETHOD_ (ULONG, Release)();
 
-   private:
+    private:
 
-      HRESULT __stdcall put_PropertiesFileName(BSTR propertiesFileName);
-      HRESULT __stdcall get_PropertiesFileName(BSTR *pPropertiesFileName);
+        HRESULT __stdcall put_PropertiesFileName(BSTR propertiesFileName);
+        HRESULT __stdcall get_PropertiesFileName(BSTR *pPropertiesFileName);
+        HRESULT __stdcall get_CodeName(BSTR *);
+        HRESULT __stdcall get_SavedDocumentName(BSTR *pTheSavedDocumentNameReturnNOT_IMPLIfNotSaved);
+        HRESULT __stdcall put_ParentWindow(HWND);
+        HRESULT __stdcall put_CommandLine(BSTR theCommandLine);
+        HRESULT __stdcall put_PrintingSupportProfile(IPrintingSupportProfile *);
+        HRESULT __stdcall get_Description(BSTR *p) { if ( ! p ) return E_POINTER; *p = SysAllocString(L"CursiVision Signature Replication tool"); return S_OK; }
+        HRESULT __stdcall put_UserMayEdit(BOOL mayEdit) { editAllowed = mayEdit; return S_OK; }
+        HRESULT __stdcall Dispose(BSTR inputFile,BSTR resultsFile,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile);
+        HRESULT __stdcall CanRunFromTools() { return S_OK; }
+        HRESULT __stdcall CanRunFromCursiVisionControl() { return S_OK; }
+        HRESULT __stdcall ServicesAdvise(ICursiVisionServices *pICursiVisionServices);
 
-      HRESULT __stdcall get_CodeName(BSTR *);
+        //   IPropertiesClient
 
-      HRESULT __stdcall get_SavedDocumentName(BSTR *pTheSavedDocumentNameReturnNOT_IMPLIfNotSaved);
+        class _IGPropertiesClient : public IGPropertiesClient {
 
-      HRESULT __stdcall put_ParentWindow(HWND);
-
-      HRESULT __stdcall put_CommandLine(BSTR theCommandLine);
-
-      HRESULT __stdcall put_PrintingSupportProfile(IPrintingSupportProfile *);
-
-      HRESULT __stdcall get_Description(BSTR *p) { if ( ! p ) return E_POINTER; *p = SysAllocString(L"CursiVision Signature Replication tool"); return S_OK; }
-
-      HRESULT __stdcall put_UserMayEdit(BOOL mayEdit) { editAllowed = mayEdit; return S_OK; }
-
-      HRESULT __stdcall Dispose(BSTR inputFile,BSTR resultsFile,BSTR graphicDataFile,BSTR dispositionSettingsFileName,BOOL isTempFile);
-
-      HRESULT __stdcall CanRunFromTools() { return S_OK; }
-
-      HRESULT __stdcall CanRunFromCursiVisionControl() { return S_OK; }
-
-      HRESULT __stdcall ServicesAdvise(ICursiVisionServices *pICursiVisionServices);
-
-      //   IPropertiesClient
-
-      class _IGPropertiesClient : public IGPropertiesClient {
-
-      public:
+        public:
    
             _IGPropertiesClient(theReplicator *pp) : pParent(pp), refCount(0) {};
             ~_IGPropertiesClient() {};
@@ -88,108 +77,107 @@
             STDMETHOD(IsDirty)();
             STDMETHOD(GetClassID)(BYTE *pCLSID);
 
-      private:
+        private:
 
             theReplicator *pParent;
             long refCount;
 
-      } *pIGPropertiesClient;
+        } *pIGPropertiesClient;
 
-      class _IGPropertyPageClient : public IGPropertyPageClient {
+        class _IGPropertyPageClient : public IGPropertyPageClient {
 
-      public:
+        public:
          
-         _IGPropertyPageClient(theReplicator *pp) : pParent(pp) {};
-         ~_IGPropertyPageClient();
+            _IGPropertyPageClient(theReplicator *pp) : pParent(pp) {};
+            ~_IGPropertyPageClient();
 
 //      IPropertyPageClient
  
-         STDMETHOD (QueryInterface)(REFIID riid,void **ppv);
-         STDMETHOD_ (ULONG, AddRef)();
-         STDMETHOD_ (ULONG, Release)();
+            STDMETHOD (QueryInterface)(REFIID riid,void **ppv);
+            STDMETHOD_ (ULONG, AddRef)();
+            STDMETHOD_ (ULONG, Release)();
 
-         STDMETHOD(BeforeAllPropertyPages)();
-         STDMETHOD(GetPropertyPagesInfo)(long* countPages,SAFEARRAY** stringDescriptions,SAFEARRAY** pHelpDirs,SAFEARRAY** pSizes);
-         STDMETHOD(CreatePropertyPage)(long indexNumber,HWND,RECT*,BOOL,HWND * hwndPropertyPage);
-         STDMETHOD(IsPageDirty)(long,BOOL*);
-         STDMETHOD(Help)(BSTR);
-         STDMETHOD(TranslateAccelerator)(long,long*);
-         STDMETHOD(Apply)();
-         STDMETHOD(AfterAllPropertyPages)(BOOL);
-         STDMETHOD(DestroyPropertyPage)(long indexNumber);
+            STDMETHOD(BeforeAllPropertyPages)();
+            STDMETHOD(GetPropertyPagesInfo)(long* countPages,SAFEARRAY** stringDescriptions,SAFEARRAY** pHelpDirs,SAFEARRAY** pSizes);
+            STDMETHOD(CreatePropertyPage)(long indexNumber,HWND,RECT*,BOOL,HWND * hwndPropertyPage);
+            STDMETHOD(IsPageDirty)(long,BOOL*);
+            STDMETHOD(Help)(BSTR);
+            STDMETHOD(TranslateAccelerator)(long,long*);
+            STDMETHOD(Apply)();
+            STDMETHOD(AfterAllPropertyPages)(BOOL);
+            STDMETHOD(DestroyPropertyPage)(long indexNumber);
 
-         STDMETHOD(GetPropertySheetHeader)(void *pHeader);
-         STDMETHOD(get_PropertyPageCount)(long *pCount);
-         STDMETHOD(GetPropertySheets)(void *pSheets);
+            STDMETHOD(GetPropertySheetHeader)(void *pHeader);
+            STDMETHOD(get_PropertyPageCount)(long *pCount);
+            STDMETHOD(GetPropertySheets)(void *pSheets);
 
-      private:
+        private:
    
-         theReplicator* pParent;
+            theReplicator* pParent;
 
-      } * pIGPropertyPageClient;
+        } * pIGPropertyPageClient;
 
-      void load();
-      void unload();
-      void reset();
+        void load();
+        void unload();
+        void reset();
 
-      long addReplicant(templateDocument::tdUI *pDocument,long replicationIndex,long moveX,long moveY);
-      bool duplicateReplicant(long sourceIndex,long pageNumber);
-      void deleteReplicant(long activeIndex);
-      void moveReplicant(long activeIndex,long moveToX,long moveToY,long toPageNumber);
-      void scaleReplicant(long activeIndex,double scaleX,double scaleY);
+        long addReplicant(long replicationIndex,long moveX,long moveY);
+        bool duplicateReplicant(long sourceIndex,long pageNumber);
+        void deleteReplicant(long activeIndex);
+        void moveReplicant(long activeIndex,long moveToX,long moveToY,long toPageNumber);
+        void scaleReplicant(long activeIndex,double scaleX,double scaleY);
 
-      void clearPage(templateDocument::tdUI *pDocument);
+        void clearPage();
 
-      long refCount;   
+        long refCount;   
 
-      IGProperties *pIGProperties;
-      IPrintingSupportProfile *pIPrintingSupportProfile;
-      ICursiVisionServices *pICursiVisionServices;
+        IGProperties *pIGProperties;
+        IPrintingSupportProfile *pIPrintingSupportProfile;
+        ICursiVisionServices *pICursiVisionServices;
 
-      HWND hwndProperties,hwndParent;
+        HWND hwndProperties,hwndParent;
 
-      templateDocument *pTemplateDocument;
+        templateDocument *pTemplateDocument;
 
-      bool editAllowed{false};
+        bool editAllowed{false};
 
-      long startParameters;
+        long startParameters;
 
-      bool showProperties;
+        bool showProperties;
 
-      POINT replicantSignatureOrigins[WRITING_LOCATION_COUNT];
-      POINT nativeSignatureOrigins[WRITING_LOCATION_COUNT];
-      long replicantSignatureIndex[WRITING_LOCATION_COUNT];
-      long replicantSignaturePage[WRITING_LOCATION_COUNT];
-      double internalScaleX[WRITING_LOCATION_COUNT];
-      double internalScaleY[WRITING_LOCATION_COUNT];
+        POINT replicantSignatureOrigins[WRITING_LOCATION_COUNT];
+        POINT nativeSignatureOrigins[WRITING_LOCATION_COUNT];
+        long replicantSignatureIndex[WRITING_LOCATION_COUNT];
+        long replicantSignaturePage[WRITING_LOCATION_COUNT];
+        double internalScaleX[WRITING_LOCATION_COUNT];
+        double internalScaleY[WRITING_LOCATION_COUNT];
 
-      long endParameters;
+        long endParameters;
 
-      long activeIndex,replicationIndex;
-      POINTL rightClickMousePoint,leftClickMousePoint;
-      POINTL replicationOrigin,replicantDragOrigin;
+        long activeIndex,replicationIndex;
 
-      writingLocation writingLocations[WRITING_LOCATION_COUNT];
-      writingLocation *pWritingLocations[WRITING_LOCATION_COUNT];
+        writingLocation writingLocations[WRITING_LOCATION_COUNT];
+        writingLocation *pWritingLocations[WRITING_LOCATION_COUNT];
 
-      HBITMAP hbmDrawRestore[WRITING_LOCATION_COUNT];
-      RECT restoreRect[WRITING_LOCATION_COUNT];
+        HDC hdcDrawRestore[WRITING_LOCATION_COUNT];
+        RECT restoreRect[WRITING_LOCATION_COUNT];
+        long pageScrollTop[WRITING_LOCATION_COUNT];
 
-      bool isReplicant[WRITING_LOCATION_COUNT];
-      long replicantIndex[WRITING_LOCATION_COUNT];
+        bool isReplicant[WRITING_LOCATION_COUNT];
+        long replicantIndex[WRITING_LOCATION_COUNT];
 
-      void drawSignature(HDC hdc,long index,long moveX,long moveY,RECT *pNewLocation,templateDocument::tdUI *pDocument);
-      void clearSignature(templateDocument::tdUI *pDocument,long index);
-      void reDrawSignature(HDC hdc,long index,long moveX,long moveY,RECT *pNewLocation,templateDocument::tdUI *pDocument);
+        templateDocument::tdUI *pTemplateDocumentUI{NULL};
 
-      static theReplicator *pThis;
+        void drawSignature(HDC hdc,long index,RECT *prcNew,RECT *pNewLocation);
+        void clearSignature(long index);
 
-      static LRESULT CALLBACK propertiesHandler(HWND,UINT,WPARAM,LPARAM);
+        static theReplicator *pThis;
 
-      static void clearBitmapsAndDrawSignatures(HDC hdc,templateDocument::tdUI *pDocument);
-      static void drawSignatures(HDC hdc,templateDocument::tdUI *pDocument);
+        static LRESULT CALLBACK propertiesHandler(HWND,UINT,WPARAM,LPARAM);
 
-   };
+        static void drawSignatures(HDC hdc,templateDocument::tdUI *pDocument);
+
+    };
 
 
 #ifdef DEFINE_DATA
