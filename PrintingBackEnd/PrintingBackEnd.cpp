@@ -157,19 +157,6 @@
 
    HRESULT PrintingBackEnd::printDocument(char *pszFileName,char *pszChosenPrinter,BYTE *pPrinterDevMode,long sizeOfDevMode,long copies) {
 
-#if 0
-   char szPrinterSettingsFile[MAX_PATH];
-
-   memset(szPrinterSettingsFile,0,MAX_PATH * sizeof(char));
-
-   sprintf(szPrinterSettingsFile,"\"%s\\Settings\\printerSettings",szApplicationDataDirectory);
-   FILE *fPrinterSettings = fopen(szPrinterSettingsFile + 1,"wb");
-   fwrite(pPrinterDevMode,sizeOfDevMode,1,fPrinterSettings);
-   fclose(fPrinterSettings);
-
-   szPrinterSettingsFile[strlen(szPrinterSettingsFile)] = '\"';
-#endif
-
    char szExecutable[MAX_PATH];
    char szSignedDocument[MAX_PATH];
    char szPrinter[128];
@@ -188,8 +175,6 @@
 
    sprintf(szPrinter,"\"%s\"",pszChosenPrinter);
 
-#if 1
-
    GetModuleFileName(hModule,szExecutable,MAX_PATH);
 
    char *p = strrchr(szExecutable,'\\');
@@ -199,34 +184,15 @@
    if ( p )
       *p = '\0';
 
-#else
-   HKEY hKey = NULL;
-
-   if ( ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\InnoVisioNate\\CursiVision",0,KEY_QUERY_VALUE,&hKey) ) {
-      DWORD cb = MAX_PATH;
-      RegQueryValueEx(hKey,"Installation Directory",NULL,NULL,(BYTE *)szExecutable,&cb);
-      RegCloseKey(hKey);
-   } else
-      return E_FAIL;
-
-#endif
-
    char szCopies[8];
    sprintf(szCopies,"%ld",copies);
 
    sprintf(szExecutable + strlen(szExecutable),"\\Print Document.exe");
 
-#if 0
-   _spawnl(_P_NOWAIT,szExecutable,"/File",szSignedDocument,"/PrintTo",szPrinter,"/Settings",szPrinterSettingsFile,"/Copies",szCopies,NULL);
-#else
    if ( useDefaultPrinter )
       _spawnl(_P_NOWAIT,szExecutable,"/File",szSignedDocument,"/DefaultPrinter","/Copies",szCopies,NULL);
    else
       _spawnl(_P_NOWAIT,szExecutable,"/File",szSignedDocument,"/PrintTo",szPrinter,"/Copies",szCopies,NULL);
-#endif
 
    return S_OK;
    }
-
-
-   

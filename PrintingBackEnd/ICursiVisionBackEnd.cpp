@@ -54,11 +54,7 @@ SetProperties:
 
    }
 
-#if 0
-   return printDocument(bstrResultFileName,szChosenPrinter,printerDevMode,sizeof(printerDevMode),copies);
-#else
    return printDocument(bstrResultFileName,szChosenPrinter,NULL,0,copies);
-#endif
    }
 
 
@@ -66,7 +62,6 @@ SetProperties:
    pIGProperties -> put_FileName(propertiesFileName);
    short bSuccess;
    pIGProperties -> LoadFile(&bSuccess);
-   //pIGProperties -> Save();
    return S_OK;
    }
 
