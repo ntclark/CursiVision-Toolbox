@@ -31,8 +31,3 @@
    strcpy(pParent -> szServerName,pszServerName);
    return S_OK;
    }
-
-   HRESULT __stdcall forwardToReceptor::_ICursiVisionForwardToReceptorBackEnd::SetPort(long portNumber) {
-   pParent -> portNumber = portNumber;
-   return S_OK;
-   }

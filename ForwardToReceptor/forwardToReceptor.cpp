@@ -22,8 +22,6 @@
         isProcessing(false),
         doExecute(true),
 
-        portNumber(-1L),
-
         startParameters(0),
         endParameters(0),
 
@@ -40,8 +38,6 @@
     long sizeParameters = offsetof(forwardToReceptor,endParameters) - offsetof(forwardToReceptor,startParameters);
 
     memset(&startParameters,0,sizeParameters);
-
-    portNumber = atol(SERVICE_PORT_A);
 
     HRESULT rc = CoCreateInstance(CLSID_InnoVisioNateProperties,NULL,CLSCTX_ALL,IID_IGProperties,reinterpret_cast<void **>(&pIGProperties));
 

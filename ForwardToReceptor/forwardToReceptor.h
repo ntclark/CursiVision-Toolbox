@@ -69,7 +69,6 @@
          STDMETHOD_ (ULONG, Release)();
 
          HRESULT __stdcall SetServer(char *pszServerName);
-         HRESULT __stdcall SetPort(long portNumber);
 
       private:
 
@@ -193,7 +192,6 @@
       bool showProperties;
 
       char szServerName[MAX_PATH],szNextServerName[MAX_PATH];
-      long portNumber;
 
       bool saveOnly;
       char szServerStoreLocation[MAX_PATH];

@@ -21,15 +21,14 @@ library CursiVisionForwardToReceptorBackEnd {
     interface ICursiVisionForwardToReceptorBackEnd : IUnknown {
 
       HRESULT SetServer(char *pszServerName);
-      HRESULT SetPort(long portNumber);
 
     }
 
-	[uuid(C78A8C5E-89DC-4957-A263-831BFAC300E2),
-		helpstring("CursiVision Forward to Receptor Back End Object")]
-		coclass CursiVisionForwardToReceptorBackEnd {
-//		[default] interface ICursiVisionBackEnd;
-      interface ICursiVisionForwardToReceptorBackEnd;
-	};
+    [uuid(C78A8C5E-89DC-4957-A263-831BFAC300E2),
+        helpstring("CursiVision Forward to Receptor Back End Object")]
+        coclass CursiVisionForwardToReceptorBackEnd {
+        //[default] interface ICursiVisionBackEnd;
+        interface ICursiVisionForwardToReceptorBackEnd;
+    };
 
 };
