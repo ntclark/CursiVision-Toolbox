@@ -267,7 +267,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ImagingBackEnd.h" />
-    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="WIAScannerImagingBackEnd.rc">

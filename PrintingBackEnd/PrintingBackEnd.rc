@@ -4,6 +4,7 @@
 #include <commctrl.h>
 
 #include "resource.h"
+#include "thisToolBoxResource.h"
 
 #include "versionInfo.h"
 

@@ -9,8 +9,9 @@
 #include <PrSht.h>
 
 #include "emailUtilities.h"
-#include "resource.h"
+#include "thisToolBoxResource.h"
 #include "ToolBoxResources.h"
+#include "resource.h"
 
 #include "pdfEnabler_i.h"
 #include "PrintingSupport_i.h"

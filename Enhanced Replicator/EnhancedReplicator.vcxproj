@@ -284,7 +284,6 @@
     <ClInclude Include="$(GSYSTEM_HOME)\Common\include\templateDocument.h" />
     <ClInclude Include="..\..\Common\include\drawBoxDefines.h" />
     <ClInclude Include="EnhancedReplicator.h" />
-    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EnhancedReplicator.rc">

@@ -6,6 +6,7 @@
 #include <stddef.h>
 #include <stdio.h>
 
+#include "thisToolBoxResource.h"
 #include "resource.h"
 
 #include "writingLocation.h"

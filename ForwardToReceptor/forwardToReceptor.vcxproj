@@ -275,7 +275,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="forwardToReceptor.h" />
-    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ForwardToReceptor.rc">

@@ -308,7 +308,7 @@ copy "$(ProjectDir)\Support Files\$(Platform)\twaindsm.dll" "$(GSYSTEM_HOME)\Com
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ImagingBackEnd.h" />
-    <ClInclude Include="resource.h" />
+    <ClInclude Include="thisToolBoxResource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TWAINImagingBackEnd.rc">

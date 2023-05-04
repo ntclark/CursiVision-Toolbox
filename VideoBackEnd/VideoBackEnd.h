@@ -20,6 +20,9 @@
 
 #undef GetWindowID
 
+#include "thisToolBoxResource.h"
+#include "resource.h"
+
 #include "pdfEnabler_i.h"
 #include "PrintingSupport_i.h"
 #include "VideoBackEnd_i.h"

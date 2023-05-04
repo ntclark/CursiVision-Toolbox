@@ -3,7 +3,7 @@
 #include <winres.h>
 #include <commctrl.h>
 
-#include "resource.h"
+#include "thisToolBoxResource.h"
 #include "ToolBoxResources.h"
 
 #include "versionInfo.h"

@@ -13,6 +13,7 @@
 
 #include "twain.h"
 
+#include "thisToolBoxResource.h"
 #include "resource.h"
 
 #include "pdfEnabler_i.h"

@@ -100,9 +100,6 @@
     <ClInclude Include="EnhancedReplicator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(GSYSTEM_HOME)\Common\include\templateDocument.h">
       <Filter>Header Files</Filter>
     </ClInclude>

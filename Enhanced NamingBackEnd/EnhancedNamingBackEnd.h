@@ -12,6 +12,7 @@
 
 #include <list>
 
+#include "thisToolResource.h"
 #include "resource.h"
 
 #include "pdfEnabler_i.h"

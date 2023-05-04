@@ -11,4 +11,3 @@
 #define IDDI_SKIP                   205
 #define IDDI_USE_DEFAULT_PRINTER    206
 #define IDDI_CHOOSE_PRINTER_LABEL   207
-

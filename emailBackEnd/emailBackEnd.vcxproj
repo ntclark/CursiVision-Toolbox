@@ -295,7 +295,6 @@ regsvr32 /s /c "$(TargetPath)"
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="emailBackEnd.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="TLSEncryption.h" />
   </ItemGroup>
   <ItemGroup>

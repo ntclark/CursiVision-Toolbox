@@ -11,6 +11,7 @@
 #include <sti.h>
 #include <list>
 
+#include "thisToolBoxResource.h"
 #include "resource.h"
 
 #include "pdfEnabler_i.h"

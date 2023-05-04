@@ -8,6 +8,7 @@
 #include <olectl.h>
 #include <PrSht.h>
 
+#include "thisToolBoxResource.h"
 #include "resource.h"
 
 #include "pdfEnabler_i.h"

@@ -9,6 +9,7 @@
 #include <PrSht.h>
 
 #include "resource.h"
+#include "thisToolBoxResource.h"
 
 #include "pdfEnabler_i.h"
 #include "PrintingSupport_i.h"

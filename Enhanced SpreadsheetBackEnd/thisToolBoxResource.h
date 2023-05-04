@@ -6,7 +6,6 @@
 
 #undef IDD_OPTIONS
 
-#define IDD_OPTIONS           1
 #define IDD_NO_PROFILE        2
 
 #define IDS_NO_PROFILE        2
