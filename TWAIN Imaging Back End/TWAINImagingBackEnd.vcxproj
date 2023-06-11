@@ -110,7 +110,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>gdiplus.lib;shlwapi.lib;comctl32.lib;wiaguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gdiplus.lib;shlwapi.lib;comctl32.lib;wiaguid.lib;rpcrt4.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>.\ImagingBackEnd.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -163,7 +163,7 @@ copy "$(ProjectDir)\Support Files\$(Platform)\twaindsm.dll" "$(GSYSTEM_HOME)\Com
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>gdiplus.lib;shlwapi.lib;comctl32.lib;wiaguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gdiplus.lib;shlwapi.lib;comctl32.lib;wiaguid.lib;rpcrt4.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>.\ImagingBackEnd.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -212,7 +212,7 @@ copy "$(ProjectDir)\Support Files\$(Platform)\twaindsm.dll" "$(GSYSTEM_HOME)\Com
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>gdiplus.lib;shlwapi.lib;comctl32.lib;wiaguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gdiplus.lib;shlwapi.lib;comctl32.lib;wiaguid.lib;rpcrt4.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>.\ImagingBackEnd.def</ModuleDefinitionFile>
       <ImportLibrary>$(OutDir)TWAINImagingBackEnd.lib</ImportLibrary>
@@ -258,7 +258,7 @@ copy "$(ProjectDir)\Support Files\$(Platform)\twaindsm.dll" "$(GSYSTEM_HOME)\Com
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>gdiplus.lib;shlwapi.lib;comctl32.lib;wiaguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gdiplus.lib;shlwapi.lib;comctl32.lib;wiaguid.lib;rpcrt4.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>.\ImagingBackEnd.def</ModuleDefinitionFile>
       <ImportLibrary>$(OutDir)TWAINImagingBackEnd.lib</ImportLibrary>

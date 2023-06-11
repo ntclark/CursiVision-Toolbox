@@ -111,7 +111,7 @@
       <AdditionalIncludeDirectories>VisioLogger;$(ProjectDir);$(ProjectDir)\include;%GSYSTEM_HOME%\Common\include;%GSYSTEM_HOME%\Common\resources;$(SolutionDir);$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>gdiplus.lib;Ws2_32.lib;shlwapi.lib;comctl32.lib;Strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gdiplus.lib;rpcrt4.lib;Ws2_32.lib;shlwapi.lib;comctl32.lib;Strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>.\VideoBackEnd.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -160,7 +160,7 @@
       <AdditionalIncludeDirectories>VisioLogger;$(ProjectDir);$(ProjectDir)\include;%GSYSTEM_HOME%\Common\include;%GSYSTEM_HOME%\Common\resources;$(SolutionDir);$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>gdiplus.lib;Ws2_32.lib;shlwapi.lib;comctl32.lib;Strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gdiplus.lib;rpcrt4.lib;Ws2_32.lib;shlwapi.lib;comctl32.lib;Strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>.\VideoBackEnd.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -204,7 +204,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>gdiplus.lib;shlwapi.lib;comctl32.lib;Strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gdiplus.lib;rpcrt4.lib;shlwapi.lib;comctl32.lib;Strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>.\VideoBackEnd.def</ModuleDefinitionFile>
       <ImportLibrary>$(OutDir)VideoBackEnd.lib</ImportLibrary>
@@ -245,7 +245,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>gdiplus.lib;shlwapi.lib;comctl32.lib;Strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gdiplus.lib;rpcrt4.lib;shlwapi.lib;comctl32.lib;Strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>.\VideoBackEnd.def</ModuleDefinitionFile>
       <ImportLibrary>$(OutDir)VideoBackEnd.lib</ImportLibrary>
