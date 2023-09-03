@@ -12,6 +12,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 #include "dispositionSettingsDefines.h"
 
 #define OBJECT_WITH_PROPERTIES ImagingBackEnd
+#define DEFAULT_RESULT_DISPOSITION_PTR &pObject -> processingDisposition
 
 #define LOAD_ADDITIONAL                                          \
 {                                                                \

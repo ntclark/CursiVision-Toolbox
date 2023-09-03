@@ -169,37 +169,6 @@
 
       } * pIGPropertyPageClient;
 
-#if 0
-      class _IPersistStreamInit : public IPersistStreamInit {
-      public:
- 
-         _IPersistStreamInit(NamingBackEnd *pp) : pParent(pp) {};
-         ~_IPersistStreamInit() {};
- 
-         STDMETHOD (QueryInterface)(REFIID riid,void **ppv);
-         STDMETHOD_ (ULONG, AddRef)();
-         STDMETHOD_ (ULONG, Release)();
- 
-         STDMETHOD(GetClassID)(CLSID *);
- 
-//      IPersistStream
- 
-         STDMETHOD(GetSizeMax)(ULARGE_INTEGER *);
-         STDMETHOD(IsDirty)();
-         STDMETHOD(Load)(IStream *);
-         STDMETHOD(Save)(IStream *,int);
- 
- //      IPersistStreamInit
- 
-         STDMETHOD(InitNew)();
-
-     private:
- 
-         NamingBackEnd *pParent;
- 
-      } * pIPersistStreamInit;
-#endif
-
       long refCount;   
 
       IGProperties *pIGProperties;

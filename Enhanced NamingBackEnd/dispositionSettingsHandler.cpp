@@ -10,6 +10,7 @@
 
 #define OBJECT_WITH_PROPERTIES NamingBackEnd
 #define CURSIVISION_SERVICES_INTERFACE pObject -> pICursiVisionServices
+#define DEFAULT_RESULT_DISPOSITION_PTR &pObject -> processingDisposition
 
 #include "dispositionSettingsDefines.h"
 

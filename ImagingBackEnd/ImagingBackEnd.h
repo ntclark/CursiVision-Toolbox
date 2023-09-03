@@ -125,8 +125,6 @@
 
          //   IPropertyPage2
 
-//         STDMETHOD(EditProperty)(DISPID);
-
          ImagingBackEnd *pParent;
 
          long refCount;

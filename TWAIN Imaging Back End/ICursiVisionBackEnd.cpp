@@ -99,15 +99,10 @@ SetProperties:
 
       ResumeThread(hImageThread);
 
-//if ( hwndParent )
-//ShowWindow(hwndParent,SW_HIDE);
-
       Sleep(1000);
       while ( ! ( NULL == hwndScanner ) )
          Sleep(250);
 
-//if ( hwndParent )
-//ShowWindow(hwndParent,SW_SHOW);
 #endif
 
       if ( scanningCanceled ) {
@@ -240,21 +235,6 @@ SetProperties:
                p = (*it) - 1;
 
             OLECHAR szExtension[] = {L"jpg"};
-#if 0
-
-            if ( fileTransfer ) {
-               switch ( imageFormat ) {
-               case TWFF_JFIF:
-                  break;
-               case TWFF_PNG:
-                  swprintf(szExtension,L"png");
-                  break;
-               case TWFF_BMP:
-                  swprintf(szExtension,L"bmp");
-                  break;
-               }
-            }
-#endif
 
             if ( 1 < originalImageFiles.size() )
                swprintf(bstrImage,L"%s\\%s%ld%s.%s",resultDirectory,resultBaseName,++imageCount,originalExtension,szExtension);
@@ -360,7 +340,6 @@ SetProperties:
 
    return hBitmap;
    }
-
 
 
    bool ImagingBackEnd::selectPDFPage(IPdfPage **ppIPdfPage) {
