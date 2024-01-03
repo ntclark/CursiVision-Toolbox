@@ -58,13 +58,13 @@ SetProperties:
 
     if ( saveInTaxYear ) {
 
-        DWORD allProcesses[4096], cbNeeded, cProcesses;
+        DWORD allProcesses[4096], cbNeeded;
 
         EnumProcesses(allProcesses, sizeof(allProcesses), &cbNeeded);
 
         char szProcessName[MAX_PATH];
 
-        for ( long k = 0; k < cbNeeded / sizeof(DWORD); k++ ) {
+        for ( long k = 0; k < (long)(cbNeeded / sizeof(DWORD)); k++ ) {
             HMODULE hModule;
             DWORD cb;
             HANDLE hProcess = OpenProcess( PROCESS_QUERY_INFORMATION | PROCESS_TERMINATE | PROCESS_VM_READ,FALSE, allProcesses[k]);
@@ -151,7 +151,7 @@ SetProperties:
     bool isFileSaved = false;
 
 #define SAVE_FILE \
-    CopyFileW(bstrOriginalFile,bstrResultsFile,FALSE);
+    CopyFileW(bstrResultFileName,bstrResultsFile,FALSE);
 
 #include "savePDFFile.cpp"
 
