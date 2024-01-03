@@ -1,0 +1,18 @@
+
+import "ocidl.idl";
+
+#include <olectl.h>
+
+[ uuid(3AB7F4DA-2BED-449B-8E52-CC2EFBA9C315), helpstring("TaxWise Naming backend plugin"), lcid(0x0), version(1.0)] 
+
+library TaxWiseNamingBackEnd { 
+
+    importlib(STDOLE_TLB); 
+    importlib(STDTYPE_TLB);
+
+    [uuid(3AB7F4DA-2BED-449B-8E52-CC2EFBA9C316),helpstring("TaxWise Naming File Storage Object")]
+    coclass TaxWiseNamingBackEnd {
+        [default] interface IUnknown;
+    };
+
+};

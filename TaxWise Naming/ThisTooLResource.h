@@ -1,0 +1,11 @@
+
+#include "ToolBoxResources.h"
+
+#define IDDI_SAVE_IN_TAX_YEAR_SUBFOLDER     2200
+#define IDDI_LABEL_TWO                      2201
+#define IDDI_SAVE_IN_STATE_FED_SUBFOLDER    2202
+#define IDDI_SAVE_IN_PACKAGE_NAME_SUBFOLDER 2203
+#define IDDI_SAVE_IN_PROFILE_NAME_SUBFOLDER 2204
+
+
+

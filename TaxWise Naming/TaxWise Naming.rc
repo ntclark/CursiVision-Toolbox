@@ -1,0 +1,72 @@
+
+#include <windows.h>
+#include <winres.h>
+#include <commctrl.h>
+
+#include "thisToolResource.h"
+#include "resource.h"
+
+#include "versionInfo.h"
+
+VINFO(VFT_DLL)
+
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "InnoVisioNate\0"
+            VALUE "FileDescription", "The TaxWise File Naming tool. Attempt to save the signed document via tax year and tax ID number.\0"
+            VALUE "FileVersion", CV_PRODUCT_VERSION
+            VALUE "InternalName", "TaxWise Naming.dll\0"
+            VALUE "LegalCopyright", "Copyright © 2024 InnoVisioNate Inc.\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "TaxWise Naming.dll\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "TaxWise File Naming tool\0"
+            VALUE "ProductVersion", CV_PRODUCT_VERSION
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#define SKIP_CURSIVISION_PROPERTIES
+#define DONT_TERMINATE_DIALOG_TEMPLATE
+#define ADDITIONAL_TOP_SPACE 104
+
+#include "resultDisposition.rc"
+
+   LTEXT "This document processing tool finds the file name of the signed document based on the Tax ID", -1,   8, 8, 256, 24
+
+   LTEXT "Sub-folder options:", -1, 8, 30, 64, 12
+
+   AUTOCHECKBOX "A folder for each tax year?",IDDI_SAVE_IN_TAX_YEAR_SUBFOLDER,                          16, 42, 256, 12
+   LTEXT "Note: when the tax year cannot be determined, the file will be saved per the following settings, however, not in the tax year subfolder", -1, 32, 52, 256, 16
+
+   AUTOCHECKBOX "A folder for State and Federal?",IDDI_SAVE_IN_STATE_FED_SUBFOLDER,                     16, 70, 256, 12
+   AUTOCHECKBOX "A folder using the main profiles package name?",IDDI_SAVE_IN_PACKAGE_NAME_SUBFOLDER,   16, 82, 256, 12
+   AUTOCHECKBOX "A folder using the selected profile name?",IDDI_SAVE_IN_PROFILE_NAME_SUBFOLDER,        16, 94, 256, 12
+
+   LTEXT "The base location of the document is determined by the following settings",IDDI_LABEL_TWO,     8,112, 256, 12
+
+END
+
+
+IDD_NO_PROFILE DIALOGEX 0,0, 256, 256 + 32 + 8
+CAPTION "Note"
+STYLE DS_SETFONT | WS_CHILD | WS_POPUP | WS_CAPTION
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+
+END
+
+STRINGTABLE {
+
+#include "commonStrings.rc"
+
+}
