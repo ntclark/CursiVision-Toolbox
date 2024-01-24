@@ -35,7 +35,7 @@
       HKEY hKeySettings = NULL;
 
       RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\InnoVisioNate\\CursiVision",0L,KEY_QUERY_VALUE,&hKeySettings);
-      
+
       if ( ! ( NULL == hKeySettings ) ) {
 
          DWORD cb = MAX_PATH;
@@ -50,15 +50,9 @@
 
       GetCommonAppDataLocation(NULL,szTemp);
 
-      sprintf(szApplicationDataDirectory,"%s\\CursiVision",szTemp);
+      sprintf(szTaxWiseBundleSettings,"%s\\CursiVision\\Settings\\TaxWise Bundle",szTemp);
 
-      CreateDirectory(szApplicationDataDirectory,NULL);
-
-      sprintf(szApplicationDataDirectory,"%s\\CursiVision\\Settings",szTemp);
-
-      CreateDirectory(szApplicationDataDirectory,NULL);
-
-      sprintf(szApplicationDataDirectory,"%s\\CursiVision",szTemp);
+      CreateDirectory(szTaxWiseBundleSettings,NULL);
 
       GetDocumentsLocation(NULL,szTemp);
 

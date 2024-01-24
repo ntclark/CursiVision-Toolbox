@@ -200,9 +200,13 @@
    HMODULE hModule = NULL;
    HWND hwndMainFrame;
 
+   char szTaxWiseBundleSettings[MAX_PATH];
+
 #else
 
    extern HMODULE hModule;
    extern HWND hwndMainFrame;
+
+   extern char szTaxWiseBundleSettings[];
 
 #endif

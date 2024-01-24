@@ -43,7 +43,7 @@
 
    char szTemp[MAX_PATH];
 
-   sprintf(szTemp,"%s\\Settings\\TaxWiseNaming.settings",szApplicationDataDirectory);
+   sprintf(szTemp,"%s\\TaxWiseNaming.settings",szTaxWiseBundleSettings);
 
    BSTR bstrFileName = SysAllocStringLen(NULL,MAX_PATH);
    MultiByteToWideChar(CP_ACP,0,szTemp,-1,bstrFileName,MAX_PATH);
