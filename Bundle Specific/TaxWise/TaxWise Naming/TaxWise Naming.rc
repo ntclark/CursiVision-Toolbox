@@ -67,6 +67,6 @@ END
 
 STRINGTABLE {
 
-#include "commonStrings.rc"
+#include "commonStringsStock.rc"
 
 }
