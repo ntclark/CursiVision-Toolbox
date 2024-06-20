@@ -33,9 +33,6 @@
     <ClCompile Include="TWAINpropertiesHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dllMain.cpp">
-      <Filter>Source Files\COM Implementation</Filter>
-    </ClCompile>
     <ClCompile Include="ICursiVisionBackEnd.cpp">
       <Filter>Source Files\COM Interfaces</Filter>
     </ClCompile>
@@ -52,6 +49,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(GSYSTEM_HOME)\Common\source\utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dllMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

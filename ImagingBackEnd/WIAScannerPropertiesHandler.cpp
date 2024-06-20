@@ -125,7 +125,7 @@ extern "C" int GetDocumentsLocation(HWND hwnd,char *);
 
         EnumChildWindows(hwnd,page1,NULL);
 
-        tcItem.pszText = DISPOSITION_TITLE;
+        tcItem.pszText = "Save Location";
         SendDlgItemMessage(hwnd,IDDI_TABS,TCM_INSERTITEM,2,(LPARAM)&tcItem);
 
         RECT rcTabs;

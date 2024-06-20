@@ -3,6 +3,7 @@
 #include <winres.h>
 #include <commctrl.h>
 
+#include "resource.h"
 #include "visioLoggerResource.h"
 
 IDD_NO_PICTURE DIALOGEX 0, 0, 256 + 32, 64 + 24

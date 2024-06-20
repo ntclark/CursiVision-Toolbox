@@ -108,6 +108,9 @@
     <ClInclude Include="VisioLogger\visioLoggerResource.h">
       <Filter>Header Files\VisioLogger</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Common\include\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="VideoBackEnd.rc">

@@ -30,6 +30,7 @@
       CoInitialize(NULL);
 
       hModule = hI;
+hModuleResources = hModule;
 
       GetModuleFileName(hModule,szModuleName,1024);
 

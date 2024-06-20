@@ -234,13 +234,13 @@ TW_UINT16 FAR PASCAL DSMCallback(pTW_IDENTITY _pOrigin,pTW_IDENTITY _pDest,TW_UI
 #ifdef DEFINE_DATA
 
    HMODULE hModule = NULL;
-
+   HMODULE hModuleResources = NULL;
    DSMENTRYPROC dsmEntryProcedure = NULL;
 
 #else
 
    extern HMODULE hModule;
-
+   extern HMODULE hModuleResources;
    extern DSMENTRYPROC dsmEntryProcedure;
 
 #endif

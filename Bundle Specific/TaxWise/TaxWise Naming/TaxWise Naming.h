@@ -202,6 +202,7 @@
 
    char szTaxWiseBundleSettings[MAX_PATH];
 
+   HMODULE hModuleResources = NULL;
 #else
 
    extern HMODULE hModule;
@@ -209,4 +210,5 @@
 
    extern char szTaxWiseBundleSettings[];
 
+   extern HMODULE hModuleResources;
 #endif

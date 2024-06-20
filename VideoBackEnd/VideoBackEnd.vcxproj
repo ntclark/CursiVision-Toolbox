@@ -294,6 +294,7 @@
     <Midl Include="VisioLogger\VisioLoggerVideo.odl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Common\include\resource.h" />
     <ClInclude Include="thisToolBoxResource.h" />
     <ClInclude Include="VideoBackEnd.h" />
     <ClInclude Include="VisioLogger\visioLoggerResource.h" />

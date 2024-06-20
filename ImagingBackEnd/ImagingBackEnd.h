@@ -242,9 +242,10 @@ void SaveBitmapFile(HDC hdcSource,HBITMAP hBitmap,char *pszBitmapFileName);
 #ifdef DEFINE_DATA
 
    HMODULE hModule = NULL;
+   HMODULE hModuleResources = NULL;
 
 #else
 
    extern HMODULE hModule;
-
+   extern HMODULE hModuleResources;
 #endif

@@ -203,11 +203,13 @@
 #ifdef DEFINE_DATA
 
    HMODULE hModule = NULL;
+   HMODULE hModuleResources = NULL;
    HWND hwndMainFrame;
 
 #else
 
    extern HMODULE hModule;
+   extern HMODULE hModuleResources;
    extern HWND hwndMainFrame;
 
 #endif

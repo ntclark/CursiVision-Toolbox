@@ -27,6 +27,7 @@
       CoInitialize(NULL);
 
       hModule = hI;
+hModuleResources = hModule;
 
       GetModuleFileName(hModule,szModuleName,1024);
       memset(wstrModuleName,0,sizeof(wstrModuleName));

@@ -180,7 +180,7 @@ static HWND hwndCameras = NULL;
         tcItem.pszText = "Location";
         SendDlgItemMessage(hwnd,IDDI_TABS,TCM_INSERTITEM,1,(LPARAM)&tcItem);
 
-        tcItem.pszText = DISPOSITION_TITLE;
+        tcItem.pszText = "Save Location";
         SendDlgItemMessage(hwnd,IDDI_TABS,TCM_INSERTITEM,2,(LPARAM)&tcItem);
 
         if ( pObject -> isProcessing )

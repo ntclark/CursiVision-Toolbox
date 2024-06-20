@@ -6,7 +6,7 @@
 
 #include "ToolBoxResources.h"
 
-#define IDD_ICON                   1
+//#define IDD_ICON                   1
 
 #define IDD_RECEPTOR                100
 
