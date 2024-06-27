@@ -27,7 +27,16 @@
 
       hModule = hI;
 
-hModuleResources = hModule;
+      LANGID languageId = GetUserDefaultUILanguage();
+
+      switch ( languageId ) {
+      case 3082:
+         hModuleResources = LoadLibrary("sp.dll");
+         break;
+
+      default:
+         hModuleResources = LoadLibrary("en.dll");
+      }
 
       GetModuleFileName(hModule,szModuleName,1024);
       memset(wstrModuleName,0,sizeof(wstrModuleName));

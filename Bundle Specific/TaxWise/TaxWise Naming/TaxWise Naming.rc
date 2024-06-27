@@ -65,8 +65,3 @@ BEGIN
 
 END
 
-STRINGTABLE {
-
-#include "commonStringsStock.rc"
-
-}
