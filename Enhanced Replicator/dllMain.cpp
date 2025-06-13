@@ -31,7 +31,7 @@
 
       HKEY hKeySettings = NULL;
 
-      RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\InnoVisioNate\\CursiVision",0L,KEY_QUERY_VALUE,&hKeySettings);
+      RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\EnVisioNate\\CursiVision",0L,KEY_QUERY_VALUE,&hKeySettings);
       
       if ( ! ( NULL == hKeySettings ) ) {
 

@@ -1,4 +1,4 @@
-// Copyright 2017 InnoVisioNate Inc. All rights reserved.
+// Copyright 2017 EnVisioNate LLC. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -39,7 +39,7 @@
 
       HKEY hKeySettings = NULL;
 
-      RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\InnoVisioNate\\CursiVision",0L,KEY_QUERY_VALUE,&hKeySettings);
+      RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\EnVisioNate\\CursiVision",0L,KEY_QUERY_VALUE,&hKeySettings);
       
       if ( ! ( NULL == hKeySettings ) ) {
 

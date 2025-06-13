@@ -1,4 +1,4 @@
-// Copyright 2017 InnoVisioNate Inc. All rights reserved.
+// Copyright 2017 EnVisioNate LLC. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -7,7 +7,7 @@ import "ocidl.idl";
 #include <olectl.h>
 [ 
    uuid(8870FA7E-CF04-4a03-A20E-BB5B83071E0D),
-   helpstring("InnoVisioNate CursiVision Enhanced Replicator"), 
+   helpstring("EnVisioNate CursiVision Enhanced Replicator"), 
    lcid(0x0), 
    version(1.0)
 ] 

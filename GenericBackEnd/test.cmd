@@ -7,4 +7,4 @@ rem copy %1 D:\temp
 
 rem %1
 
-"C:\Program Files (x86)\InnoVisioNate\CursiVision\CursiVision.exe" %1
+"C:\Program Files (x86)\EnVisioNate\CursiVision\CursiVision.exe" %1

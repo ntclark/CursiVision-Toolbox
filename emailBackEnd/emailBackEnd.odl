@@ -5,7 +5,7 @@ import "ocidl.idl";
 
 [ 
    uuid(A64AB7AF-8A26-4f07-8877-56FE99570340),
-   helpstring("InnoVisioNate CursiVision E-Mail backend plugin"), 
+   helpstring("EnVisioNate CursiVision E-Mail backend plugin"), 
    lcid(0x0), 
    version(1.0)
 ] 

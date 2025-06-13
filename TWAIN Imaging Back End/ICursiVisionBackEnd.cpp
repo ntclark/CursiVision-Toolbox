@@ -1,4 +1,4 @@
-// Copyright 2017, 2018, 2019 InnoVisioNate Inc. All rights reserved.
+// Copyright 2017, 2018, 2019 EnVisioNate LLC. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -77,7 +77,7 @@ SetProperties:
       char szMessage[1024];
       char szDocument[MAX_PATH];
       WideCharToMultiByte(CP_ACP,0,bstrResultFileName,-1,szDocument,MAX_PATH,0,0);
-      sprintf(szMessage,"The InnoVisioNate Image Scanning processing tool could not open the Document %s.\n\nThe Windows error code is: %ld\n\nPress Retry to specify the settings, or Cancel to exit",szDocument,GetLastError());
+      sprintf(szMessage,"The EnVisioNate Image Scanning processing tool could not open the Document %s.\n\nThe Windows error code is: %ld\n\nPress Retry to specify the settings, or Cancel to exit",szDocument,GetLastError());
       if ( IDCANCEL == MessageBox(NULL,szMessage,"Error!",MB_ICONEXCLAMATION | MB_RETRYCANCEL | MB_DEFBUTTON1 ) ) 
          return E_FAIL;
 

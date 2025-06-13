@@ -16,11 +16,11 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "Comments", "\0"
-            VALUE "CompanyName", "InnoVisioNate\0"
+            VALUE "CompanyName", "EnVisioNate\0"
             VALUE "FileDescription", "The CursiVision Replicator tool. Capture the signature once, then place it in configurable location(s) in the result.\0"
             VALUE "FileVersion", CV_PRODUCT_VERSION
             VALUE "InternalName", "Replicator.dll\0"
-            VALUE "LegalCopyright", "Copyright © 2009-2023 InnoVisioNate Inc.\0"
+            VALUE "LegalCopyright", "Copyright © 2009-2025 EnVisioNate LLC\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "Replicator.dll\0"
             VALUE "PrivateBuild", "\0"

@@ -1,4 +1,4 @@
-// Copyright 2017, 2018, 2019 InnoVisioNate Inc. All rights reserved.
+// Copyright 2017, 2018, 2019 EnVisioNate LLC. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -125,7 +125,7 @@
    twainIdentity.SupportedGroups = DF_APP2 | DG_IMAGE | DG_CONTROL | DF_DSM2;
 
    strcpy(twainIdentity.Version.Info,"1.0.0");
-   strcpy(twainIdentity.Manufacturer,"InnoVisioNate Inc.");
+   strcpy(twainIdentity.Manufacturer,"EnVisioNate LLC.");
    strcpy(twainIdentity.ProductFamily,"CursiVision");
    strcpy(twainIdentity.ProductName,"CursiVision");
 

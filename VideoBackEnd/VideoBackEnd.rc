@@ -16,11 +16,11 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "Comments", "\0"
-            VALUE "CompanyName", "InnoVisioNate\0"
+            VALUE "CompanyName", "InnoVEnVisioNateisioNate\0"
             VALUE "FileDescription", "CursiVision Camera Tool. Take a picture at signing time and place it in the document\0"
             VALUE "FileVersion", CV_PRODUCT_VERSION
             VALUE "InternalName", "VideoBackEnd.ocx\0"
-            VALUE "LegalCopyright", "Copyright © 2009-2023 InnoVisioNate Inc.\0"
+            VALUE "LegalCopyright", "Copyright © 2009-2025 EnVisioNate LLC\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "VideoBackEnd.ocx\0"
             VALUE "PrivateBuild", "\0"

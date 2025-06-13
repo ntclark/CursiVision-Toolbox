@@ -40,7 +40,7 @@ hModuleResources = hModule;
 
       HKEY hKeySettings = NULL;
 
-      RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\InnoVisioNate\\CursiVision",0L,KEY_QUERY_VALUE,&hKeySettings);
+      RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\EnVisioNate\\CursiVision",0L,KEY_QUERY_VALUE,&hKeySettings);
       
       if ( ! ( NULL == hKeySettings ) ) {
 
@@ -56,7 +56,6 @@ hModuleResources = hModule;
 
       GetLocation(NULL,CSIDL_COMMON_APPDATA,szTemp);
 
-#if 1
       sprintf(szApplicationDataDirectory,"%s\\CursiVision",szTemp);
 
       CreateDirectory(szApplicationDataDirectory,NULL);
@@ -70,19 +69,6 @@ hModuleResources = hModule;
       GetLocation(NULL,CSIDL_PERSONAL,szTemp);
 
       sprintf(szUserDirectory,"%s\\CursiVision Files",szTemp);
-#endif
-
-#if 0
-      sprintf(szApplicationDataDirectory,"%s\\InnoVisioNate",szTemp);
-
-      CreateDirectory(szApplicationDataDirectory,NULL);
-
-      sprintf(szApplicationDataDirectory,"%s\\InnoVisioNate\\Settings",szTemp);
-
-      CreateDirectory(szApplicationDataDirectory,NULL);
-
-      sprintf(szApplicationDataDirectory,"%s\\InnoVisioNate",szTemp);
-#endif
 
       }
 
@@ -300,7 +286,7 @@ hModuleResources = hModule;
   
    char *VL_OBJECT_NAME[] = {"InnoVisioNate.VideoNewRow","InnoVisioNate.VideoAction","InnoVisionate.VideoPreSignature"};
    char *VL_OBJECT_NAME_V[] = {"InnoVisioNate.VideoNewRow.1","InnoVisioNate.VideoAction.1","InnoVisioNate.VideoPreSignature.1"};
-   char *VL_OBJECT_DESCRIPTION[] = {"InnoVisioNate Video tool","InnoVisioNate Video tool","InnoVisioNate Video tool"};
+   char *VL_OBJECT_DESCRIPTION[] = {"EnVisioNate Video tool","EnVisioNate Video tool","InnoVisioNate Video tool"};
    GUID VL_OBJECT_CLSID[] = {CLSID_VisioLoggerVideoNewRow,CLSID_VisioLoggerVideoAction,CLSID_VisioLoggerVideoPreSignature};
 
    // VisioLogger registration. I may choose not to use this object for both. If I permanently decide to use this

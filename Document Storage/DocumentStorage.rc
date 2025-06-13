@@ -21,11 +21,11 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "Comments", "\0"
-            VALUE "CompanyName", "InnoVisioNate\0"
+            VALUE "CompanyName", "EnVisioNate\0"
             VALUE "FileDescription", "CursiVision Document Storage Tool\0"
             VALUE "FileVersion", "3, 0, 1, 0\0"
             VALUE "InternalName", "DocumentStorage.ocx\0"
-            VALUE "LegalCopyright", "Copyright © 2010 InnoVisioNate Inc.\0"
+            VALUE "LegalCopyright", "Copyright © 2025 EnVisioNate LLC\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "DocumentStorage.ocx\0"
             VALUE "PrivateBuild", "\0"

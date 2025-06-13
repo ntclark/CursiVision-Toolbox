@@ -16,11 +16,11 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "Comments", "\0"
-            VALUE "CompanyName", "InnoVisioNate\0"
+            VALUE "CompanyName", "EnVisioNate\0"
             VALUE "FileDescription", "The TaxWise File Naming tool. Attempt to save the signed document via tax year and tax ID number.\0"
             VALUE "FileVersion", CV_PRODUCT_VERSION
             VALUE "InternalName", "TaxWise Naming.dll\0"
-            VALUE "LegalCopyright", "Copyright © 2024 InnoVisioNate Inc.\0"
+            VALUE "LegalCopyright", "Copyright © 2025 EnVisioNate LLC\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "TaxWise Naming.dll\0"
             VALUE "PrivateBuild", "\0"
