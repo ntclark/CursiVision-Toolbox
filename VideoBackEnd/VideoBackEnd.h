@@ -1,6 +1,3 @@
-// Copyright 2017 EnVisioNate LLC. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 //#pragma warning( disable : 4995 )
 
@@ -179,6 +176,7 @@
          STDMETHOD(Apply)();
          STDMETHOD(AfterAllPropertyPages)(BOOL);
          STDMETHOD(DestroyPropertyPage)(long indexNumber);
+         STDMETHOD(TakePropertySheetDialogs)(SAFEARRAY *);
 
          STDMETHOD(GetPropertySheetHeader)(void *pHeader);
          STDMETHOD(get_PropertyPageCount)(long *pCount);
@@ -291,6 +289,7 @@
             STDMETHOD(Apply)() { return S_OK; }
             STDMETHOD(AfterAllPropertyPages)(BOOL) { return S_OK; }
             STDMETHOD(DestroyPropertyPage)(long indexNumber) { return S_OK; }
+            STDMETHOD(TakePropertySheetDialogs)(SAFEARRAY *) { return S_OK; }
 
             STDMETHOD(GetPropertySheetHeader)(void *pHeader);
             STDMETHOD(get_PropertyPageCount)(long *pCount);

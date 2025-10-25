@@ -1,6 +1,3 @@
-// Copyright 2017, 2018, 2019 EnVisioNate LLC. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 #include "ImagingBackEnd.h"
 
@@ -77,6 +74,9 @@
    HRESULT ImagingBackEnd::_IGPropertyPageClient::DestroyPropertyPage(long index) {
    return S_OK;
    }
+
+
+   HRESULT ImagingBackEnd::_IGPropertyPageClient::TakePropertySheetDialogs(SAFEARRAY *) { return S_OK; }
 
 
    HRESULT ImagingBackEnd::_IGPropertyPageClient::GetPropertySheetHeader(void *pv) {

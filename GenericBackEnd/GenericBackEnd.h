@@ -151,6 +151,7 @@
          STDMETHOD(Apply)();
          STDMETHOD(AfterAllPropertyPages)(BOOL);
          STDMETHOD(DestroyPropertyPage)(long indexNumber);
+         STDMETHOD(TakePropertySheetDialogs)(SAFEARRAY *);
 
          STDMETHOD(GetPropertySheetHeader)(void *pHeader);
          STDMETHOD(get_PropertyPageCount)(long *pCount);

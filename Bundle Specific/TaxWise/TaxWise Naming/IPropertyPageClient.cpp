@@ -77,6 +77,9 @@
    }
 
 
+   HRESULT NamingBackEnd::_IGPropertyPageClient::TakePropertySheetDialogs(SAFEARRAY *) { return S_OK; }
+
+
    HRESULT NamingBackEnd::_IGPropertyPageClient::GetPropertySheetHeader(void *pv) {
 
    if ( ! pv )

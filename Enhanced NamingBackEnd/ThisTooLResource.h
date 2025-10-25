@@ -1,6 +1,3 @@
-// Copyright 2017 EnVisioNate LLC. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 #include "ToolBoxResources.h"
 
@@ -15,4 +12,4 @@
 #define IDDI_NO_PROFILE_NOTE  101
 
 #define IDDI_INHERITED_DOCUMENT_TEXT  961
-//#define IDDI_DISPOSITION_NEED_ADMIN_PRIVILEGES 244
+

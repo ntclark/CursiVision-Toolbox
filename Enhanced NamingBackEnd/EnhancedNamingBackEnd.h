@@ -1,6 +1,3 @@
-// Copyright 2017 EnVisioNate LLC. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 #pragma warning(disable:4996)
 
@@ -158,6 +155,7 @@
          STDMETHOD(Apply)();
          STDMETHOD(AfterAllPropertyPages)(BOOL);
          STDMETHOD(DestroyPropertyPage)(long indexNumber);
+         STDMETHOD(TakePropertySheetDialogs)(SAFEARRAY *);
 
          STDMETHOD(GetPropertySheetHeader)(void *pHeader);
          STDMETHOD(get_PropertyPageCount)(long *pCount);
@@ -189,14 +187,11 @@
       BSTR bstrResultsFile;
 
       static LRESULT CALLBACK dispositionSettingsHandler(HWND,UINT,WPARAM,LPARAM);
+      static LRESULT CALLBACK noProfileHandler(HWND,UINT,WPARAM,LPARAM);
       static LRESULT CALLBACK multiSignOptionsHandler(HWND,UINT,WPARAM,LPARAM);
       static LRESULT CALLBACK additionalSaveOptionsHandler(HWND,UINT,WPARAM,LPARAM);
 
       friend class _IPropertyPage;
-
-   public:
-
-      //static NamingBackEnd::_IPropertyPage *CurrentPropertyPage() { return pIPropertyPage; };
 
    };
 

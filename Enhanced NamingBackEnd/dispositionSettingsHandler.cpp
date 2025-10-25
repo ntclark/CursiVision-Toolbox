@@ -1,6 +1,3 @@
-// Copyright 2017 EnVisioNate LLC. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 #include "EnhancedNamingBackEnd.h"
 
@@ -19,8 +16,10 @@
 #define ADDITIONAL_INITIALIZATION \
    needsAdmin = false;                                                                      \
    IPrintingSupportProfile *px = NULL;                                                      \
-   if ( CURSIVISION_SERVICES_INTERFACE )                                                    \
+   if ( CURSIVISION_SERVICES_INTERFACE ) {                                                  \
       CURSIVISION_SERVICES_INTERFACE -> get_PrintingSupportProfile(&px);                    \
+      hModuleResources = CURSIVISION_SERVICES_INTERFACE -> ResourcesModule();               \
+   }                                                                                        \
    if ( px && ! px -> AllowPrintProfileChanges() && ! pObject -> editAllowed ) {            \
       SetDlgItemText(hwnd,IDDI_DISPOSITION_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change print profiles");        \
       needsAdmin = true;                                                                    \
@@ -44,7 +43,6 @@
             SetWindowLongPtr(GetDlgItem(hwnd,IDDI_DISPOSITION_NEED_ADMIN_PRIVILEGES),GWLP_WNDPROC,(UINT_PTR)redTextHandler);    \
     }
 
-
 #define UNLOAD_ADDITIONAL \
    SendMessage(GetDlgItem(hwnd,IDDI_NAME1_PREFIX),CB_GETLBTEXT,SendMessage(GetDlgItem(hwnd,IDDI_NAME1_PREFIX),CB_GETCURSEL,0L,0L),(WPARAM)pObject -> szNamePrefix[0]); \
    SendMessage(GetDlgItem(hwnd,IDDI_NAME2_PREFIX),CB_GETLBTEXT,SendMessage(GetDlgItem(hwnd,IDDI_NAME2_PREFIX),CB_GETCURSEL,0L,0L),(WPARAM)pObject -> szNamePrefix[1]);
@@ -66,6 +64,28 @@
 #include "dispositionSettingsBody.cpp"
 
    return (LRESULT)FALSE;
+   }
+
+
+   LRESULT CALLBACK NamingBackEnd::noProfileHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
+
+   switch ( msg ) {
+   case WM_INITDIALOG: {
+      RECT rcClient;
+      char szMessage[2048];
+      LoadString(hModule,IDS_NO_PROFILE,szMessage,2048);
+      GetWindowRect(hwnd,&rcClient);
+      SetDlgItemText(hwnd,IDDI_NO_PROFILE_NOTE,szMessage);
+      SetWindowPos(GetDlgItem(hwnd,IDDI_NO_PROFILE_NOTE),HWND_TOP,0,0,rcClient.right - rcClient.left - 32,rcClient.bottom - rcClient.top - 32,SWP_NOMOVE);
+      }
+      return (LRESULT)0L;
+
+   default:
+      break;
+
+   }
+
+   return (LRESULT)0L;
    }
 
 

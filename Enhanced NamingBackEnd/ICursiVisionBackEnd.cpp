@@ -1,6 +1,3 @@
-// Copyright 2017 EnVisioNate LLC. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 #include "EnhancedNamingBackEnd.h"
 
@@ -172,62 +169,8 @@ SetProperties:
 
    HWND hwndMainFrame = hwndParent;
 
-#if 1
-#define SAVE_FILE                                                                                              \
+#define SAVE_FILE \
    CopyFileW(bstrActiveDocument,bstrResultsFile,FALSE);
-#else
-#define SAVE_FILE                                                                                              \
-   {                                                                                                           \
-   if ( ! CopyFileW(bstrActiveDocument,bstrResultsFile,FALSE) ) {                                              \
-      char szMessage[1024];                                                                                    \
-      sprintf(szMessage,"CursiVision was not able to save the file with the base name: \n\n\t\"%s.pdf\""       \
-                        "\n\nThere may be invalid characters in the name."                                     \
-                        "\n\nSelect Ok to manually save the file, or Cancel to exit without saving",pValue);   \
-                                                                                                               \
-      if ( IDCANCEL == MessageBox(NULL,szMessage,"Error!",MB_ICONEXCLAMATION | MB_OKCANCEL | MB_TOPMOST ) )    \
-         return E_FAIL;                                                                                        \
-                                                                                                               \
-      OPENFILENAMEA ofn;                                                                                       \
-                                                                                                               \
-      char szFilter[MAX_PATH];                                                                                 \
-      char szTemp[2 * MAX_PATH];                                                                               \
-                                                                                                               \
-      memset(szFilter,0,sizeof(szFilter));                                                                     \
-      memset(&ofn,0,sizeof(ofn));                                                                              \
-                                                                                                               \
-      sprintf(szTemp,"Save %s",pValue);                                                                        \
-                                                                                                               \
-      sprintf(szFilter,"Signed Documents");                                                                    \
-      long k = strlen(szFilter) + sprintf(szFilter + strlen(szFilter) + 1,"*.pdf");                            \
-      k = k + sprintf(szFilter + k + 2,"All Files");                                                           \
-      sprintf(szFilter + k + 3,"*.*");                                                                         \
-                                                                                                               \
-      ofn.lStructSize = sizeof(OPENFILENAMEA);                                                                 \
-      ofn.hwndOwner = hwndMainFrame;                                                                           \
-      ofn.Flags = OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;                                                     \
-      ofn.lpstrFilter = szFilter;                                                                              \
-      ofn.lpstrFile = szResultFile;                                                                            \
-      ofn.lpstrDefExt = "pdf";                                                                                 \
-      ofn.nFilterIndex = 1;                                                                                    \
-      ofn.nMaxFile = MAX_PATH;                                                                                 \
-      ofn.lpstrTitle = szTemp;                                                                                 \
-                                                                                                               \
-      sprintf(ofn.lpstrFile,"%s.pdf",pValue);                                                                  \
-                                                                                                               \
-      if ( ! GetSaveFileNameA(&ofn) )                                                                          \
-         return E_FAIL;                                                                                        \
-                                                                                                               \
-      strcpy(szActiveDocument,ofn.lpstrFile);                                                                  \
-      strcpy(szResultFile,szActiveDocument);                                                                   \
-      char *psx = strrchr(szResultFile,'.');                                                                   \
-      if ( psx )                                                                                               \
-         *psx = '\0';                                                                                          \
-                                                                                                               \
-      goto reAttemptFileDecoration;                                                                            \
-                                                                                                               \
-   }                                                                                                           \
-   }
-#endif
 
 #include "savePDFFile.cpp"
 

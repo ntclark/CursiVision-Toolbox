@@ -1,6 +1,3 @@
-// Copyright 2017 EnVisioNate LLC. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 #include "SpreadsheetBackEnd.h"
 
@@ -82,6 +79,9 @@
    }
 
 
+   HRESULT SpreadsheetBackEnd::_IGPropertyPageClient::TakePropertySheetDialogs(SAFEARRAY *) { return S_OK; }
+
+
    HRESULT SpreadsheetBackEnd::_IGPropertyPageClient::GetPropertySheetHeader(void *pv) {
 
    if ( ! pv )
@@ -121,8 +121,15 @@
       pPropSheetPages[0].pszTemplate = MAKEINTRESOURCE(IDD_NO_PROFILE);
       pPropSheetPages[0].pfnDlgProc = (DLGPROC)SpreadsheetBackEnd::noProfileHandler;
    } else {
-      pPropSheetPages[0].pszTemplate = MAKEINTRESOURCE(IDD_OPTIONS);
-      pPropSheetPages[0].pfnDlgProc = (DLGPROC)SpreadsheetBackEnd::propertiesHandler;
+      IPrintingSupportProfile *px = NULL;
+      pParent -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
+      if ( ! ( NULL == px ) ) {
+         pPropSheetPages[0].pszTemplate = MAKEINTRESOURCE(IDD_OPTIONS);
+         pPropSheetPages[0].pfnDlgProc = (DLGPROC)SpreadsheetBackEnd::propertiesHandler;
+      } else {
+         pPropSheetPages[0].pszTemplate = MAKEINTRESOURCE(IDD_NO_PROFILE);
+         pPropSheetPages[0].pfnDlgProc = (DLGPROC)SpreadsheetBackEnd::noProfileHandler;
+      }
    }
 
    pPropSheetPages[0].pszTitle = "Spreadsheet Settings";

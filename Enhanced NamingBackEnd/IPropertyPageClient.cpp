@@ -1,9 +1,5 @@
-// Copyright 2017 EnVisioNate LLC. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 #include "EnhancedNamingBackEnd.h"
-
 
    long __stdcall NamingBackEnd::_IGPropertyPageClient::QueryInterface(REFIID riid,void **ppv) {
    *ppv = NULL; 
@@ -82,6 +78,9 @@
    }
 
 
+   HRESULT NamingBackEnd::_IGPropertyPageClient::TakePropertySheetDialogs(SAFEARRAY *) { return S_OK; }
+
+
    HRESULT NamingBackEnd::_IGPropertyPageClient::GetPropertySheetHeader(void *pv) {
 
    if ( ! pv )
@@ -116,8 +115,22 @@
    pPropSheetPages[0].dwSize = sizeof(PROPSHEETPAGE);
    pPropSheetPages[0].dwFlags = PSP_USETITLE;
    pPropSheetPages[0].hInstance = hModule;
-   pPropSheetPages[0].pszTemplate = MAKEINTRESOURCE(IDD_DISPOSITION_PROPERTIES);
-   pPropSheetPages[0].pfnDlgProc = (DLGPROC)NamingBackEnd::dispositionSettingsHandler;
+
+   if ( ! pParent -> pICursiVisionServices ) {
+      pPropSheetPages[0].pszTemplate = MAKEINTRESOURCE(IDD_NO_PROFILE);
+      pPropSheetPages[0].pfnDlgProc = (DLGPROC)NamingBackEnd::noProfileHandler;
+   } else {
+      IPrintingSupportProfile *px = NULL;
+      pParent -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
+      if ( ! ( NULL == px ) ) {
+         pPropSheetPages[0].pszTemplate = MAKEINTRESOURCE(IDD_DISPOSITION_PROPERTIES);
+         pPropSheetPages[0].pfnDlgProc = (DLGPROC)NamingBackEnd::dispositionSettingsHandler;
+      } else {
+         pPropSheetPages[0].pszTemplate = MAKEINTRESOURCE(IDD_NO_PROFILE);
+         pPropSheetPages[0].pfnDlgProc = (DLGPROC)NamingBackEnd::noProfileHandler;
+      }
+   }
+
    pPropSheetPages[0].pszTitle = "File Naming Settings";
    pPropSheetPages[0].lParam = (LONG_PTR)&pParent -> processingDisposition;
    pPropSheetPages[0].pfnCallback = NULL;

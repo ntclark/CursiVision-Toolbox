@@ -70,7 +70,7 @@ STRINGTABLE {
 
 IDDI_NAME1_PREFIX "Create a field in your print profile (Tools - Setup - Print) that defines a location containing text for the file name."
 
-IDS_NO_PROFILE "This CursiVision back end tool is designed to be used with documents that have been printed through the CursiVision Print driver.\r\
+IDS_NO_PROFILE "This CursiVision tool is designed to be used with documents that have been printed through the CursiVision Print driver.\r\
 The CursiVision print driver captures text, and it's location, from every document printed.\r\r\
 By editing the printing profile (Tools - Setup - Printing) for the current document, you can specify a location on your documents from which to \
 find certain text for each copy of the document printed.\r\r\

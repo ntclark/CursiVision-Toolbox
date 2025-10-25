@@ -1,6 +1,3 @@
-// Copyright 2017 EnVisioNate LLC. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 #include "EnhancedReplicator.h"
 
@@ -80,6 +77,9 @@
    HRESULT theReplicator::_IGPropertyPageClient::DestroyPropertyPage(long index) {
    return S_OK;
    }
+
+
+   HRESULT theReplicator::_IGPropertyPageClient::TakePropertySheetDialogs(SAFEARRAY *) { return S_OK; }
 
 
    HRESULT theReplicator::_IGPropertyPageClient::GetPropertySheetHeader(void *pv) {
