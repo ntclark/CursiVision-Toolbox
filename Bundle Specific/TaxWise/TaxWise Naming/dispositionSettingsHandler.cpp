@@ -16,18 +16,18 @@
 #define ADDITIONAL_INITIALIZATION \
     needsAdmin = false;                                                                      \
     if ( ! CURSIVISION_SERVICES_INTERFACE -> AllowToolboxPropertyChanges() && ! pObject -> editAllowed ) { \
-        SetDlgItemText(hwnd,IDDI_DISPOSITION_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change tool properties");    \
+        SetDlgItemText(hwnd,IDDI_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change tool properties");    \
         needsAdmin = true;                                                                 \
     } else                                                                                \
-        ShowWindow(GetDlgItem(hwnd,IDDI_DISPOSITION_NEED_ADMIN_PRIVILEGES),SW_HIDE);      \
+        ShowWindow(GetDlgItem(hwnd,IDDI_NEED_ADMIN_PRIVILEGES),SW_HIDE);      \
     if ( needsAdmin ) {                                                                          \
-        enableDisableSiblings(GetDlgItem(hwnd,IDDI_DISPOSITION_NEED_ADMIN_PRIVILEGES),FALSE);   \
+        enableDisableSiblings(GetDlgItem(hwnd,IDDI_NEED_ADMIN_PRIVILEGES),FALSE);   \
         moveUpAllAmount(hwnd,-16,NULL);                                                         \
-        SetWindowPos(GetDlgItem(hwnd,IDDI_DISPOSITION_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE | SWP_SHOWWINDOW);     \
+        SetWindowPos(GetDlgItem(hwnd,IDDI_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE | SWP_SHOWWINDOW);     \
         if ( NULL == defaultTextHandler )                                                                                       \
-            defaultTextHandler = (WNDPROC)SetWindowLongPtr(GetDlgItem(hwnd,IDDI_DISPOSITION_NEED_ADMIN_PRIVILEGES),GWLP_WNDPROC,(UINT_PTR)redTextHandler); \
+            defaultTextHandler = (WNDPROC)SetWindowLongPtr(GetDlgItem(hwnd,IDDI_NEED_ADMIN_PRIVILEGES),GWLP_WNDPROC,(UINT_PTR)redTextHandler); \
         else                                                                                                                    \
-            SetWindowLongPtr(GetDlgItem(hwnd,IDDI_DISPOSITION_NEED_ADMIN_PRIVILEGES),GWLP_WNDPROC,(UINT_PTR)redTextHandler);    \
+            SetWindowLongPtr(GetDlgItem(hwnd,IDDI_NEED_ADMIN_PRIVILEGES),GWLP_WNDPROC,(UINT_PTR)redTextHandler);    \
     }   \
     PUT_BOOL(pObject -> saveInTaxYear,IDDI_SAVE_IN_TAX_YEAR_SUBFOLDER)          \
     PUT_BOOL(pObject -> saveInStateFederal,IDDI_SAVE_IN_STATE_FED_SUBFOLDER)    \
