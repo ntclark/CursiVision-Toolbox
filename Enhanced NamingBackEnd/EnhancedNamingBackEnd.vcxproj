@@ -304,7 +304,6 @@ regsvr32 /s /c "$(TargetPath)"</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EnhancedNamingBackEnd.h" />
-    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(GSYSTEM_HOME)\Common\resources\resultDisposition.rc">

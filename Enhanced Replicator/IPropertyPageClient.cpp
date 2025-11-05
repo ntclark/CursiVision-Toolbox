@@ -163,7 +163,7 @@
    pPropSheetPages[0].pResource = (PROPSHEETPAGE_RESOURCE)pDialog;
 #endif
 
-  adjustPropertiesDialogSize(&sizelDisplay,(DLGTEMPLATEEX *)pPropSheetPages[0].pResource,128);
+  adjustPropertiesDialogSize((DLGTEMPLATEEX *)pPropSheetPages[0].pResource,128);
 
    return S_OK;
    }

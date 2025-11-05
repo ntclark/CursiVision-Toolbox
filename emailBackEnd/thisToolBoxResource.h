@@ -2,6 +2,7 @@
 #include "ToolBoxResources.h"
 
 #define IDD_DISPOSITION_EMAIL_BODY     1
+#define IDD_DISPOSITION_EMAIL          2
 
 #define IDS_EMAIL_BODY_INSTRUCTIONS    1
 
