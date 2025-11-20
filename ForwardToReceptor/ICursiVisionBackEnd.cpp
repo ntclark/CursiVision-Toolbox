@@ -1,6 +1,3 @@
-// Copyright 2017 EnVisioNate LLC. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 #include <Ws2tcpip.h>
 
@@ -11,7 +8,7 @@
 
     isProcessing = true;
 
-    if ( showProperties || ! szServerName[0] ) {
+    if ( showProperties || '\0' == szServerName[0] ) {
 
 SetProperties:
 
@@ -27,8 +24,20 @@ SetProperties:
 
     char szCommand[4096];
     char szFileName[MAX_PATH];
+    char szPipeName[MAX_PATH];
 
-    HANDLE hPipeToReceptor = CreateFileW(L"\\\\.\\pipe\\CVReceptor",GENERIC_WRITE | GENERIC_READ,0L,NULL,OPEN_EXISTING,0L,NULL);
+    sprintf_s<MAX_PATH>(szPipeName,"\\\\%s\\pipe\\CVReceptor",szServerName);
+
+    HANDLE hPipeToReceptor = CreateFileA(szPipeName,GENERIC_WRITE | GENERIC_READ,0L,NULL,OPEN_EXISTING,0L,NULL);
+
+    if ( INVALID_HANDLE_VALUE == hPipeToReceptor ) {
+        sprintf(szCommand,"The CursiVision Receptor service on server %s could not be contacted\r\r"
+                            "Please ensure the service is running on that computer, \r\r"
+                            "and that the computer is visible on your network.",szServerName);
+        MessageBox(NULL,szCommand,"CursiVision Forward To Receptor Error!",MB_ICONEXCLAMATION);
+
+        return E_FAIL;
+    }
 
     BSTR translatedDispositionSettingsFile = NULL;
 
@@ -136,7 +145,7 @@ SetProperties:
     cb = 1024;
     ReadFile(hPipeToReceptor,(void *)szCommand,cb,&cb,NULL);
 
-    if ( szNextServerName[0] ) {
+    if ( ! ( '\0' == szNextServerName[0] ) ) {
         memset(szCommand,0,sizeof(szCommand));
         sprintf(szCommand,"forward %s",szNextServerName);
         cb = (DWORD)strlen(szCommand);
@@ -146,7 +155,7 @@ SetProperties:
         ReadFile(hPipeToReceptor,(void *)szCommand,cb,&cb,NULL);
     }
 
-    if ( saveOnly && szServerStoreLocation[0] ) {
+    if ( saveOnly && ! ( '\0' == szServerStoreLocation[0] ) ) {
         memset(szCommand,0,sizeof(szCommand));
         sprintf(szCommand,"store %s",szServerStoreLocation);
         cb = (DWORD)strlen(szCommand);
