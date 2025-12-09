@@ -304,25 +304,25 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
         pTLS = new TLSEncryption(theSocket,serverName);
 
         sprintf_s<COMMAND_SIZE>(szCommand,"EHLO %s\r\n",serverName);
-        pTLS -> exchange(szCommand,strlen(szCommand),szInput);
+        pTLS -> exchange(szCommand,(DWORD)strlen(szCommand),szInput);
 
         sprintf_s<COMMAND_SIZE>(szCommand,"AUTH LOGIN\r\n");
-        pTLS -> exchange(szCommand,strlen(szCommand),szInput);	
+        pTLS -> exchange(szCommand,(DWORD)strlen(szCommand),szInput);	
   
         if ( strstr(szInput,"334") ) {
         
             sprintf_s<COMMAND_SIZE>(szCommand,"%s",userName);
-            pTLS -> Base64Encode(szCommand,strlen(szCommand));
-            pTLS -> exchange(szCommand,strlen(szCommand),szInput);
+            pTLS -> Base64Encode(szCommand,(DWORD)strlen(szCommand));
+            pTLS -> exchange(szCommand,(DWORD)strlen(szCommand),szInput);
 
             if ( strstr(szInput,"334") ) {
                 sprintf_s<COMMAND_SIZE>(szCommand,"%s",password);
-                pTLS -> Base64Encode(szCommand,strlen(szCommand));
-                pTLS -> exchange(szCommand,strlen(szCommand),szInput);
+                pTLS -> Base64Encode(szCommand,(DWORD)strlen(szCommand));
+                pTLS -> exchange(szCommand,(DWORD)strlen(szCommand),szInput);
             }
 
             sprintf_s<COMMAND_SIZE>(szCommand,"MAIL FROM: <%s>\r\n",fromAddress);
-            pTLS -> exchange(szCommand,strlen(szCommand),szInput);
+            pTLS -> exchange(szCommand,(DWORD)strlen(szCommand),szInput);
 
         }
 
@@ -433,12 +433,12 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
         char *pEnd = pStart + emailBytes;
 
         while ( pStart < pEnd ) {
-            int n = min(1024,pEnd - pStart);
+            int n = (int)min(1024,pEnd - pStart);
             pTLS -> send(pStart,n);
             pStart += n;
         }
 
-        pTLS -> exchange((char *)"\r\n.\r\n",strlen("\r\n.\r\n"),szInput);
+        pTLS -> exchange((char *)"\r\n.\r\n",(DWORD)strlen("\r\n.\r\n"),szInput);
    
         sprintf_s<COMMAND_SIZE>(szCommand,"QUIT\r\n");
 
