@@ -1,14 +1,8 @@
-// Copyright 2017 EnVisioNate LLC. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 #include <windows.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <olectl.h>
 #include <PrSht.h>
-
-#include "resource.h"
 
 #include "PrintingSupport_i.h"
 #include "GenericBackEnd_i.h"
@@ -19,6 +13,7 @@
 
 #include "directories.h"
 #include "resultDisposition.h"
+#include "GenericBackEndResources.h"
 
    class GenericBackEnd : public ICursiVisionBackEnd {
    public:

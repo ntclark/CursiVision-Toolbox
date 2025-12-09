@@ -1,7 +1,6 @@
 
 #include "GenericBackEnd.h"
 
-
    long __stdcall GenericBackEnd::_IGPropertyPageClient::QueryInterface(REFIID riid,void **ppv) {
    *ppv = NULL; 
  

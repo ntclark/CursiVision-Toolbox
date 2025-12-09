@@ -35,7 +35,6 @@ SetProperties:
                             "Please ensure the service is running on that computer, \r\r"
                             "and that the computer is visible on your network.",szServerName);
         MessageBox(NULL,szCommand,"CursiVision Forward To Receptor Error!",MB_ICONEXCLAMATION);
-
         return E_FAIL;
     }
 

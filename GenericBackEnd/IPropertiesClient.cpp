@@ -1,9 +1,5 @@
-// Copyright 2017 EnVisioNate LLC. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 #include "GenericBackEnd.h"
-
 
    long __stdcall GenericBackEnd::_IGPropertiesClient::QueryInterface(REFIID riid,void **ppv) {
    *ppv = NULL; 

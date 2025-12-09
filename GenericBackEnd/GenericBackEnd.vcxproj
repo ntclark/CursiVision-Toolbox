@@ -278,7 +278,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GenericBackEnd.h" />
-    <ClInclude Include="resource.h" />
+    <ClInclude Include="GenericBackEndResources.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GenericBackEnd.rc">

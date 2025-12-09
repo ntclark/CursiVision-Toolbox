@@ -3,8 +3,7 @@
 #include <winres.h>
 #include <commctrl.h>
 
-#include "resource.h"
-#include "ToolBoxResources.h"
+#include "GenericBackEndResources.h"
 
 #include "versionInfo.h"
 
@@ -36,7 +35,7 @@ BEGIN
 END
 
 
-IDDIALOG_PROPERTIES DIALOGEX 0, 0, 256 + 64, 256
+IDDIALOG_PROPERTIES DIALOGEX 0, 0, 400, 512
 STYLE DS_SETFONT | DS_3DLOOK | WS_CHILD | WS_VISIBLE  
 EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg", 0, 0, 0x0

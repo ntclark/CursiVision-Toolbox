@@ -1,6 +1,3 @@
-// Copyright 2017 EnVisioNate LLC. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 #include <windows.h>
 #include <stddef.h>
@@ -9,7 +6,6 @@
 #include <PrSht.h>
 
 #include "thisToolBoxResource.h"
-#include "resource.h"
 
 #include "pdfEnabler_i.h"
 #include "PrintingSupport_i.h"
