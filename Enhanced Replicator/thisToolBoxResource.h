@@ -1,6 +1,3 @@
-// Copyright 2017 EnVisioNate LLC. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 #include "ToolBoxResources.h"
 
@@ -18,3 +15,5 @@
 #define IDDI_SIGNATURE_REGION_EVERY_SUBSEQUENT_PAGE  413
 
 #define IDDI_NO_PROFILE_NOTE  201
+
+#define WM_REFRESH_TEMPLATE_DOC         (WM_USER + 1)

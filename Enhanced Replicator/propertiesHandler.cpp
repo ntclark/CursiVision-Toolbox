@@ -1,6 +1,3 @@
-// Copyright 2017 EnVisioNate LLC. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 #include "EnhancedReplicator.h"
 #include "drawBoxDefines.h"
@@ -20,19 +17,43 @@
     static long oldActiveRegion = -1L;
     static long cornerGrabIndex = -1L;
 
+    static HWND hwndPDFPane = NULL;
+    static DLGTEMPLATEEX *pTemplate = NULL;
+
+    static LONG xHWNDPDFPane = 0L;
+    static LONG yHWNDPDFPane = 0L;
+    static LONG cxHWNDPDFPane = 0L;
+    static LONG cyHWNDPDFPane = 0L;
+
     static boolean needsAdmin = false;
     LRESULT CALLBACK redTextHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam);
     WNDPROC defaultTextHandler{NULL};
 
+   static WNDPROC defaultStaticHandler = NULL;
+   static LRESULT pdfPaneHandler(HWND,UINT,WPARAM,LPARAM);
+
     LRESULT CALLBACK theReplicator::propertiesHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
 
     theReplicator *p = (theReplicator *)GetWindowLongPtr(hwnd,GWLP_USERDATA);
+
+    if ( WM_MOUSEFIRST <= msg && msg <= WM_MOUSELAST && ! ( NULL == p ) && ! ( NULL == p -> pTemplateDocumentUI ) ) {
+        POINTL ptlMouse{LOWORD(lParam),HIWORD(lParam)};
+        if ( xHWNDPDFPane > ptlMouse.x || yHWNDPDFPane > ptlMouse.y || (xHWNDPDFPane + cxHWNDPDFPane) < ptlMouse.x || (yHWNDPDFPane + cyHWNDPDFPane) < ptlMouse.y ) 
+            return (LRESULT)0L;
+        if ( ! ( NULL == p ) && NULL == p -> pTemplateDocument )
+            return (LRESULT)0L;
+        lParam = MAKELPARAM(ptlMouse.x - xHWNDPDFPane,ptlMouse.y - yHWNDPDFPane);
+    }
 
     switch ( msg ) {
 
     case WM_INITDIALOG: {
 
         PROPSHEETPAGE *pPage = reinterpret_cast<PROPSHEETPAGE *>(lParam);
+
+        pTemplate = (DLGTEMPLATEEX *)pPage -> pResource;
+
+        SetWindowPos(hwnd,HWND_TOP,0,0,pTemplate -> cx,pTemplate -> cy,SWP_NOMOVE);
 
         p = (theReplicator *)pPage -> lParam;
 
@@ -43,8 +64,8 @@
         p -> pIGProperties -> Push();
         p -> pIGProperties -> Push();
 
-        char szInfo[1024];
-        LoadString(hModule,IDS_EDIT_INSTRUCTIONS,szInfo,1024);
+        char szInfo[2048];
+        LoadString(hModule,IDS_EDIT_INSTRUCTIONS,szInfo,2048);
         SetDlgItemText(hwnd,IDDI_REPLICATOR_INSTRUCTIONS,szInfo);
 
         p -> load();
@@ -77,8 +98,6 @@
                 SetWindowLongPtr(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),GWLP_WNDPROC,(UINT_PTR)redTextHandler);
         }
 
-        p -> pTemplateDocumentUI = p -> pTemplateDocument -> createView(hwnd,8,64,false,theReplicator::drawSignatures);
-
         }
         return LRESULT(FALSE);
 
@@ -110,7 +129,7 @@
 
     case WM_MOUSEMOVE: {
       
-        if ( ! p -> pTemplateDocumentUI )
+        if ( NULL == p -> pTemplateDocumentUI )
             break;
 
         POINTL ptlMouse = {LOWORD(lParam),HIWORD(lParam)};
@@ -412,23 +431,35 @@
         }
 
         }
-        break;   
+        break;
 
-    case WM_SIZE: {
+    case WM_REFRESH_TEMPLATE_DOC: {
 
-        if ( ! p -> pTemplateDocumentUI )
+        if ( ! ( NULL == p -> pTemplateDocumentUI ) )
             break;
 
-        p -> pTemplateDocumentUI -> size();
+        hwndPDFPane = GetDlgItem(hwnd,IDDI_REPLICATOR_INSTRUCTIONS + 256);
 
-        RECT rcView,rcParent,rcReset;
+        RECT rcDialog,rcReset,rcInstructions;
 
-        GetWindowRect(hwnd,&rcParent);
-        GetWindowRect(p -> pTemplateDocumentUI -> hwndPane,&rcView);
+        GetWindowRect(hwnd,&rcDialog);
         GetWindowRect(GetDlgItem(hwnd,IDDI_REPLICATOR_RESET),&rcReset);
+        GetWindowRect(GetDlgItem(hwnd,IDDI_REPLICATOR_INSTRUCTIONS),&rcInstructions);
 
-        SetWindowPos(GetDlgItem(hwnd,IDDI_REPLICATOR_INSTRUCTIONS),HWND_TOP,0,0,
-                        rcParent.right - rcParent.left - (rcReset.right - rcParent.left) - 2 * (rcView.left - rcParent.left),(rcView.top - rcParent.top) - 16,SWP_NOMOVE);
+        xHWNDPDFPane = rcInstructions.right - rcDialog.left + 16;
+        yHWNDPDFPane = rcReset.top - rcDialog.top;
+
+        cxHWNDPDFPane = pTemplate -> cx - (rcInstructions.right - rcInstructions.left) - 32;
+        cyHWNDPDFPane = pTemplate -> cy - 2 * (rcReset.top - rcDialog.top);
+
+        SetWindowPos(hwndPDFPane,HWND_TOP,xHWNDPDFPane,yHWNDPDFPane,cxHWNDPDFPane,cyHWNDPDFPane,SWP_SHOWWINDOW);
+
+        if ( NULL == defaultStaticHandler )
+            defaultStaticHandler = (WNDPROC)SetWindowLongPtr(hwndPDFPane,GWLP_WNDPROC,(ULONG_PTR)pdfPaneHandler);
+        else
+            SetWindowLongPtr(hwndPDFPane,GWLP_WNDPROC,(ULONG_PTR)pdfPaneHandler);
+
+        p -> pTemplateDocumentUI = p -> pTemplateDocument -> createView(hwndPDFPane,0,0,false,theReplicator::drawSignatures);
 
         }
         break;
@@ -474,6 +505,11 @@
         break;
 
     case WM_DESTROY: {
+        if ( ! ( NULL == hwndPDFPane ) ) {
+            (WNDPROC)SetWindowLongPtr(hwndPDFPane,GWLP_WNDPROC,(ULONG_PTR)defaultStaticHandler);
+            DestroyWindow(hwndPDFPane);
+            hwndPDFPane = NULL;
+        }
         if ( p -> pTemplateDocumentUI )
             p -> pTemplateDocumentUI -> releaseView();
         p -> pTemplateDocumentUI = NULL;
@@ -487,6 +523,17 @@
     }
 
     return LRESULT(FALSE);
+    }
+
+
+    static LRESULT pdfPaneHandler(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) {
+
+    if ( msg < WM_MOUSEFIRST || msg > WM_MOUSELAST )
+        return defaultStaticHandler(hwnd,msg,wParam,lParam);
+
+    lParam = MAKELPARAM( LOWORD(lParam) + xHWNDPDFPane, HIWORD(lParam) + yHWNDPDFPane);
+
+    return SendMessage(GetParent(hwnd),msg,wParam,lParam);
     }
 
 
