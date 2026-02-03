@@ -1,6 +1,3 @@
-// Copyright 2017 EnVisioNate LLC. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 #include "EnhancedReplicator.h"
 
@@ -17,19 +14,35 @@
     if ( ! pDocument -> isDocumentRendered() )
         return;
 
+    long scrollAmount = -1L;
+    BSTR bstrPagesVisible;
+    pDocument -> PDFiumControl() -> get_PDFPagesVisible(&bstrPagesVisible);
+
     for ( long k = 0; k < WRITING_LOCATION_COUNT; k++ ) {
-        if ( ! pThis -> pWritingLocations[k] )
+
+        if ( NULL == pThis -> pWritingLocations[k] )
             break;
-        if ( pThis -> pWritingLocations[k] -> pdfPageNumber != pDocument -> currentPageNumber() ) 
+
+        WCHAR wszMyPage[8];
+        swprintf_s<8>(wszMyPage,L"%ld",pThis -> pWritingLocations[k] -> pdfPageNumber);
+        if ( NULL == wcsstr(bstrPagesVisible,wszMyPage) ) 
             continue;
-        pThis -> drawSignature(NULL,k,NULL,NULL);
+
+        if ( -1L == scrollAmount )
+            scrollAmount = pThis -> pageScrollTop[k] - pThis -> pTemplateDocumentUI -> prcPDFSpecificPagePixels[pThis -> pWritingLocations[k] -> pdfPageNumber - 1].top;
+
+        pThis -> pTemplateDocumentUI -> size(pThis -> pWritingLocations[k] -> pdfPageNumber);
+
+        pThis -> drawSignature(NULL,k,scrollAmount,NULL,NULL);
     }
+
+    SysFreeString(bstrPagesVisible);
 
     return;
     }
 
 
-    void theReplicator::drawSignature(HDC hdc,long index,RECT *prcNewPixels,RECT *pNewLocation) {
+    void theReplicator::drawSignature(HDC hdc,long index,long scrollAmount,RECT *prcNewPixels,RECT *pNewLocation) {
 
     bool wasProvided = true;
 
@@ -66,7 +79,6 @@
     HGDIOBJ oldBrush = SelectObject(hdc,hBrush);
 
     if ( ! ( NULL == hdcDrawRestore[index] ) ) {
-        long scrollAmount = pageScrollTop[index] - pTemplateDocumentUI -> prcPDFSpecificPagePixels[pSG -> pdfPageNumber - 1].top;
         BitBlt(hdc,restoreRect[index].left,restoreRect[index].top - scrollAmount,
                         restoreRect[index].right - restoreRect[index].left,restoreRect[index].bottom - restoreRect[index].top,
                             hdcDrawRestore[index],0,0,SRCCOPY);
@@ -75,13 +87,22 @@
     }
 
     restoreRect[index] = pSG -> documentRect;
-    pTemplateDocumentUI -> convertToPixels(pSG -> pdfPageNumber,&restoreRect[index]);
+//RECT rcOriginal = restoreRect[index];
+//pTemplateDocumentUI -> convertToPixels(pSG -> pdfPageNumber,&rcOriginal);
+
+    pTemplateDocumentUI -> convertToClippedPixels(pSG -> pdfPageNumber,&restoreRect[index]);
 
     restoreRect[index].left -= BORDER_WEIGHT;
     restoreRect[index].right += BORDER_WEIGHT;
     restoreRect[index].top -= BORDER_WEIGHT;
     restoreRect[index].bottom += BORDER_WEIGHT;
+
     hdcDrawRestore[index] = pTemplateDocumentUI -> pdfDCArea(pSG -> pdfPageNumber,&restoreRect[index]);
+    //hdcDrawRestore[index] = pTemplateDocumentUI -> pdfDCArea(pSG -> pdfPageNumber,&rcOriginal);
+
+//BitBlt(GetDC(HWND_DESKTOP),0,0,restoreRect[index].right - restoreRect[index].left,restoreRect[index].bottom - restoreRect[index].top,hdcDrawRestore[index],0,0,SRCCOPY);
+//BitBlt(GetDC(HWND_DESKTOP),0,0,rcOriginal.right - rcOriginal.left,rcOriginal.bottom - rcOriginal.top,hdcDrawRestore[index],0,0,SRCCOPY);
+
     pageScrollTop[index] = pTemplateDocumentUI -> prcPDFSpecificPagePixels[pSG -> pdfPageNumber - 1].top;
 
     RECT rcPixels{0,0,0,0};

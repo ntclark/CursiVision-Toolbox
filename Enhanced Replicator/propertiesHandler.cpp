@@ -75,7 +75,7 @@
         IPrintingSupportProfile *px = NULL;
         p -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
 
-        if ( px && ! px -> AllowPrintProfileChanges() && ! p -> editAllowed ) {
+        if ( ! ( NULL == px ) && ! px -> AllowPrintProfileChanges() && ! p -> editAllowed ) {
             SetWindowPos(GetDlgItem(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE);
             SetDlgItemText(hwnd,IDDI_TOOLBOX_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change print profiles");
             needsAdmin = true;
@@ -104,6 +104,9 @@
     case WM_LBUTTONDOWN: {
 
         if ( -1L == p -> activeIndex )
+            break;
+
+        if ( needsAdmin )
             break;
 
         POINTL ptlMouse = {LOWORD(lParam),HIWORD(lParam)};
@@ -160,7 +163,7 @@
 
             for ( long k = 0; k < WRITING_LOCATION_COUNT; k++ ) {
 
-                if ( ! p -> pWritingLocations[k] )
+                if ( NULL == p -> pWritingLocations[k] )
                     break;
 
                 writingLocation *pSG = p -> pWritingLocations[k];
@@ -176,9 +179,9 @@
 
                 if ( ! ( oldActiveIndex == p -> activeIndex ) ) {
                     if ( ! ( -1L == oldActiveIndex ) )
-                        p -> drawSignature(NULL,oldActiveIndex,NULL,NULL);
+                        p -> drawSignature(NULL,oldActiveIndex,0,NULL,NULL);
                     oldActiveIndex = p -> activeIndex;
-                    p -> drawSignature(NULL,p -> activeIndex,NULL,NULL);
+                    p -> drawSignature(NULL,p -> activeIndex,0,NULL,NULL);
                 }
 
                 if ( p -> isReplicant[k] ) {
@@ -211,7 +214,7 @@
 
             if ( ! ( oldActiveIndex == p -> activeIndex ) ) 
                 if ( ! ( -1L == oldActiveIndex ) ) 
-                    p -> drawSignature(NULL,oldActiveIndex,NULL,NULL);
+                    p -> drawSignature(NULL,oldActiveIndex,0,NULL,NULL);
 
             if ( -1L == p -> activeIndex ) 
                 SetCursor(LoadCursor(NULL,IDC_ARROW));
@@ -285,7 +288,7 @@
 
         RECT rcPixels{(long)dragRect.left,(long)dragRect.top,(long)dragRect.right,(long)dragRect.bottom};
 
-        p -> drawSignature(NULL,p -> activeIndex,&rcPixels,&pSG -> documentRect);
+        p -> drawSignature(NULL,p -> activeIndex,0,&rcPixels,&pSG -> documentRect);
 
         }
         break;
@@ -298,7 +301,7 @@
         if ( ! p -> isReplicant[p -> activeIndex] )
             break;
 
-        p -> drawSignature(NULL,p -> activeIndex,NULL,NULL);
+        p -> drawSignature(NULL,p -> activeIndex,0,NULL,NULL);
 
         SetWindowText(GetDlgItem(hwnd,IDDI_REPLICATOR_ACTION_INSTRUCTIONS),"");
 
@@ -312,6 +315,9 @@
     case WM_RBUTTONUP: {
 
         if ( -1L == p -> activeIndex )
+            break;
+
+        if ( needsAdmin )
             break;
 
         long x = LOWORD(lParam) - p -> pTemplateDocumentUI -> rcPageParentCoordinates.left;
@@ -382,7 +388,7 @@
             RECT rcNew;
             long keepIndex = p -> activeIndex;
             p -> activeIndex = -1L;
-            p -> drawSignature(NULL,keepIndex,NULL,NULL);
+            p -> drawSignature(NULL,keepIndex,0,NULL,NULL);
             p -> activeIndex = keepIndex;
             writingLocation *pSG = p -> pWritingLocations[p -> activeIndex];
             RECT rcPixels = pSG -> documentRect;
@@ -391,7 +397,7 @@
             rcPixels.top += 32;
             rcPixels.right += 32;
             rcPixels.bottom += 32;
-            p -> drawSignature(NULL,p -> activeIndex,&rcPixels,&rcNew);
+            p -> drawSignature(NULL,p -> activeIndex,0,&rcPixels,&rcNew);
             p -> addReplicant(p -> activeIndex,rcNew.left,rcNew.bottom);
             p -> activeIndex = -1L;
             SetWindowText(GetDlgItem(hwnd,IDDI_REPLICATOR_ACTION_INSTRUCTIONS),"");

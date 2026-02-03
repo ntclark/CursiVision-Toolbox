@@ -170,7 +170,7 @@
 
         templateDocument::tdUI *pTemplateDocumentUI{NULL};
 
-        void drawSignature(HDC hdc,long index,RECT *prcNew,RECT *pNewLocation);
+        void drawSignature(HDC hdc,long index,long scrollAmount,RECT *prcNew,RECT *pNewLocation);
         void clearSignature(long index);
 
         static theReplicator *pThis;
