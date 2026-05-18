@@ -71,19 +71,18 @@ STRINGTABLE {
 IDDI_NAME1_PREFIX "Create a field in your print profile (Tools - Setup - Print) \r\
 that defines a location containing text for the file name."
 
-IDS_NO_PROFILE "This CursiVision tool is designed to be used with documents \r\
-that have been printed through the CursiVision Print driver.\r\
-The CursiVision print driver captures text, and it's location, \r\
-from every document printed.\r\r\
-By editing the printing profile (Tools - Setup - Printing) for \r\
-the current document, you can specify a location on your documents\r\
- from which to find certain text for each copy of the document printed.\r\r\
-With these definitions, this back end tool can then take the text \r\
-from that location off of the printed document and name your signed\r\
-document with that text.\r\r\
-When you edit the profile, create fields by going to the Text Fields Tab,\r\
- press Edit, and use the mouse to select each field. Be sure to right click \r\
-on each field and create a label for it.\r\r\r\
-There is no print profile defined for this document. To create a print profile,\r\
-print your source document from your application to the CursiVision print driver."
+IDS_NO_PROFILE "This CursiVision tool is designed for documents you sign, either .\r\
+initiated with the CursiVision print driver or that you open with the file menu.\r\r\
+The system can capture text at any location from these documents.\r\r\
+When you edit settings for the document you can specify locations\r\
+within it from which to find the text in each copy of the document signed.\r\r\
+With these definitions, this tool can then take the text from that location\r\
+and name your signed document with that text at that location.\r\r\
+When you edit the profile, create fields by going to the Data Fields Settings \r\
+Tab on the left, and use the mouse to select each field. Be sure to right click \r\
+on each field and create a label for it.\r\r\
+After you define these fields, click Ok to save the definitions\r\
+to the system, then restart the settings dialog to use them.\r\r\r\
+This tool settings option is not available until you've defined\r\
+one or more of these data fields"
 }

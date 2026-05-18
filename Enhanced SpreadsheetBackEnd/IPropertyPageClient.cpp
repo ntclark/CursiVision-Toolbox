@@ -117,6 +117,7 @@
    pPropSheetPages[0].dwFlags = PSP_USETITLE;
    pPropSheetPages[0].hInstance = hModule;
 
+#if 0
    if ( ! pParent -> pICursiVisionServices ) {
       pPropSheetPages[0].pszTemplate = MAKEINTRESOURCE(IDD_NO_PROFILE);
       pPropSheetPages[0].pfnDlgProc = (DLGPROC)SpreadsheetBackEnd::noProfileHandler;
@@ -124,13 +125,16 @@
       IPrintingSupportProfile *px = NULL;
       pParent -> pICursiVisionServices -> get_PrintingSupportProfile(&px);
       if ( ! ( NULL == px ) ) {
+#endif
          pPropSheetPages[0].pszTemplate = MAKEINTRESOURCE(IDD_OPTIONS);
          pPropSheetPages[0].pfnDlgProc = (DLGPROC)SpreadsheetBackEnd::propertiesHandler;
+#if 0
       } else {
          pPropSheetPages[0].pszTemplate = MAKEINTRESOURCE(IDD_NO_PROFILE);
          pPropSheetPages[0].pfnDlgProc = (DLGPROC)SpreadsheetBackEnd::noProfileHandler;
       }
    }
+#endif
 
    pPropSheetPages[0].pszTitle = "Spreadsheet Settings";
    pPropSheetPages[0].lParam = (LONG_PTR)&pParent -> processingDisposition;
