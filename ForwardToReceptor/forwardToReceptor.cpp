@@ -100,7 +100,7 @@
     pIPropertyPage = NULL;
     IPrintingSupportProfile *px = NULL;
     pICursiVisionServices -> get_PrintingSupportProfile(&px);
-    if ( pICursiVisionServices -> IsAdministrator() || ! px )
+    if ( pICursiVisionServices -> IsAdministrator() || ! px || pICursiVisionServices -> AllowPrintProfileChangesSetting())
         pIGProperties -> Save();
     pCurrentReplicatorBackEnd = NULL;
     return;

@@ -249,7 +249,9 @@ extern "C" long sendMail(char *serverName,long smtpPort,char *userName,char *pas
     char szInput[1024];
 
     memset(szInput,0,sizeof(szInput));
-    recv(theSocket,szInput,1024,0L);
+    int byteCount = recv(theSocket,szInput,1024,0L);
+if ( 0 == byteCount )
+byteCount = WSAGetLastError();
 
     char outputCommands[2][32];
     char responses[2][16];

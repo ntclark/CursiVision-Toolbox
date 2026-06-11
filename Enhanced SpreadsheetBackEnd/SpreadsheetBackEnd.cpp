@@ -109,10 +109,8 @@
    pICursiVisionServices -> get_PrintingSupportProfile(&px);
    if ( pICursiVisionServices -> IsAdministrator() || ! px )
       pIGProperties -> Save();
-
    if ( pIPropertyPage )
       pIPropertyPage -> Release();
-
    pIPropertyPage = NULL;
 
    return;
@@ -133,8 +131,10 @@
    HRESULT SpreadsheetBackEnd::SaveProperties() {
    IPrintingSupportProfile *px = NULL;
    pICursiVisionServices -> get_PrintingSupportProfile(&px);
-   if ( ! pICursiVisionServices -> IsAdministrator() && px )
-      return S_OK;
+   if ( ! pICursiVisionServices -> IsAdministrator() && px ) {
+      if ( ! pICursiVisionServices -> AllowPrintProfileChangesSetting() )
+         return S_OK;
+   }
    BSTR bstrFileName = NULL;
    pIGProperties -> get_FileName(&bstrFileName);
    if ( ! bstrFileName || 0 == bstrFileName[0] ) {

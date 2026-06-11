@@ -28,19 +28,19 @@
          SetDlgItemText(hwnd,IDDI_NEED_ADMIN_PRIVILEGES,"Changes are disabled because Admin privileges are required to change tool properties");    \
          needsAdmin = true;                                                                 \
       } else                                                                                \
-          ShowWindow(GetDlgItem(hwnd,IDDI_NEED_ADMIN_PRIVILEGES),SW_HIDE);      \
+          ShowWindow(GetDlgItem(hwnd,IDDI_NEED_ADMIN_PRIVILEGES),SW_HIDE);                  \
    }                                                                                        \
    loadComboBox(hwnd,pObject -> szNamePrefix[0],0,pObject -> pICursiVisionServices);        \
    loadComboBox(hwnd,pObject -> szNamePrefix[1],1,pObject -> pICursiVisionServices);        \
    SendDlgItemMessage(hwnd,IDDI_NAME1_PREFIX + 1,CB_INSERTSTRING,(WPARAM)-1L,(LPARAM)"<none>"); \
    if ( needsAdmin ) {                                                                          \
-        enableDisableSiblings(GetDlgItem(hwnd,IDDI_NEED_ADMIN_PRIVILEGES),FALSE);   \
+        enableDisableSiblings(GetDlgItem(hwnd,IDDI_NEED_ADMIN_PRIVILEGES),FALSE);               \
         moveUpAllAmount(hwnd,-16,NULL);                                                         \
-        SetWindowPos(GetDlgItem(hwnd,IDDI_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE | SWP_SHOWWINDOW);     \
-        if ( NULL == defaultTextHandler )                                                                                       \
+        SetWindowPos(GetDlgItem(hwnd,IDDI_NEED_ADMIN_PRIVILEGES),HWND_TOP,8,8,0,0,SWP_NOSIZE | SWP_SHOWWINDOW); \
+        if ( NULL == defaultTextHandler )                                                                       \
             defaultTextHandler = (WNDPROC)SetWindowLongPtr(GetDlgItem(hwnd,IDDI_NEED_ADMIN_PRIVILEGES),GWLP_WNDPROC,(UINT_PTR)redTextHandler); \
-        else                                                                                                                    \
-            SetWindowLongPtr(GetDlgItem(hwnd,IDDI_NEED_ADMIN_PRIVILEGES),GWLP_WNDPROC,(UINT_PTR)redTextHandler);    \
+        else                                                                                                    \
+            SetWindowLongPtr(GetDlgItem(hwnd,IDDI_NEED_ADMIN_PRIVILEGES),GWLP_WNDPROC,(UINT_PTR)redTextHandler);\
     }
 
 #define UNLOAD_ADDITIONAL \

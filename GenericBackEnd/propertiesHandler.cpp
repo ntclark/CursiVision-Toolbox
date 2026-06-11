@@ -137,6 +137,10 @@
 
             p -> waitForCompletion = BST_CHECKED == SendMessage(GetDlgItem(hwnd,IDDI_WAIT_FOR_COMPLETION),BM_GETCHECK,0L,0L);
 
+            p -> SaveProperties();
+            p -> DiscardProperties();
+            p -> DiscardProperties();
+
             SetWindowLongPtr(hwnd,DWLP_MSGRESULT,PSNRET_NOERROR);
 
             return (LRESULT)TRUE;
