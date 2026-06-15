@@ -47,9 +47,9 @@
         p = (FTPBackEnd *)pPage -> lParam;
         SetWindowLongPtr(hwnd,GWLP_USERDATA,(LONG_PTR)p);
 
-        if ( ! p -> isProcessing ) {
+        if ( ! p -> isProcessing )
             ShowWindow(GetDlgItem(hwnd,IDDI_FTP_SEND),SW_HIDE);
-        } else {
+        else {
             RECT rcGroup,rcParent;
             GetWindowRect(GetDlgItem(hwnd,IDDI_FTP_GROUP),&rcGroup);
             GetWindowRect(hwnd,&rcParent);

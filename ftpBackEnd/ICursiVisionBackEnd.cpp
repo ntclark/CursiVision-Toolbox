@@ -1,6 +1,3 @@
-// Copyright 2017 EnVisioNate LLC. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 #include "ftpBackEnd.h"
 
@@ -22,9 +19,8 @@
 
       char szMessage[512];
       sprintf(szMessage,"The required field\n\n\t%s\n\nHas not been provided. Would you like to set the properties ?\n\nChoosing No will cancel the send.",requiredFieldLabels[k]);
-      if ( IDYES == MessageBox(NULL,szMessage,"Note",MB_YESNO | MB_ICONEXCLAMATION | MB_DEFBUTTON1) ) {
+      if ( IDYES == MessageBox(NULL,szMessage,"Note",MB_YESNO | MB_ICONEXCLAMATION | MB_DEFBUTTON1) )
          goto SetProperties;
-      }
 
       return E_FAIL;
 
